@@ -1,0 +1,24 @@
+# Core NLP & ML
+transformers
+torch
+spacy
+scikit-learn
+hdbscan
+umap-learn
+
+# IA API
+anthropic
+
+# Data & Viz
+pandas
+numpy
+matplotlib
+plotly
+
+# Jupyter Support & UI
+ipykernel
+notebook
+ipywidgets
+
+# Modelo de Lenguaje (Español Large)
+https://github.com/explosion/spacy-models/releases/download/es_core_news_lg-3.7.0/es_core_news_lg-3.7.0-py3-none-any.whl
