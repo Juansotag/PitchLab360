@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PitchLab360 - GovLab | Universidad de La Sabana</title>
+    <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- ===================== SIDEBAR ===================== -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+
+                <div class="main-logo-container">
+                    <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno" target="_blank">
+                        <img src="/assets/PitchLab360.jpg" alt="PitchLab360 Logo" class="logo logo-pitchlab-main"
+                            title="PitchLab360">
+                    </a>
+                </div>
+
+                <!-- ── MÓDULOS VIEW (default) ── -->
+                <div id="sidebar-modules-view">
+                    <h2 class="sidebar-title">Módulos de Análisis</h2>
+                    <div class="modules-container">
+                        <div class="module-card metrics-card" data-target="res-metricas">
+                            <div class="module-header">
+                                <div class="module-title-wrapper"><i
+                                        class="fa-solid fa-calculator metric-icon"></i><span>Capa 1: Métricas</span>
+                                </div>
+                                <span class="status-badge pending">Pendiente</span>
+                            </div>
+                            <div class="module-body">
+                                <p class="module-desc">Medido de forma objetiva</p>
+                            </div>
+                        </div>
+                        <div class="module-card llm-card" data-target="res-frases">
+                            <div class="module-header">
+                                <div class="module-title-wrapper"><i
+                                        class="fa-solid fa-quote-left llm-icon"></i><span>Frases clave</span></div><span
+                                    class="status-badge pending">Pendiente</span>
+                            </div>
+                        </div>
+                        <div class="module-card llm-card" data-target="res-marcos">
+                            <div class="module-header">
+                                <div class="module-title-wrapper"><i
+                                        class="fa-solid fa-masks-theater llm-icon"></i><span>Marcos narrativos</span>
+                                </div><span class="status-badge pending">Pendiente</span>
+                            </div>
+                        </div>
+                        <div class="module-card llm-card" data-target="res-publicos">
+                            <div class="module-header">
+                                <div class="module-title-wrapper"><i
+                                        class="fa-solid fa-users llm-icon"></i><span>Públicos</span></div><span
+                                    class="status-badge pending">Pendiente</span>
+                            </div>
+                        </div>
+                        <div class="module-card llm-card" data-target="res-estilo">
+                            <div class="module-header">
+                                <div class="module-title-wrapper"><i
+                                        class="fa-solid fa-pen-nib llm-icon"></i><span>Estilo</span></div><span
+                                    class="status-badge pending">Pendiente</span>
+                            </div>
+                        </div>
+                        <div class="module-card llm-card" data-target="res-digital">
+                            <div class="module-header">
+                                <div class="module-title-wrapper"><i
+                                        class="fa-solid fa-mobile-screen llm-icon"></i><span>Potencial Digital</span>
+                                </div><span class="status-badge pending">Pendiente</span>
+                            </div>
+                        </div>
+                        <div class="module-card llm-card" data-target="res-autenticidad">
+                            <div class="module-header">
+                                <div class="module-title-wrapper"><i
+                                        class="fa-solid fa-fingerprint llm-icon"></i><span>Autenticidad</span></div>
+                                <span class="status-badge pending">Pendiente</span>
+                            </div>
+                        </div>
+                        <div class="module-card llm-card" data-target="res-riesgos">
+                            <div class="module-header">
+                                <div class="module-title-wrapper"><i
+                                        class="fa-solid fa-triangle-exclamation llm-icon"></i><span>Riesgos</span></div>
+                                <span class="status-badge pending">Pendiente</span>
+                            </div>
+                        </div>
+                        <div class="module-card llm-card" data-target="res-eficacia">
+                            <div class="module-header">
+                                <div class="module-title-wrapper"><i
+                                        class="fa-solid fa-bullseye llm-icon"></i><span>Eficacia</span></div><span
+                                    class="status-badge pending">Pendiente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── RESULTS VIEW (shown after analysis) ── -->
+                <div id="sidebar-results-view" style="display:none">
+                    <div class="results-view-header">
+                        <h2 class="sidebar-title" style="margin:0">Resultados</h2>
+                        <button class="btn-icon" id="btn-back-to-modules" title="Volver a módulos">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                    </div>
+
+                    <section class="res-section-sb" id="res-metricas">
+                        <div class="res-section-hdr metrics-header"><i
+                                class="fa-solid fa-calculator"></i><span>Métricas</span><i
+                                class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-body-sb">
+                            <div class="metrics-grid" id="metrics-grid"></div>
+                            <div class="metrics-extra" id="metrics-extra"></div>
+                        </div>
+                    </section>
+
+                    <section class="res-section-sb" id="res-frases">
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-quote-left"></i><span>Frases Clave
+                                y Tono</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-body-sb" id="body-frases"></div>
+                    </section>
+
+                    <section class="res-section-sb" id="res-marcos">
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-masks-theater"></i><span>Marcos
+                                Narrativos</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-body-sb" id="body-marcos"></div>
+                    </section>
+
+                    <section class="res-section-sb" id="res-publicos">
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-users"></i><span>Públicos</span><i
+                                class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-body-sb" id="body-publicos"></div>
+                    </section>
+
+                    <section class="res-section-sb" id="res-estilo">
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-pen-nib"></i><span>Estilo</span><i
+                                class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-body-sb" id="body-estilo"></div>
+                    </section>
+
+                    <section class="res-section-sb" id="res-digital">
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-mobile-screen"></i><span>Potencial
+                                Digital</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-body-sb" id="body-digital"></div>
+                    </section>
+
+                    <section class="res-section-sb" id="res-autenticidad">
+                        <div class="res-section-hdr llm-header"><i
+                                class="fa-solid fa-fingerprint"></i><span>Autenticidad</span><i
+                                class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-body-sb" id="body-autenticidad"></div>
+                    </section>
+
+                    <section class="res-section-sb" id="res-riesgos">
+                        <div class="res-section-hdr llm-header"><i
+                                class="fa-solid fa-triangle-exclamation"></i><span>Riesgos</span><i
+                                class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-body-sb" id="body-riesgos"></div>
+                    </section>
+
+                    <section class="res-section-sb" id="res-eficacia">
+                        <div class="res-section-hdr llm-header"><i
+                                class="fa-solid fa-bullseye"></i><span>Eficacia</span><i
+                                class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-body-sb" id="body-eficacia"></div>
+                    </section>
+                </div>
+
+                <div class="sidebar-footer">
+                    <button class="btn btn-export" id="btn-export-pdf" style="display:none">
+                        <i class="fa-solid fa-file-pdf"></i> Exportar PDF
+                    </button>
+                    <div class="methodology-note">
+                        <i class="fa-solid fa-circle-info"></i> Acerca del análisis
+                    </div>
+                    <div class="sidebar-logos-bottom">
+                        <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno" target="_blank">
+                            <img src="/assets/Universidad de la Sabana.png" alt="Universidad de La Sabana Logo"
+                                class="logo logo-unisabana-bottom" title="Universidad de La Sabana">
+                        </a>
+                        <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno" target="_blank">
+                            <img src="/assets/Govlab.png" alt="GovLab Logo" class="logo logo-govlab-bottom"
+                                title="Laboratorio de Gobierno">
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drag-handle" id="drag-handle">
+                <div class="handle-line"></div>
+                <div class="handle-line"></div>
+            </div>
+        </aside>
+
+        <!-- ===================== MAIN PANEL ===================== -->
+        <main class="main-panel">
+            <header class="top-nav">
+                <span style="font-size:0.95rem;font-weight:600;color:var(--text-muted)"> </span>
+                <button class="btn btn-outline" id="toggle-yt-btn">
+                    <i class="fa-brands fa-youtube"></i> Importar de YouTube
+                </button>
+            </header>
+
+            <div class="work-area" id="work-area-input">
+
+                <!-- YouTube Extract Panel (Collapsible) -->
+                <div class="youtube-panel hidden" id="youtube-panel">
+                    <h3><i class="fa-brands fa-youtube" style="color:red"></i> Extracción de subtítulos</h3>
+
+                    <div class="api-key-section">
+                        <div class="api-key-header" id="api-key-toggle">
+                            <span><i class="fa-solid fa-key"></i> Configuración de API Keys</span>
+                            <i class="fa-solid fa-chevron-down api-key-chevron" id="api-key-chevron"></i>
+                        </div>
+                        <div class="api-key-body hidden" id="api-key-body">
+                            <div class="input-group full-width">
+                                <label>Anthropic API Key <span class="badge-required">requerida para IA</span></label>
+                                <div class="api-key-input-wrapper">
+                                    <input type="password" placeholder="sk-ant-api03-..." id="anthropic-api-key"
+                                        autocomplete="off">
+                                    <button class="btn-icon" id="toggle-api-visibility" title="Mostrar/Ocultar clave">
+                                        <i class="fa-solid fa-eye" id="api-eye-icon"></i>
+                                    </button>
+                                </div>
+                                <p class="api-key-hint"><i class="fa-solid fa-circle-info"></i> Obtén tu clave en <a
+                                        href="https://console.anthropic.com/account/keys"
+                                        target="_blank">console.anthropic.com</a>. La clave se usa solo en esta sesión y
+                                    nunca se guarda.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="yt-inputs">
+                        <div class="input-group full-width">
+                            <label>URL del Video</label>
+                            <input type="text" placeholder="https://youtube.com/watch?v=..." id="yt-url"
+                                value="https://www.youtube.com/watch?v=Va_lTCivNZY&t=14985s">
+                        </div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Inicio (hh:mm:ss)</label>
+                                <input type="text" placeholder="00:00" id="yt-start" value="2:58:30">
+                            </div>
+                            <div class="input-group">
+                                <label>Fin (hh:mm:ss)</label>
+                                <input type="text" placeholder="05:00" id="yt-end" value="3:18:09">
+                            </div>
+                        </div>
+                        <div class="action-row">
+                            <button class="btn btn-primary btn-yt-extract">
+                                <i class="fa-solid fa-download"></i> Extraer Subtítulos
+                            </button>
+                            <button class="btn btn-warning btn-yt-clean">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Limpiar Texto (IA)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="yt-preview" id="yt-preview">
+                        <em>Vista previa del video aparecerá aquí tras ingresar una URL válida.</em>
+                    </div>
+                </div>
+
+                <!-- Text Area Panel -->
+                <div class="editor-section">
+                    <div class="section-header">
+                        <h3>Transcripción del Discurso</h3>
+                        <span class="word-count" id="word-count">0 palabras</span>
+                    </div>
+                    <textarea class="discourse-textarea" placeholder="Pega el discurso aquí o extráelo de YouTube..."
+                        id="discourse-text"></textarea>
+                </div>
+
+                <!-- Metadata Form -->
+                <div class="metadata-section">
+                    <h3><i class="fa-solid fa-tags"></i> Contexto y Metadatos</h3>
+                    <div class="metadata-grid">
+                        <div class="input-group">
+                            <label>Candidato / Exponente</label>
+                            <input type="text" id="meta-candidato" placeholder="Ej: Candidato X">
+                        </div>
+                        <div class="input-group">
+                            <label>Evento</label>
+                            <input type="text" id="meta-evento" placeholder="Ej: Debate Presidencial">
+                        </div>
+                        <div class="input-group">
+                            <label>Audiencia</label>
+                            <input type="text" id="meta-audiencia" placeholder="Ej: Jóvenes / Nación">
+                        </div>
+                        <div class="input-group">
+                            <label>Medio / Plataforma</label>
+                            <input type="text" id="meta-medio" placeholder="Ej: RCN / Plaza Pública">
+                        </div>
+                        <div class="input-group">
+                            <label>Fecha</label>
+                            <input type="date" id="meta-fecha">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Floating Execute Button -->
+            <div class="execution-bar">
+                <button class="btn btn-giant-primary" id="btn-analyze">
+                    <i class="fa-solid fa-bolt"></i> INICIAR ANÁLISIS COMPLETO
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Print-only view (populated dynamically) -->
+    <div id="print-view"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
