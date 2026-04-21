@@ -34,7 +34,7 @@
                         <div class="module-card metrics-card" data-target="res-metricas">
                             <div class="module-header">
                                 <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-calculator metric-icon"></i><span>Capa 1: Métricas</span>
+                                        class="fa-solid fa-calculator metric-icon"></i><span>Indicadores de Complejidad</span>
                                 </div>
                                 <span class="status-badge pending">Pendiente</span>
                             </div>
@@ -45,21 +45,21 @@
                         <div class="module-card llm-card" data-target="res-frases">
                             <div class="module-header">
                                 <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-quote-left llm-icon"></i><span>Frases clave</span></div><span
+                                        class="fa-solid fa-quote-left llm-icon"></i><span>Mensajes Clave</span></div><span
                                     class="status-badge pending">Pendiente</span>
                             </div>
                         </div>
                         <div class="module-card llm-card" data-target="res-marcos">
                             <div class="module-header">
                                 <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-masks-theater llm-icon"></i><span>Marcos narrativos</span>
+                                        class="fa-solid fa-masks-theater llm-icon"></i><span>Encuadres Narrativos</span>
                                 </div><span class="status-badge pending">Pendiente</span>
                             </div>
                         </div>
                         <div class="module-card llm-card" data-target="res-publicos">
                             <div class="module-header">
                                 <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-users llm-icon"></i><span>Públicos</span></div><span
+                                        class="fa-solid fa-users llm-icon"></i><span>Audiencias</span></div><span
                                     class="status-badge pending">Pendiente</span>
                             </div>
                         </div>
@@ -105,68 +105,83 @@
                 <div id="sidebar-results-view" style="display:none">
                     <div class="results-view-header">
                         <h2 class="sidebar-title" style="margin:0">Resultados</h2>
-                        <button class="btn-icon" id="btn-back-to-modules" title="Volver a módulos">
-                            <i class="fa-solid fa-arrow-left"></i>
-                        </button>
                     </div>
 
                     <section class="res-section-sb" id="res-metricas">
-                        <div class="res-section-hdr metrics-header"><i
-                                class="fa-solid fa-calculator"></i><span>Métricas</span><i
-                                class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-hdr metrics-header">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span>Indicadores de Complejidad y Estructura</span>
+                            <button class="btn-help-metrics" id="btn-help-metrics" title="¿Cómo interpretar?">
+                                <i class="fa-solid fa-circle-question"></i>
+                            </button>
+                            <i class="fa-solid fa-chevron-down res-toggle"></i>
+                        </div>
                         <div class="res-section-body-sb">
+                            <div class="metrics-help-box hidden" id="metrics-help-box">
+                                <div class="help-box-header">
+                                    <strong><i class="fa-solid fa-circle-info"></i> Guía de Interpretación</strong>
+                                    <button class="close-help-box" id="close-help-box">&times;</button>
+                                </div>
+                                <div class="help-box-content">
+                                    <p><strong>TTR (Type-Token Ratio):</strong> Riqueza léxica (0 a 1). Valores altos indican vocabulario variado y menos repetitivo.</p>
+                                    <p><strong>Legibilidad (Flesch):</strong> Basada en longitud de palabras y frases. 
+                                        <br>• 90-100: Muy fácil (5to grado)
+                                        <br>• 60-70: Estándar / Conversacional
+                                        <br>• 0-30: Muy difícil / Académico
+                                    </p>
+                                    <p><strong>Palabras / Oración:</strong> Frases cortas (15-20 palabras) favorecen la claridad y el impacto en redes.</p>
+                                    <p><strong>Nosotros vs Ellos:</strong> Analiza la construcción de identidad colectiva frente a la confrontación con oponentes.</p>
+                                </div>
+                            </div>
                             <div class="metrics-grid" id="metrics-grid"></div>
                             <div class="metrics-extra" id="metrics-extra"></div>
                         </div>
                     </section>
 
                     <section class="res-section-sb" id="res-frases">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-quote-left"></i><span>Frases Clave
-                                y Tono</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-quote-left"></i><span>Análisis de Tono y Mensajes Clave</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
                         <div class="res-section-body-sb" id="body-frases"></div>
                     </section>
 
                     <section class="res-section-sb" id="res-marcos">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-masks-theater"></i><span>Marcos
-                                Narrativos</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-masks-theater"></i><span>Encuadres y Emociones Predominantes</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
                         <div class="res-section-body-sb" id="body-marcos"></div>
                     </section>
 
                     <section class="res-section-sb" id="res-publicos">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-users"></i><span>Públicos</span><i
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-users"></i><span>Segmentación de Audiencias</span><i
                                 class="fa-solid fa-chevron-down res-toggle"></i></div>
                         <div class="res-section-body-sb" id="body-publicos"></div>
                     </section>
 
                     <section class="res-section-sb" id="res-estilo">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-pen-nib"></i><span>Estilo</span><i
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-pen-nib"></i><span>Perfil y Estilo de Comunicación</span><i
                                 class="fa-solid fa-chevron-down res-toggle"></i></div>
                         <div class="res-section-body-sb" id="body-estilo"></div>
                     </section>
 
                     <section class="res-section-sb" id="res-digital">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-mobile-screen"></i><span>Potencial
-                                Digital</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
+                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-mobile-screen"></i><span>Proyección en Canales Digitales</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
                         <div class="res-section-body-sb" id="body-digital"></div>
                     </section>
 
                     <section class="res-section-sb" id="res-autenticidad">
                         <div class="res-section-hdr llm-header"><i
-                                class="fa-solid fa-fingerprint"></i><span>Autenticidad</span><i
+                                class="fa-solid fa-fingerprint"></i><span>Evaluación de Autenticidad</span><i
                                 class="fa-solid fa-chevron-down res-toggle"></i></div>
                         <div class="res-section-body-sb" id="body-autenticidad"></div>
                     </section>
 
                     <section class="res-section-sb" id="res-riesgos">
                         <div class="res-section-hdr llm-header"><i
-                                class="fa-solid fa-triangle-exclamation"></i><span>Riesgos</span><i
+                                class="fa-solid fa-triangle-exclamation"></i><span>Análisis de Riesgos y Verificación</span><i
                                 class="fa-solid fa-chevron-down res-toggle"></i></div>
                         <div class="res-section-body-sb" id="body-riesgos"></div>
                     </section>
 
                     <section class="res-section-sb" id="res-eficacia">
                         <div class="res-section-hdr llm-header"><i
-                                class="fa-solid fa-bullseye"></i><span>Eficacia</span><i
+                                class="fa-solid fa-bullseye"></i><span>Evaluación de Impacto y Eficacia</span><i
                                 class="fa-solid fa-chevron-down res-toggle"></i></div>
                         <div class="res-section-body-sb" id="body-eficacia"></div>
                     </section>
@@ -176,8 +191,8 @@
                     <button class="btn btn-export" id="btn-export-pdf" style="display:none">
                         <i class="fa-solid fa-file-pdf"></i> Exportar PDF
                     </button>
-                    <div class="methodology-note">
-                        <i class="fa-solid fa-circle-info"></i> Acerca del análisis
+                    <div class="methodology-note-box">
+                        <p><strong>Nota Académica:</strong> Este análisis es un ejercicio estrictamente académico y no representa la posición oficial de la Universidad de La Sabana, el Laboratorio de Gobierno (GovLab) o ninguno de sus trabajadores, estudiantes o personal administrativo.</p>
                     </div>
                     <div class="sidebar-logos-bottom">
                         <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno" target="_blank">
@@ -308,7 +323,7 @@
             <!-- Floating Execute Button -->
             <div class="execution-bar">
                 <button class="btn btn-giant-primary" id="btn-analyze">
-                    <i class="fa-solid fa-bolt"></i> INICIAR ANÁLISIS COMPLETO
+                    INICIAR ANÁLISIS COMPLETO
                 </button>
             </div>
         </main>

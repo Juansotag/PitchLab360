@@ -4,5 +4,5 @@ youtube-transcript-api
 anthropic
 python-dotenv
 pydantic
-spacy
 textstat
+httpx

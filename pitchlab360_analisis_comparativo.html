@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PitchLab360 — Análisis Comparativo de Campo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --surface2: #181c22;
+    --border: #1e2530;
+    --border-bright: #2d3748;
+    --text: #e8eaf0;
+    --text-muted: #6b7a8d;
+    --text-dim: #2d3748;
+    --accent-gold: #c9a84c;
+    --c1: #4a9eff;
+    --c2: #52c97a;
+    --c3: #c9a84c;
+    --c4: #e05252;
+    --c5: #9b72e8;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; line-height: 1.6; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, var(--border) 39px, var(--border) 40px);
+    opacity: 0.12; pointer-events: none; z-index: 0;
+  }
+  .wrapper { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 40px 24px 100px; }
+  header { border-bottom: 1px solid var(--border-bright); padding-bottom: 32px; margin-bottom: 48px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; }
+  .brand { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--accent-gold); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(26px, 4vw, 50px); font-weight: 900; line-height: 1.1; }
+  h1 em { font-style: normal; color: var(--accent-gold); }
+  .subtitle { color: var(--text-muted); font-size: 13px; margin-top: 8px; max-width: 520px; }
+  .header-meta p { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-muted); line-height: 2; text-align: right; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 56px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); padding: 8px 16px; font-size: 12px; font-weight: 500; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  section { margin-bottom: 72px; }
+  .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .metric-cell { background: var(--surface); padding: 24px; }
+  .metric-name { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 18px; }
+  .metric-bars { display: flex; flex-direction: column; gap: 10px; }
+  .metric-row { display: grid; grid-template-columns: 100px 1fr 52px; align-items: center; gap: 10px; }
+  .metric-row-name { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-track { height: 4px; background: var(--border-bright); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; }
+  .metric-val { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-align: right; }
+  .compare-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); }
+  .compare-table th { background: var(--surface2); padding: 12px 16px; text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-bright); border-right: 1px solid var(--border); }
+  .compare-table td { padding: 16px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); vertical-align: top; font-size: 12px; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table td:last-child, .compare-table th:last-child { border-right: none; }
+  .compare-table tbody tr:hover td { background: var(--surface); }
+  .candidate-name { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .tag { display: inline-block; padding: 2px 7px; font-size: 9px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; border-radius: 2px; font-weight: 500; background: rgba(255,255,255,0.06); color: var(--text-muted); }
+  .score-pill { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; border: 2px solid currentColor; }
+  td.center { text-align: center; }
+  .insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .insight-card { background: var(--surface); padding: 28px; position: relative; overflow: hidden; }
+  .insight-card::before { content: attr(data-num); position: absolute; top: -8px; right: 12px; font-family: 'Playfair Display', serif; font-size: 80px; font-weight: 900; color: var(--border-bright); line-height: 1; pointer-events: none; }
+  .insight-title { font-size: 11px; font-weight: 600; color: var(--accent-gold); margin-bottom: 10px; letter-spacing: 0.5px; text-transform: uppercase; font-family: 'IBM Plex Mono', monospace; }
+  .insight-body { font-size: 13px; color: var(--text-muted); line-height: 1.75; }
+  .insight-body strong { color: var(--text); font-weight: 500; }
+  .ranking-list { display: flex; flex-direction: column; gap: 2px; }
+  .rank-item { display: grid; grid-template-columns: 28px 180px 1fr 60px; align-items: center; gap: 16px; padding: 14px 20px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid transparent; }
+  .rank-num { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text-dim); }
+  .rank-name { font-size: 13px; font-weight: 600; }
+  .rank-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .rank-bar-wrap { height: 5px; background: var(--border-bright); border-radius: 3px; overflow: hidden; }
+  .rank-bar { height: 100%; border-radius: 3px; }
+  .rank-score { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; text-align: right; }
+  .dichot-grid { display: flex; flex-direction: column; gap: 2px; }
+  .dichot-row { display: grid; grid-template-columns: 160px 1fr auto; gap: 12px; align-items: center; padding: 14px 20px; background: var(--surface); border: 1px solid var(--border); }
+  .dichot-name { font-size: 12px; font-weight: 600; }
+  .dichot-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .dichot-track { height: 8px; background: var(--border-bright); border-radius: 4px; overflow: hidden; }
+  .dichot-nos { height: 100%; border-radius: 4px; }
+  .dichot-ratio { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-muted); white-space: nowrap; min-width: 160px; text-align: right; }
+  .tone-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .tone-card { background: var(--surface); padding: 24px; }
+  .tone-name { font-size: 12px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .tone-track { height: 8px; background: linear-gradient(to right, #e05252, #555, #52c97a); border-radius: 4px; position: relative; margin-bottom: 10px; }
+  .tone-needle { width: 12px; height: 12px; border-radius: 50%; background: #fff; position: absolute; top: 50%; transform: translate(-50%, -50%); border: 2px solid var(--bg); box-shadow: 0 0 0 2px currentColor; }
+  .tone-val { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+  .frames-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .frame-card { background: var(--surface); padding: 24px; }
+  .frame-name-header { font-size: 12px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .frame-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .frame-label { font-size: 11px; color: var(--text-muted); width: 80px; flex-shrink: 0; }
+  .frame-bar-wrap { flex: 1; height: 4px; background: var(--border-bright); border-radius: 2px; overflow: hidden; }
+  .frame-bar { height: 100%; border-radius: 2px; }
+  .frame-pct { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-muted); width: 30px; text-align: right; }
+  .matrix-wrap { overflow-x: auto; }
+  .matrix { width: 100%; border-collapse: collapse; border: 1px solid var(--border); min-width: 700px; }
+  .matrix th { background: var(--surface2); padding: 12px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-bright); border-right: 1px solid var(--border); text-align: left; }
+  .matrix td { padding: 14px 16px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 12px; color: var(--text-muted); line-height: 1.6; vertical-align: top; }
+  .matrix td:last-child, .matrix th:last-child { border-right: none; }
+  .matrix tr:last-child td { border-bottom: none; }
+  .matrix tbody tr:hover td { background: var(--surface); }
+  .matrix .row-head { font-weight: 600; color: var(--text); }
+  .plus { color: #52c97a; font-weight: 500; }
+  .minus { color: #e05252; font-weight: 500; }
+  .note-box { margin-top: 12px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
+  .note-box strong { color: var(--text); font-weight: 500; }
+  .conclusion-box { background: var(--surface); border: 1px solid var(--border-bright); border-left: 4px solid var(--accent-gold); padding: 32px; }
+  .conclusion-box h3 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--accent-gold); }
+  .conclusion-box p { font-size: 13px; color: var(--text-muted); line-height: 1.8; margin-bottom: 14px; }
+  .conclusion-box p:last-child { margin-bottom: 0; }
+  .conclusion-box strong { color: var(--text); font-weight: 500; }
+  footer { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  footer p { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); }
+  @media (max-width: 640px) {
+    header { grid-template-columns: 1fr; }
+    .header-meta p { text-align: left; }
+    .rank-item { grid-template-columns: 28px 1fr 48px; }
+    .rank-item .rank-bar-wrap { display: none; }
+    .dichot-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<header>
+  <div>
+    <div class="brand">PitchLab360 · GovLab · Universidad de La Sabana</div>
+    <h1>Análisis Comparativo<br><em>de Campo Discursivo</em></h1>
+    <p class="subtitle">Evaluación estratégica de cinco candidatos presidenciales colombianos ante audiencia de gobernadores. Capa 1 cuantitativa + Capa 2 cualitativa integradas.</p>
+  </div>
+  <div class="header-meta">
+    <p>Fecha análisis: 2026-02-16</p>
+    <p>Candidatos evaluados: 5</p>
+    <p>Metodología: PitchLab360 v.MVP</p>
+    <p>Contexto: Evento con gobernadores</p>
+    <p>Analista: GovLab · U. de La Sabana</p>
+  </div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c1)"></div>Sergio Fajardo</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c2)"></div>Claudia López</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c3)"></div>Roy Barreras</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c4)"></div>Paloma Valencia</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c5)"></div>Abelardo de la Espriella</div>
+</div>
+
+<!-- S1: MÉTRICAS CUANTITATIVAS -->
+<section>
+  <div class="section-label">Capa 1 — Cuantitativo</div>
+  <div class="section-title">Indicadores de Complejidad y Estructura</div>
+  <div class="metrics-grid">
+    <div class="metric-cell">
+      <div class="metric-name">TTR — Riqueza Léxica</div>
+      <div class="metric-bars">
+        <div class="metric-row"><div class="metric-row-name">P. Valencia</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--c4)"></div></div><div class="metric-val" style="color:var(--c4)">0.642</div></div>
+        <div class="metric-row"><div class="metric-row-name">R. Barreras</div><div class="bar-track"><div class="bar-fill" style="width:91%;background:var(--c3)"></div></div><div class="metric-val" style="color:var(--c3)">0.586</div></div>
+        <div class="metric-row"><div class="metric-row-name">A. Espriella</div><div class="bar-track"><div class="bar-fill" style="width:83%;background:var(--c5)"></div></div><div class="metric-val" style="color:var(--c5)">0.536</div></div>
+        <div class="metric-row"><div class="metric-row-name">C. López</div><div class="bar-track"><div class="bar-fill" style="width:83%;background:var(--c2)"></div></div><div class="metric-val" style="color:var(--c2)">0.532</div></div>
+        <div class="metric-row"><div class="metric-row-name">S. Fajardo</div><div class="bar-track"><div class="bar-fill" style="width:77%;background:var(--c1)"></div></div><div class="metric-val" style="color:var(--c1)">0.497</div></div>
+      </div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-name">Legibilidad Flesch — Mayor = más accesible</div>
+      <div class="metric-bars">
+        <div class="metric-row"><div class="metric-row-name">S. Fajardo</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--c1)"></div></div><div class="metric-val" style="color:var(--c1)">74.89</div></div>
+        <div class="metric-row"><div class="metric-row-name">R. Barreras</div><div class="bar-track"><div class="bar-fill" style="width:94%;background:var(--c3)"></div></div><div class="metric-val" style="color:var(--c3)">70.65</div></div>
+        <div class="metric-row"><div class="metric-row-name">P. Valencia</div><div class="bar-track"><div class="bar-fill" style="width:93%;background:var(--c4)"></div></div><div class="metric-val" style="color:var(--c4)">69.32</div></div>
+        <div class="metric-row"><div class="metric-row-name">C. López</div><div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--c2)"></div></div><div class="metric-val" style="color:var(--c2)">63.84</div></div>
+        <div class="metric-row"><div class="metric-row-name">A. Espriella</div><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--c5)"></div></div><div class="metric-val" style="color:var(--c5)">61.27</div></div>
+      </div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-name">Densidad Negativa — Mayor = más reactivo</div>
+      <div class="metric-bars">
+        <div class="metric-row"><div class="metric-row-name">A. Espriella</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--c5)"></div></div><div class="metric-val" style="color:var(--c5)">2.18%</div></div>
+        <div class="metric-row"><div class="metric-row-name">R. Barreras</div><div class="bar-track"><div class="bar-fill" style="width:98%;background:var(--c3)"></div></div><div class="metric-val" style="color:var(--c3)">2.13%</div></div>
+        <div class="metric-row"><div class="metric-row-name">C. López</div><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--c2)"></div></div><div class="metric-val" style="color:var(--c2)">1.75%</div></div>
+        <div class="metric-row"><div class="metric-row-name">P. Valencia</div><div class="bar-track"><div class="bar-fill" style="width:72%;background:var(--c4)"></div></div><div class="metric-val" style="color:var(--c4)">1.57%</div></div>
+        <div class="metric-row"><div class="metric-row-name">S. Fajardo</div><div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--c1)"></div></div><div class="metric-val" style="color:var(--c1)">1.19%</div></div>
+      </div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-name">Media Palabras/Oración</div>
+      <div class="metric-bars">
+        <div class="metric-row"><div class="metric-row-name">R. Barreras</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--c3)"></div></div><div class="metric-val" style="color:var(--c3)">22.8</div></div>
+        <div class="metric-row"><div class="metric-row-name">P. Valencia</div><div class="bar-track"><div class="bar-fill" style="width:93%;background:var(--c4)"></div></div><div class="metric-val" style="color:var(--c4)">21.1</div></div>
+        <div class="metric-row"><div class="metric-row-name">C. López</div><div class="bar-track"><div class="bar-fill" style="width:90%;background:var(--c2)"></div></div><div class="metric-val" style="color:var(--c2)">20.6</div></div>
+        <div class="metric-row"><div class="metric-row-name">A. Espriella</div><div class="bar-track"><div class="bar-fill" style="width:89%;background:var(--c5)"></div></div><div class="metric-val" style="color:var(--c5)">20.3</div></div>
+        <div class="metric-row"><div class="metric-row-name">S. Fajardo</div><div class="bar-track"><div class="bar-fill" style="width:74%;background:var(--c1)"></div></div><div class="metric-val" style="color:var(--c1)">16.9</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2: DICOTOMÍA -->
+<section>
+  <div class="section-label">Capa 1 — Polarización Discursiva</div>
+  <div class="section-title">Dicotomía Nosotros vs. Ellos</div>
+  <div class="dichot-grid">
+    <div class="dichot-row">
+      <div><div class="dichot-name" style="color:var(--c1)">Sergio Fajardo</div><div class="dichot-sub">Nos(39) vs Ellos(27)</div></div>
+      <div class="dichot-track"><div class="dichot-nos" style="width:59%;background:var(--c1)"></div></div>
+      <div class="dichot-ratio">ratio 1.44 — <span style="color:#52c97a">Inclusivo ✓</span></div>
+    </div>
+    <div class="dichot-row">
+      <div><div class="dichot-name" style="color:var(--c4)">Paloma Valencia</div><div class="dichot-sub">Nos(16) vs Ellos(23)</div></div>
+      <div class="dichot-track"><div class="dichot-nos" style="width:41%;background:var(--c4)"></div></div>
+      <div class="dichot-ratio">ratio 0.70 — <span style="color:var(--accent-gold)">Equilibrado</span></div>
+    </div>
+    <div class="dichot-row">
+      <div><div class="dichot-name" style="color:var(--c3)">Roy Barreras</div><div class="dichot-sub">Nos(5) vs Ellos(29)</div></div>
+      <div class="dichot-track"><div class="dichot-nos" style="width:15%;background:var(--c3)"></div></div>
+      <div class="dichot-ratio">ratio 0.17 — <span style="color:#e05252">Polarizado</span></div>
+    </div>
+    <div class="dichot-row">
+      <div><div class="dichot-name" style="color:var(--c5)">A. de la Espriella</div><div class="dichot-sub">Nos(4) vs Ellos(26)</div></div>
+      <div class="dichot-track"><div class="dichot-nos" style="width:13%;background:var(--c5)"></div></div>
+      <div class="dichot-ratio">ratio 0.15 — <span style="color:#e05252">Muy polarizado</span></div>
+    </div>
+    <div class="dichot-row">
+      <div><div class="dichot-name" style="color:var(--c2)">Claudia López</div><div class="dichot-sub">Nos(6) vs Ellos(45)</div></div>
+      <div class="dichot-track"><div class="dichot-nos" style="width:12%;background:var(--c2)"></div></div>
+      <div class="dichot-ratio">ratio 0.13 — <span style="color:#e05252">Máx. polarizado ✗</span></div>
+    </div>
+  </div>
+  <div class="note-box"><strong>Nota analítica:</strong> La paradoja más llamativa del campo: Claudia López, ante una audiencia de gobernadores que deberían ser sus aliados naturales, presenta el ratio Nos/Ellos más bajo de todos (0.13). Es decir, los está tratando discursivamente como parte del problema. Fajardo es el único que los incluye genuinamente en su endogrupo.</div>
+</section>
+
+<!-- S3: TONO EMOCIONAL -->
+<section>
+  <div class="section-label">Capa 2 — IA Cualitativa</div>
+  <div class="section-title">Índice de Tono Emocional (−1 negativo · +1 positivo)</div>
+  <div class="tone-grid">
+    <div class="tone-card">
+      <div class="tone-name"><div class="legend-dot" style="background:var(--c1)"></div>Sergio Fajardo</div>
+      <div class="tone-track"><div class="tone-needle" style="left:65%;color:var(--c1)"></div></div>
+      <div class="tone-val">+0.30 — Moderadamente positivo<br>Constructivo · Anti-polarización</div>
+    </div>
+    <div class="tone-card">
+      <div class="tone-name"><div class="legend-dot" style="background:var(--c2)"></div>Claudia López</div>
+      <div class="tone-track"><div class="tone-needle" style="left:65%;color:var(--c2)"></div></div>
+      <div class="tone-val">+0.30 — Pragmático-propositivo<br>Técnico · Experiencia ejecutiva</div>
+    </div>
+    <div class="tone-card">
+      <div class="tone-name"><div class="legend-dot" style="background:var(--c5)"></div>A. de la Espriella</div>
+      <div class="tone-track"><div class="tone-needle" style="left:65%;color:var(--c5)"></div></div>
+      <div class="tone-val">+0.30 — Conciliador-contrastivo<br>Combativo · Institucionalista</div>
+    </div>
+    <div class="tone-card">
+      <div class="tone-name"><div class="legend-dot" style="background:var(--c4)"></div>Paloma Valencia</div>
+      <div class="tone-track"><div class="tone-needle" style="left:35%;color:var(--c4)"></div></div>
+      <div class="tone-val">−0.30 — Combativo-crítico<br>Propositivo territorial · Directo</div>
+    </div>
+    <div class="tone-card">
+      <div class="tone-name"><div class="legend-dot" style="background:var(--c3)"></div>Roy Barreras</div>
+      <div class="tone-track"><div class="tone-needle" style="left:35%;color:var(--c3)"></div></div>
+      <div class="tone-val">−0.30 — Preocupado-urgente<br>Diagnóstico de crisis · Alarmista</div>
+    </div>
+  </div>
+  <div class="note-box"><strong>Hallazgo clave:</strong> Los tres candidatos con tono positivo (+0.30) llegaron al mismo resultado emocional por rutas retóricas completamente distintas — Fajardo por unidad, López por tecnocracia, Espriella por contraste institucional. Esto sugiere que el índice de tono agrega información, pero requiere lectura cualitativa para interpretar correctamente.</div>
+</section>
+
+<!-- S4: FRAMES -->
+<section>
+  <div class="section-label">Capa 2 — Encuadres Predominantes</div>
+  <div class="section-title">Distribución de Frames Emocionales por Candidato</div>
+  <div class="frames-grid">
+    <div class="frame-card">
+      <div class="frame-name-header"><div class="legend-dot" style="background:var(--c1)"></div>Sergio Fajardo</div>
+      <div class="frame-row"><div class="frame-label">esperanza</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:100%;background:var(--c1)"></div></div><div class="frame-pct">30%</div></div>
+      <div class="frame-row"><div class="frame-label">orden</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:83%;background:var(--c1);opacity:.7"></div></div><div class="frame-pct">25%</div></div>
+      <div class="frame-row"><div class="frame-label">cercanía</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:67%;background:var(--c1);opacity:.5"></div></div><div class="frame-pct">20%</div></div>
+      <div class="frame-row"><div class="frame-label">seguridad</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:50%;background:var(--c1);opacity:.4"></div></div><div class="frame-pct">15%</div></div>
+      <div class="frame-row"><div class="frame-label">cambio</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:33%;background:var(--c1);opacity:.3"></div></div><div class="frame-pct">10%</div></div>
+    </div>
+    <div class="frame-card">
+      <div class="frame-name-header"><div class="legend-dot" style="background:var(--c2)"></div>Claudia López</div>
+      <div class="frame-row"><div class="frame-label">cambio</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:100%;background:var(--c2)"></div></div><div class="frame-pct">25%</div></div>
+      <div class="frame-row"><div class="frame-label">orden</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:80%;background:var(--c2);opacity:.7"></div></div><div class="frame-pct">20%</div></div>
+      <div class="frame-row"><div class="frame-label">antiélite</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:72%;background:var(--c2);opacity:.6"></div></div><div class="frame-pct">18%</div></div>
+      <div class="frame-row"><div class="frame-label">esperanza</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:60%;background:var(--c2);opacity:.5"></div></div><div class="frame-pct">15%</div></div>
+      <div class="frame-row"><div class="frame-label">cercanía</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:48%;background:var(--c2);opacity:.4"></div></div><div class="frame-pct">12%</div></div>
+    </div>
+    <div class="frame-card">
+      <div class="frame-name-header"><div class="legend-dot" style="background:var(--c3)"></div>Roy Barreras</div>
+      <div class="frame-row"><div class="frame-label">miedo</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:100%;background:var(--c3)"></div></div><div class="frame-pct">35%</div></div>
+      <div class="frame-row"><div class="frame-label">orden</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:71%;background:var(--c3);opacity:.7"></div></div><div class="frame-pct">25%</div></div>
+      <div class="frame-row"><div class="frame-label">esperanza</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:57%;background:var(--c3);opacity:.6"></div></div><div class="frame-pct">20%</div></div>
+      <div class="frame-row"><div class="frame-label">estabilidad</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:43%;background:var(--c3);opacity:.5"></div></div><div class="frame-pct">15%</div></div>
+      <div class="frame-row"><div class="frame-label">cercanía</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:14%;background:var(--c3);opacity:.4"></div></div><div class="frame-pct">5%</div></div>
+    </div>
+    <div class="frame-card">
+      <div class="frame-name-header"><div class="legend-dot" style="background:var(--c4)"></div>Paloma Valencia</div>
+      <div class="frame-row"><div class="frame-label">cambio</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:100%;background:var(--c4)"></div></div><div class="frame-pct">25%</div></div>
+      <div class="frame-row"><div class="frame-label">seguridad</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:88%;background:var(--c4);opacity:.7"></div></div><div class="frame-pct">22%</div></div>
+      <div class="frame-row"><div class="frame-label">indignación</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:80%;background:var(--c4);opacity:.6"></div></div><div class="frame-pct">20%</div></div>
+      <div class="frame-row"><div class="frame-label">cercanía</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:60%;background:var(--c4);opacity:.5"></div></div><div class="frame-pct">15%</div></div>
+      <div class="frame-row"><div class="frame-label">esperanza</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:40%;background:var(--c4);opacity:.4"></div></div><div class="frame-pct">10%</div></div>
+    </div>
+    <div class="frame-card">
+      <div class="frame-name-header"><div class="legend-dot" style="background:var(--c5)"></div>A. de la Espriella</div>
+      <div class="frame-row"><div class="frame-label">esperanza</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:100%;background:var(--c5)"></div></div><div class="frame-pct">25%</div></div>
+      <div class="frame-row"><div class="frame-label">indignación</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:88%;background:var(--c5);opacity:.7"></div></div><div class="frame-pct">22%</div></div>
+      <div class="frame-row"><div class="frame-label">cercanía</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:80%;background:var(--c5);opacity:.6"></div></div><div class="frame-pct">20%</div></div>
+      <div class="frame-row"><div class="frame-label">seguridad</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:60%;background:var(--c5);opacity:.5"></div></div><div class="frame-pct">15%</div></div>
+      <div class="frame-row"><div class="frame-label">orden</div><div class="frame-bar-wrap"><div class="frame-bar" style="width:40%;background:var(--c5);opacity:.4"></div></div><div class="frame-pct">10%</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5: MATRIZ ESTRATÉGICA -->
+<section>
+  <div class="section-label">Análisis Integrado</div>
+  <div class="section-title">Matriz Estratégica Comparativa</div>
+  <div class="matrix-wrap">
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th style="width:120px">Candidato</th>
+        <th>Perfil Comunicativo</th>
+        <th>Estrategia Central</th>
+        <th>Fortaleza Clave</th>
+        <th>Debilidad Crítica</th>
+        <th style="text-align:center;width:60px">Efic.</th>
+        <th style="text-align:center;width:60px">Aut.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="candidate-name"><div class="legend-dot" style="background:var(--c1)"></div>S. Fajardo</div><span class="tag">tecnocrático</span></td>
+        <td class="row-head">Ejecutivo experimentado: autoridad técnica + proximidad personal</td>
+        <td>Anti-polarización como eje; "Yo sé gobernar" como ancla de credibilidad; planes de 20 años</td>
+        <td class="plus">Único ratio Nos/Ellos positivo (1.44). Mayor legibilidad (74.89). Menor densidad negativa (1.19%)</td>
+        <td class="minus">Bajo diferencial emocional. Sin factor viral claro. La competencia no resta impacto masivo</td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c1)">7</span></td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c1)">8</span></td>
+      </tr>
+      <tr>
+        <td><div class="candidate-name"><div class="legend-dot" style="background:var(--c2)"></div>C. López</div><span class="tag">tecnocrático</span></td>
+        <td class="row-head">Experta técnica con experiencia ejecutiva; propuesta de reforma estructural del Estado</td>
+        <td>Legitimidad por experiencia como alcaldesa; cuatro niveles de intervención territorial; pragmatismo sobre ideología</td>
+        <td class="plus">Diagnóstico técnico más sólido. Alta coherencia propuesta-experiencia. Autenticidad 8/10</td>
+        <td class="minus">Ratio Nos/Ellos más bajo (0.13) ante gobernadores — paradoja estratégica grave y costosa</td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c2)">7</span></td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c2)">8</span></td>
+      </tr>
+      <tr>
+        <td><div class="candidate-name"><div class="legend-dot" style="background:var(--c3)"></div>R. Barreras</div><span class="tag">pedagógico</span></td>
+        <td class="row-head">Analítico-alarmista; voz de la moderación frente a extremos políticos</td>
+        <td>Frame de crisis democrática (miedo 35%); propuesta de unificación de períodos; voto en blanco como elemento disruptivo</td>
+        <td class="plus">Mayor TTR (0.586). Diagnóstico internacional contextualizado. Autenticidad alta (8/10)</td>
+        <td class="minus">Tono excesivamente pesimista. Reconocer estar "en el margen del error" debilita la candidatura</td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c3)">6</span></td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c3)">8</span></td>
+      </tr>
+      <tr>
+        <td><div class="candidate-name"><div class="legend-dot" style="background:var(--c4)"></div>P. Valencia</div><span class="tag">combativo</span></td>
+        <td class="row-head">Comunicadora combativa que conecta emocionalmente via lenguaje coloquial y anécdotas locales</td>
+        <td>Contraste radical con gobierno actual; "vamos" (26x) como motor inclusivo; primera mujer presidenta como posicionamiento histórico</td>
+        <td class="plus">Mayor TTR (0.642). Eficacia más alta (8/10). Anécdotas con potencial viral. Mejor ratio combativos</td>
+        <td class="minus">Autenticidad muy baja (4/10). Diálogos fabricados. Estadísticas sin fuente verificable</td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c4)">8</span></td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c4)">4</span></td>
+      </tr>
+      <tr>
+        <td><div class="candidate-name"><div class="legend-dot" style="background:var(--c5)"></div>A. Espriella</div><span class="tag">combativo</span></td>
+        <td class="row-head">Confrontacional institucionalista; denuncia política combinada con promesas concretas de gestión</td>
+        <td>Ataque sistemático al gobierno; promesa de permanencia en el país; descentralización como eje filosófico</td>
+        <td class="plus">Discurso más formal del campo (8/10). "Patria desde los territorios" bien construido técnicamente</td>
+        <td class="minus">Autenticidad muy baja (4/10). Anáforas mecánicas excesivas. Ratio Nos/Ellos de 0.15 ante su audiencia objetivo</td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c5)">7</span></td>
+        <td style="text-align:center"><span class="score-pill" style="color:var(--c5)">4</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- S6: RANKINGS -->
+<section>
+  <div class="section-label">Evaluación Integrada</div>
+  <div class="section-title">Rankings por Dimensión Estratégica</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:32px;">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--text-muted);margin-bottom:12px;text-transform:uppercase;">Eficacia Comunicativa Global</div>
+      <div class="ranking-list">
+        <div class="rank-item" style="border-left-color:var(--c4)">
+          <div class="rank-num">1</div>
+          <div><div class="rank-name" style="color:var(--c4)">Paloma Valencia</div><div class="rank-sub">Impacto masivo · Conexión emocional</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:100%;background:var(--c4)"></div></div>
+          <div class="rank-score" style="color:var(--c4)">8 / 10</div>
+        </div>
+        <div class="rank-item" style="border-left-color:var(--c1)">
+          <div class="rank-num">2</div>
+          <div><div class="rank-name" style="color:var(--c1)">Sergio Fajardo</div><div class="rank-sub">Solidez técnica · Anti-polarización</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:87%;background:var(--c1)"></div></div>
+          <div class="rank-score" style="color:var(--c1)">7 / 10</div>
+        </div>
+        <div class="rank-item" style="border-left-color:var(--c2)">
+          <div class="rank-num">2</div>
+          <div><div class="rank-name" style="color:var(--c2)">Claudia López</div><div class="rank-sub">Propuesta más sólida · Audiencia técnica</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:87%;background:var(--c2)"></div></div>
+          <div class="rank-score" style="color:var(--c2)">7 / 10</div>
+        </div>
+        <div class="rank-item" style="border-left-color:var(--c5)">
+          <div class="rank-num">2</div>
+          <div><div class="rank-name" style="color:var(--c5)">A. de la Espriella</div><div class="rank-sub">Alianzas regionales · Objetivo táctico</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:87%;background:var(--c5)"></div></div>
+          <div class="rank-score" style="color:var(--c5)">7 / 10</div>
+        </div>
+        <div class="rank-item" style="border-left-color:var(--c3)">
+          <div class="rank-num">5</div>
+          <div><div class="rank-name" style="color:var(--c3)">Roy Barreras</div><div class="rank-sub">Tono derrotista · Baja movilización</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:75%;background:var(--c3)"></div></div>
+          <div class="rank-score" style="color:var(--c3)">6 / 10</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--text-muted);margin-bottom:12px;text-transform:uppercase;">Autenticidad Percibida</div>
+      <div class="ranking-list">
+        <div class="rank-item" style="border-left-color:var(--c1)">
+          <div class="rank-num">1</div>
+          <div><div class="rank-name" style="color:var(--c1)">Sergio Fajardo</div><div class="rank-sub">Flujo natural · Vocabulario orgánico</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:100%;background:var(--c1)"></div></div>
+          <div class="rank-score" style="color:var(--c1)">8 / 10</div>
+        </div>
+        <div class="rank-item" style="border-left-color:var(--c2)">
+          <div class="rank-num">1</div>
+          <div><div class="rank-name" style="color:var(--c2)">Claudia López</div><div class="rank-sub">Coherencia técnica · Experiencia real</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:100%;background:var(--c2)"></div></div>
+          <div class="rank-score" style="color:var(--c2)">8 / 10</div>
+        </div>
+        <div class="rank-item" style="border-left-color:var(--c3)">
+          <div class="rank-num">1</div>
+          <div><div class="rank-name" style="color:var(--c3)">Roy Barreras</div><div class="rank-sub">Análisis consistente · Pocas fabricaciones</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:100%;background:var(--c3)"></div></div>
+          <div class="rank-score" style="color:var(--c3)">8 / 10</div>
+        </div>
+        <div class="rank-item" style="border-left-color:var(--c4)">
+          <div class="rank-num">4</div>
+          <div><div class="rank-name" style="color:var(--c4)">Paloma Valencia</div><div class="rank-sub">Diálogos fabricados · Cifras sin fuente</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:50%;background:var(--c4)"></div></div>
+          <div class="rank-score" style="color:var(--c4)">4 / 10</div>
+        </div>
+        <div class="rank-item" style="border-left-color:var(--c5)">
+          <div class="rank-num">4</div>
+          <div><div class="rank-name" style="color:var(--c5)">A. de la Espriella</div><div class="rank-sub">Anáforas mecánicas · Retórica calculada</div></div>
+          <div class="rank-bar-wrap"><div class="rank-bar" style="width:50%;background:var(--c5)"></div></div>
+          <div class="rank-score" style="color:var(--c5)">4 / 10</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S7: INSIGHTS -->
+<section>
+  <div class="section-label">Lectura de Experto</div>
+  <div class="section-title">Hallazgos Estratégicos del Campo Discursivo</div>
+  <div class="insight-grid">
+    <div class="insight-card" data-num="1">
+      <div class="insight-title">La trampa de la doble audiencia</div>
+      <div class="insight-body">Los cinco candidatos optimizaron su discurso para la sala pero no para las redes sociales que los observan simultáneamente. <strong>Un evento con gobernadores en 2026 tiene dos audiencias: la presencial y la digital.</strong> Solo Paloma Valencia parece haber entendido esto con su lenguaje coloquial y anécdotas viralizables, aunque a costa de autenticidad percibida.</div>
+    </div>
+    <div class="insight-card" data-num="2">
+      <div class="insight-title">La inversión autenticidad–eficacia</div>
+      <div class="insight-body">Los datos revelan una <strong>correlación inversa notable</strong>: Valencia y Espriella tienen la eficacia más alta pero la autenticidad más baja (4/10). Fajardo, López y Barreras tienen autenticidad alta (8/10) pero eficacia media. En comunicación política colombiana 2026, la construcción retórica calculada supera a la autenticidad en impacto inmediato.</div>
+    </div>
+    <div class="insight-card" data-num="3">
+      <div class="insight-title">Fajardo: el outlier silencioso</div>
+      <div class="insight-body">Técnicamente es <strong>el candidato mejor posicionado ante esta audiencia específica</strong>: único ratio Nos/Ellos positivo (1.44), menor densidad negativa (1.19%), mayor legibilidad, alta autenticidad. Su problema central: en el mercado de atención política colombiano, la solidez técnica sin intensidad emocional suficiente es sistemáticamente invisible.</div>
+    </div>
+    <div class="insight-card" data-num="4">
+      <div class="insight-title">López: la propuesta huérfana</div>
+      <div class="insight-body">Presenta la propuesta estructural más elaborada (cuatro niveles de intervención territorial) con la mayor legitimidad ejecutiva del campo (ex-alcaldesa de Bogotá). Sin embargo, <strong>su ratio Nos/Ellos de 0.13 ante gobernadores es el error estratégico más costoso del campo</strong>: está hablándole a sus aliados potenciales como si fueran el problema que debe resolver.</div>
+    </div>
+    <div class="insight-card" data-num="5">
+      <div class="insight-title">Barreras: diagnóstico correcto, medicina equivocada</div>
+      <div class="insight-body">Su frame de miedo al 35% es el más alto del campo y probablemente el más preciso para el contexto político colombiano 2026. Pero <strong>en comunicación política, diagnosticar una crisis sin proyectar inevitabilidad de victoria activa la desmovilización, no la movilización.</strong> "Parece inevitable que vamos a tener un país fracturado" es titular académico, no consigna electoral.</div>
+    </div>
+    <div class="insight-card" data-num="6">
+      <div class="insight-title">El campo está sobre-diagnosticado</div>
+      <div class="insight-body">Los cinco candidatos <strong>coinciden en el diagnóstico</strong> (gobierno Petro = problema, centralismo = obstáculo) pero no se diferencian realmente en la solución. Todos prometen descentralización, todos apelan a los gobernadores, todos critican el abandono territorial. <strong>La guerra comunicativa de 2026 será de imagen y autenticidad percibida, no de propuesta programática.</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- S8: CONCLUSIÓN -->
+<section>
+  <div class="section-label">Síntesis Final</div>
+  <div class="section-title">Conclusión Ejecutiva</div>
+  <div class="conclusion-box">
+    <h3>Lectura Estratégica del Campo — Febrero 2026</h3>
+    <p>El análisis comparativo revela un campo político donde <strong>la competencia técnica es alta pero la diferenciación estratégica es sorprendentemente baja</strong>. Todos los candidatos comparten el mismo diagnóstico, lo que convierte esta carrera en una disputa fundamentalmente de credibilidad percibida, carisma territorial y posicionamiento en el eje autenticidad-eficacia.</p>
+    <p><strong>Paloma Valencia</strong> emerge como la candidata con mayor potencial de impacto masivo gracias a su lenguaje directo y anécdotas viralizables, pero su debilidad estructural es la percepción de artificialidad (4/10). <strong>Sergio Fajardo</strong> es técnicamente el mejor posicionado ante esta audiencia específica, pero enfrenta el problema clásico del candidato competente en un mercado que premia la intensidad emocional por encima de la solidez argumental.</p>
+    <p><strong>Claudia López</strong> tiene la propuesta más sólida pero comete el error más costoso: tratar a sus aliados naturales como exogrupo. <strong>Roy Barreras</strong> apuesta por el centro intelectual con el diagnóstico más preciso, pero su tono de crisis puede funcionar como advertencia académica sin convertirse en catalizador de voto. <strong>Abelardo de la Espriella</strong> cumple objetivos tácticos de construcción de alianzas regionales con un discurso formal y bien estructurado, aunque la retórica excesivamente calculada limita su escalabilidad.</p>
+    <p>La variable más subestimada de todo el campo: <strong>la dicotomía Nos/Ellos ante esta audiencia específica.</strong> En un evento con gobernadores, el único candidato que los incluyó genuinamente en su endogrupo fue Fajardo. Todos los demás los cortejaron desde la distancia retórica. En política territorial, esa diferencia puede ser determinante para construir la coalición de apoyo regional que cualquier candidatura presidencial necesita.</p>
+  </div>
+</section>
+
+<footer>
+  <p>PitchLab360 · GovLab · Universidad de La Sabana · 2026</p>
+  <p>Análisis comparativo · 5 informes individuales · Metodología mixta Capa 1 + Capa 2</p>
+  <p>Ejercicio académico · No representa posición oficial de ninguna institución</p>
+</footer>
+
+</div>
+</body>
+</html>

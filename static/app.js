@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     /* --- SIDEBAR VIEW SWITCHING --- */
     const sidebarModulesView = document.getElementById('sidebar-modules-view');
     const sidebarResultsView = document.getElementById('sidebar-results-view');
-    const btnBack = document.getElementById('btn-back-to-modules');
     const btnExportPdf = document.getElementById('btn-export-pdf');
 
     function showResultsInSidebar() {
@@ -34,10 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebarResultsView.scrollTop = 0;
     }
 
-    btnBack.addEventListener('click', () => {
-        sidebarResultsView.style.display = 'none';
-        sidebarModulesView.style.display = 'block';
-    });
+
 
     btnExportPdf.addEventListener('click', () => {
         const printView = document.getElementById('print-view');
@@ -66,9 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         printView.innerHTML = `
-            <h1>📊 ${candidato}</h1>
-            <div class="pv-meta">PitchLab360 · GovLab Universidad de La Sabana · ${fecha}</div>
-            ${sectionsHTML}`;
+            <div class="pv-header-logos">
+                <img src="/assets/PitchLab360.jpg" class="pv-logo-main">
+                <div class="pv-logos-secondary">
+                    <img src="/assets/Universidad de la Sabana.png" class="pv-logo-sub">
+                    <img src="/assets/Govlab.png" class="pv-logo-sub">
+                </div>
+            </div>
+            <h1>Informe de Análisis de Discurso: ${candidato}</h1>
+            <div class="pv-meta">PitchLab360 · Laboratorio de Gobierno (GovLab) · Universidad de La Sabana · ${fecha}</div>
+            ${sectionsHTML}
+            <div class="pv-disclaimer">
+                <strong>Nota de exención de responsabilidad:</strong> Este análisis es un ejercicio académico generado mediante herramientas de inteligencia artificial y procesamiento de lenguaje natural. Los resultados aquí presentados no representan la posición oficial de la Universidad de La Sabana, el Laboratorio de Gobierno (GovLab), ni de sus trabajadores, estudiantes o personal administrativo.
+            </div>`;
 
         setTimeout(() => {
             window.print();
@@ -91,10 +97,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Accordion toggle for result section headers
     document.querySelectorAll('.res-section-hdr').forEach(hdr => {
-        hdr.addEventListener('click', () => {
+        hdr.addEventListener('click', (e) => {
+            // If clicking help button, don't toggle accordion
+            if (e.target.closest('.btn-help-metrics')) return;
             hdr.closest('.res-section-sb').classList.toggle('open');
         });
     });
+
+    // Metrics help box toggle
+    const btnHelpMetrics = document.getElementById('btn-help-metrics');
+    const metricsHelpBox = document.getElementById('metrics-help-box');
+    const btnCloseHelpBox = document.getElementById('close-help-box');
+
+    if (btnHelpMetrics) {
+        btnHelpMetrics.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent accordion from toggling
+            metricsHelpBox.classList.toggle('hidden');
+        });
+    }
+
+    if (btnCloseHelpBox) {
+        btnCloseHelpBox.addEventListener('click', () => {
+            metricsHelpBox.classList.add('hidden');
+        });
+    }
 
     /* --- SIDEBAR RESIZE LOGIC --- */
     const sidebar = document.getElementById('sidebar');
@@ -113,7 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.userSelect = 'none';
 
         // Calculate and apply new width (Constraints: 200px - 480px as per README)
-        const newWidth = Math.min(480, Math.max(200, e.clientX));
+        const maxWidth = window.innerWidth * 0.85;
+        const newWidth = Math.min(maxWidth, Math.max(200, e.clientX));
         sidebar.style.width = newWidth + 'px';
         sidebar.style.minWidth = newWidth + 'px'; // Ensure flexbox doesn't shrink it
     });
@@ -400,11 +427,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Main stat cards (grid)
         grid.innerHTML = [
-            { val: m.TTR, label: 'TTR', title: 'Type-Token Ratio (riqueza léxica)' },
-            { val: m.legibilidad_flesch, label: 'Legibilidad (Flesch)', title: 'Mayor = más fácil de leer' },
-            { val: m.longitud_promedio_oracion, label: 'Palabras / oración', title: '' },
-            { val: m.negaciones?.count ?? 0, label: 'Negaciones', title: '' },
-            { val: `${m.negaciones?.densidad_pct ?? 0}%`, label: 'Densidad neg.', title: '' },
+            { val: m.TTR, label: 'Índice TTR', title: 'Riqueza léxica (Type-Token Ratio)' },
+            { val: m.legibilidad_flesch, label: 'Legibilidad', title: 'Facilidad de lectura (Flesch)' },
+            { val: m.longitud_promedio_oracion, label: 'Media Palabras/Oración', title: 'Extensión media de las unidades sintácticas' },
+            { val: m.negaciones?.count ?? 0, label: 'Frecuencia Negaciones', title: 'Conteo total de partículas negativas' },
+            { val: `${m.negaciones?.densidad_pct ?? 0}%`, label: 'Densidad Negativa', title: 'Porcentaje de negaciones sobre el total' },
         ].map(s => `
             <div class="metric-stat-card" title="${s.title}">
                 <div class="stat-val">${s.val}</div>
@@ -424,16 +451,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         extra.innerHTML = `
             <div class="nos-ell-bar">
-                <div class="bar-label">Nosotros (${nos}) vs. Ellos (${ell}) &mdash; ratio: ${m.nosotros_ellos?.ratio ?? 'N/A'}</div>
+                <div class="bar-label">Dicotomía Discursiva: Nosotros (${nos}) vs. Ellos (${ell}) &mdash; Proporción: ${m.nosotros_ellos?.ratio ?? 'N/A'}</div>
                 <div class="bar-track">
                     <div class="bar-fill-nos" style="width:${nosPct}%"></div>
                     <div class="bar-fill-ell" style="width:${ellPct}%"></div>
                 </div>
             </div>
             <div>
-                <div class="result-card-title">Palabras más frecuentes</div>
+                <div class="result-card-title">Distribución de Términos Frecuentes</div>
                 <div class="word-freq-chips">
-                    ${topWords.length ? topWords.map(([w, n]) => `<span class="word-freq-chip">${w} <b>(${n})</b></span>`).join('') : '<em style="font-size:0.8rem;color:#94a3b8">No se identificaron palabras frecuentes.</em>'}
+                    ${topWords.length ? topWords.map(([w, n]) => `<span class="word-freq-chip">${w} <b>(${n})</b></span>`).join('') : '<em style="font-size:0.8rem;color:#94a3b8">No se identificaron términos recurrentes.</em>'}
                 </div>
             </div>
         `;
@@ -448,26 +475,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const pct = Math.round(((score + 1) / 2) * 100); // -1..1 → 0..100%
         body.innerHTML = `
             <div class="result-card">
-                <div class="result-card-title">Tono general</div>
+                <div class="result-card-title">Índice de Tono Emocional</div>
                 <div class="tone-bar-container">
                     <div class="tone-track">
                         <div class="tone-thumb" style="left:${pct}%"></div>
                     </div>
                     <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted)">
-                        <span>Negativo −1</span>
-                        <span style="font-weight:600;color:var(--c-blue-dark)">${score.toFixed(2)} — ${d.tono?.descripcion || ''}</span>
-                        <span>Positivo +1</span>
+                        <span>Negativo (-1)</span>
+                        <span style="font-weight:600;color:var(--c-blue-dark)">Puntaje: ${score.toFixed(2)} &mdash; Caracterización: ${d.tono?.descripcion || ''}</span>
+                        <span>Positivo (+1)</span>
                     </div>
                 </div>
             </div>
             <div class="result-card">
-                <div class="result-card-title">Frases memorables</div>
+                <div class="result-card-title">Unidades de Sentido Significativas</div>
                 <div class="phrase-list">
                     ${(d.frases_memorables || []).map(f => `
                         <div class="phrase-item">
-                            <div class="phrase-type">${f.tipo}</div>
+                            <div class="phrase-type">Categoría: ${f.tipo}</div>
                             <div>"${f.frase}"</div>
-                            <div class="phrase-just">${f.justificacion}</div>
+                            <div class="phrase-just">Justificación técnica: ${f.justificacion}</div>
                         </div>
                     `).join('')}
                 </div>
@@ -481,7 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const d = mod.data;
         body.innerHTML = `
             <div class="result-card">
-                <div class="result-card-title">Mapa emocional del discurso</div>
+                <div class="result-card-title">Distribución de Encuadres Emocionales</div>
                 <div class="emotion-list">
                     ${(d.emociones || []).sort((a,b) => b.porcentaje - a.porcentaje).map(e => `
                         <div class="emotion-row">
@@ -498,13 +525,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
             <div class="result-card">
-                <div class="result-card-title">Complejidad del lenguaje</div>
+                <div class="result-card-title">Nivel de Complejidad Discursiva</div>
                 <div class="score-gauge">
                     ${gaugeCircle(d.complejidad_lenguaje?.score || 0)}
                     <div class="gauge-text">${d.complejidad_lenguaje?.justificacion || ''}</div>
                 </div>
             </div>
-            ${d.advertencia_metodologica ? `<div class="result-card"><div class="result-card-title">⚠ Advertencia metodológica</div><div style="font-size:0.85rem;color:var(--text-secondary)">${d.advertencia_metodologica}</div></div>` : ''}
+            ${d.advertencia_metodologica ? `<div class="result-card"><div class="result-card-title">Advertencia Metodológica</div><div style="font-size:0.85rem;color:var(--text-secondary)">${d.advertencia_metodologica}</div></div>` : ''}
         `;
     }
 
@@ -514,12 +541,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const d = mod.data;
         body.innerHTML = `
             <div class="result-card">
-                <div class="result-card-title">Públicos identificados</div>
+                <div class="result-card-title">Audiencias Objetivo Identificadas</div>
                 ${tags(d.publicos_generales || [], 'blue')}
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;flex-wrap:wrap">
                 <div class="result-card">
-                    <div class="result-card-title">Perfil "Nosotros"</div>
+                    <div class="result-card-title">Construcción del "Nosotros" (Endogrupo)</div>
                     <div style="display:flex;flex-direction:column;gap:0.35rem">
                         ${(d.perfil_nosotros?.caracteristicas || []).map(c => `<div style="font-size:0.85rem">• ${c}</div>`).join('')}
                     </div>
@@ -528,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <div class="result-card">
-                    <div class="result-card-title">Perfil "Ellos"</div>
+                    <div class="result-card-title">Caracterización del "Ellos" (Exogrupo)</div>
                     <div style="display:flex;flex-direction:column;gap:0.35rem">
                         ${(d.perfil_ellos?.caracteristicas || []).map(c => `<div style="font-size:0.85rem">• ${c}</div>`).join('')}
                     </div>
@@ -571,17 +598,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasPotential = d.tiene_potencial;
         body.innerHTML = `
             <div class="result-card">
-                <div class="result-card-title">Evaluación de potencial</div>
+                <div class="result-card-title">Evaluación de Viabilidad Digital</div>
                 <div style="display:flex;align-items:center;gap:0.5rem">
                     <i class="fa-solid ${hasPotential ? 'fa-circle-check' : 'fa-circle-xmark'}" style="color:${hasPotential ? '#22c55e' : '#ef4444'};font-size:1.5rem"></i>
-                    <span style="font-size:1rem;font-weight:600;color:var(--c-blue-dark)">${hasPotential ? 'Tiene alto potencial digital' : 'Potencial digital limitado'}</span>
+                    <span style="font-size:1rem;font-weight:600;color:var(--c-blue-dark)">${hasPotential ? 'Alto potencial de viralización y adaptación' : 'Potencial de adaptación limitado'}</span>
                 </div>
             </div>
             ${(d.fragmentos || []).map(f => `
                 <div class="digital-item">
-                    <div class="digital-format">${f.formato_sugerido}</div>
+                    <div class="digital-format">Formato: ${f.formato_sugerido}</div>
                     <div class="digital-text">"${f.texto}"</div>
-                    <div class="digital-reason">${f.razon}</div>
+                    <div class="digital-reason">Criterio de selección: ${f.razon}</div>
                 </div>
             `).join('')}
         `;
@@ -593,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const d = mod.data;
         body.innerHTML = `
             <div class="result-card">
-                <div class="result-card-title">Score de autenticidad</div>
+                <div class="result-card-title">Índice de Autenticidad Percibida</div>
                 <div class="score-gauge">
                     ${gaugeCircle(d.score_autenticidad || 0)}
                     <div class="gauge-text">${d.justificacion_general || ''}</div>
@@ -601,17 +628,17 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             ${(d.momentos_fabricados || []).length ? `
             <div class="result-card">
-                <div class="result-card-title">Momentos poco auténticos</div>
+                <div class="result-card-title">Desviaciones de Autenticidad Detectadas</div>
                 <div class="phrase-list">
                     ${d.momentos_fabricados.map(m => `
                         <div class="phrase-item" style="border-color:var(--c-red)">
                             <div>"${m.fragmento}"</div>
-                            <div class="phrase-just">${m.razon}</div>
+                            <div class="phrase-just">Análisis: ${m.razon}</div>
                         </div>
                     `).join('')}
                 </div>
             </div>` : ''}
-            ${d.advertencia_metodologica ? `<div class="result-card"><div class="result-card-title">⚠ Advertencia</div><div style="font-size:0.85rem;color:var(--text-secondary)">${d.advertencia_metodologica}</div></div>` : ''}
+            ${d.advertencia_metodologica ? `<div class="result-card"><div class="result-card-title">Nota Metodológica</div><div style="font-size:0.85rem;color:var(--text-secondary)">${d.advertencia_metodologica}</div></div>` : ''}
         `;
     }
 
@@ -635,7 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             ${(d.vulnerabilidades_factcheck || []).length ? `
             <div class="result-card">
-                <div class="result-card-title">Afirmaciones verificables</div>
+                <div class="result-card-title">Aseveraciones para Verificación de Hechos</div>
                 <div style="display:flex;flex-direction:column;gap:0.5rem">
                     ${d.vulnerabilidades_factcheck.map(v => `
                         <div class="factcheck-item">
@@ -654,7 +681,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const d = mod.data;
         body.innerHTML = `
             <div class="result-card">
-                <div class="result-card-title">Score de eficacia</div>
+                <div class="result-card-title">Índice de Eficacia Comunicativa</div>
                 <div class="score-gauge">
                     ${gaugeCircle(d.score_eficacia || 0)}
                     <div class="gauge-text">${d.justificacion_score || ''}</div>
@@ -663,19 +690,19 @@ document.addEventListener('DOMContentLoaded', () => {
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
                 <div class="result-card">
                     <div class="result-card-title">Fortalezas</div>
-                    ${d.fortalezas?.map(f => `<div style="font-size:0.85rem;padding:0.2rem 0;border-left:3px solid #22c55e;padding-left:0.5rem;margin-bottom:0.3rem">✓ ${f}</div>`).join('') || ''}
+                    ${d.fortalezas?.map(f => `<div style="font-size:0.85rem;padding:0.2rem 0;border-left:3px solid #22c55e;padding-left:0.5rem;margin-bottom:0.3rem">Fortaleza: ${f}</div>`).join('') || ''}
                 </div>
                 <div class="result-card">
                     <div class="result-card-title">Debilidades</div>
-                    ${d.debilidades?.map(f => `<div style="font-size:0.85rem;padding:0.2rem 0;border-left:3px solid var(--c-red);padding-left:0.5rem;margin-bottom:0.3rem">✗ ${f}</div>`).join('') || ''}
+                    ${d.debilidades?.map(f => `<div style="font-size:0.85rem;padding:0.2rem 0;border-left:3px solid var(--c-red);padding-left:0.5rem;margin-bottom:0.3rem">Debilidad: ${f}</div>`).join('') || ''}
                 </div>
             </div>
             <div class="result-card">
-                <div class="result-card-title">Funciones cumplidas</div>
+                <div class="result-card-title">Funciones Retóricas Identificadas</div>
                 ${tags(d.funciones_cumplidas || [], 'green')}
             </div>
             <div class="result-card">
-                <div class="result-card-title">Impacto en la opinión pública</div>
+                <div class="result-card-title">Proyección de Impacto Social</div>
                 <div style="font-size:0.9rem;line-height:1.5;color:var(--c-blue-dark)">${d.impacto_opinion_publica || ''}</div>
             </div>
         `;
@@ -694,7 +721,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderEficacia(data.eficacia);
 
         showResultsInSidebar();
-        showToast('¡Análisis completado! Revisa los resultados en el menú lateral.', 'success', 5000);
+        showToast('Análisis completado. Revise los resultados en el panel lateral.', 'success', 5000);
     }
 
 });

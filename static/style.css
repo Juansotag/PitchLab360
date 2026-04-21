@@ -48,7 +48,7 @@ body {
 .sidebar {
     width: 300px;
     min-width: 200px;
-    max-width: 480px;
+    max-width: 80vw;
     background-color: var(--bg-sidebar);
     border-right: 1px solid var(--border-color);
     position: relative;
@@ -204,17 +204,15 @@ body {
     gap: 0.75rem;
 }
 
-.methodology-note {
-    font-size: 0.8rem;
-    color: var(--c-blue-light);
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    cursor: pointer;
-    justify-content: center;
-}
-.methodology-note:hover {
-    text-decoration: underline;
+.methodology-note-box {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: 0.75rem;
+    background-color: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    line-height: 1.4;
+    text-align: justify;
 }
 
 .sidebar-logos-bottom {
@@ -643,8 +641,22 @@ body {
     font-size: 0.65rem;
     transition: transform 0.2s;
     color: var(--text-muted);
+    margin-left: 0.5rem;
+}
+
+.btn-help-metrics {
+    background: none;
+    border: none;
+    color: var(--c-blue-light);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
     margin-left: auto;
 }
+.btn-help-metrics:hover { transform: scale(1.1); color: var(--c-blue-dark); }
 .res-section-sb.open .res-toggle { transform: rotate(180deg); }
 
 .res-section-body-sb {
@@ -842,6 +854,49 @@ body {
 .digital-reason { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; }
 
 .error-block { background: #fff5f5; border: 1px solid #fecaca; border-radius: 8px; padding: 0.75rem 1rem; color: #991b1b; font-size: 0.88rem; display: flex; gap: 0.5rem; align-items: flex-start; }
+
+/* Metrics Help Box */
+.metrics-help-box {
+    background: #f0f7ff;
+    border: 1px solid #c7d8fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    animation: fadeInSlide 0.3s ease-out;
+}
+.metrics-help-box.hidden { display: none; }
+
+.help-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    color: var(--c-blue-dark);
+}
+
+.close-help-box {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0 0.2rem;
+}
+.close-help-box:hover { color: var(--c-red); }
+
+.help-box-content p {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 /* ============================================================
    PRINT / PDF STYLES
@@ -1041,6 +1096,51 @@ body {
         font-family: 'Inter', sans-serif;
         color: #1e293b;
         padding: 2rem;
+        background: white;
+    }
+
+    .pv-header-logos {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid var(--c-blue-dark);
+        padding-bottom: 1rem;
+    }
+
+    .pv-logo-main { height: 60px; width: auto; object-fit: contain; }
+    .pv-logos-secondary { display: flex; gap: 1rem; align-items: center; }
+    .pv-logo-sub { height: 40px; width: auto; object-fit: contain; }
+
+    .pv-disclaimer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+        font-size: 0.75rem;
+        color: #64748b;
+        line-height: 1.4;
+        text-align: justify;
+    }
+
+    #print-view * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Force visibility of bars and tracks in print */
+    .bar-track, .tone-track, .emotion-track, .gauge-circle {
+        background-color: #f1f5f9 !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+    
+    .bar-fill-nos { background-color: #3277c3 !important; }
+    .bar-fill-ell { background-color: #d51437 !important; }
+    .emotion-fill { background: linear-gradient(90deg,#762372,#3277c3) !important; background-color: #762372 !important; }
+    .tone-thumb { background-color: white !important; border: 3px solid #003b8f !important; }
+    
+    /* Conic gradient fallback/support for PDF */
+    .gauge-circle {
+        background: conic-gradient(#003b8f var(--pct,0%), #f1f5f9 0%) !important;
     }
 
     #print-view h1 {
@@ -1064,7 +1164,7 @@ body {
     }
 
     #print-view .pv-section-hdr {
-        background: #f1f5f9;
+        background: #f1f5f9 !important;
         padding: 0.5rem 0.85rem;
         font-weight: 700;
         font-size: 0.9rem;
@@ -1076,4 +1176,7 @@ body {
         font-size: 0.85rem;
         line-height: 1.5;
     }
+
+    /* Hide help box in print */
+    .metrics-help-box { display: none !important; }
 }

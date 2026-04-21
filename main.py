@@ -153,7 +153,7 @@ def limpiar_texto(req: CleanRequest):
         
     try:
         chunks = chunk_text_for_cleaning(req.texto, word_chunk=800)
-        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             futures = [executor.submit(clean_chunk, ch) for ch in chunks]
             cleaned_chunks = [f.result() for f in futures]
             
@@ -209,7 +209,7 @@ def calcular_metricas(texto: str) -> dict:
 
     return {
         "TTR": round(len(set(palabras)) / len(palabras), 3) if palabras else 0,
-        "legibilidad_flesch": legibilidad,
+        "legibilidad_flesch": round(legibilidad, 2),
         "longitud_promedio_oracion": round(total_tokens / n_oraciones, 1) if n_oraciones > 0 else 0,
         "palabras_frecuentes": Counter(palabras).most_common(20),
         "nosotros_ellos": {
@@ -435,7 +435,9 @@ def analizar_todo(req: AnalizarRequest):
     metadatos_dict = req.metadatos.model_dump()
     
     # Ejecutar consultas a Claude en PARALELO para ahorrar muchísimo tiempo
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+    # Reducimos max_workers de 8 a 3 para evitar el error 429 (Rate Limit) 
+    # de 30,000 tokens por minuto en cuentas tier 1.
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
         f2m = {
             executor.submit(ejecutar_modulo, modulo, req.texto, metadatos_dict, metricas, req.api_key): modulo
             for modulo in PROMPTS
@@ -455,4 +457,6 @@ def analizar_modulo(modulo: str, req: AnalizarRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    # En Railway se usa la variable de entorno PORT
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
