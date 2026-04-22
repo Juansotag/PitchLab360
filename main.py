@@ -142,10 +142,13 @@ def limpiar_texto(req: CleanRequest):
     http_client = httpx.Client(verify=False, timeout=60.0)
     client = anthropic.Anthropic(api_key=key, http_client=http_client)
     
+    # Log de seguridad para verificar la clave usada (solo inicio y fin)
+    print(f"--- DEBUG: Usando API Key: {key[:8]}...{key[-4:]} ---")
+    
     def clean_chunk(chunk: str) -> str:
         prompt = PROMPT_LIMPIEZA.format(texto=chunk)
         res = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-haiku-4-5-20251001",
             max_tokens=2048,
             messages=[{"role": "user", "content": prompt}]
         )
@@ -316,13 +319,19 @@ Estructura requerida:
     "justificacion": str
   }},
   "tipo_discurso": {{
-    "categorias": [str],
+    "categorias": [
+      {{
+        "nombre": str,
+        "justificacion": str
+      }}
+    ],
     "categoria_dominante": str
   }},
   "perfil_comunicativo": str
 }}
-categorias es subset de:
+nombre de cada categoria es uno de:
 conversacional, combativo, pedagógico, tecnocrático, inspirador, emocional.
+Incluye una justificacion breve (1-2 frases) explicando por qué ese tipo aplica al discurso.
 """,
     "potencial_digital": """
 {base}
@@ -332,12 +341,14 @@ Estructura requerida:
   "fragmentos": [
     {{
       "texto": str,
-      "formato_sugerido": str,
+      "plataformas": [str],
       "razon": str
     }}
   ]
 }}
-formato_sugerido es uno de: short, reel, clip, titular, eslogan.
+plataformas es un subconjunto de estas opciones:
+"Tweet/X", "Post en Facebook", "Reel de Instagram", "Short de YouTube", "TikTok", "Titular para medios tradicionales", "Historia de Instagram".
+Elige las plataformas más adecuadas para cada fragmento según su naturaleza (longitud, tono, formato).
 """,
     "autenticidad": """
 {base}
@@ -374,6 +385,47 @@ Estructura requerida:
   ]
 }}
 """,
+    "stakeholders": """
+{base}
+Analiza el discurso e identifica los stakeholders sobre los que SE HABLA (actores, entidades, instituciones, grupos mencionados).
+
+Categorías de stakeholders disponibles (elige la más apropiada):
+- Funcionarios públicos de nivel bajo
+- Funcionarios públicos de nivel medio  
+- Funcionarios públicos de nivel alto
+- Funcionarios electos del nivel municipal
+- Funcionarios electos del nivel regional
+- Funcionarios electos del nivel nacional
+- Líderes de opinión
+- Medios de comunicación
+- Ciudadanía en general
+- Sector privado
+- Organizaciones no gubernamentales
+- Organismos internacionales
+- Partidos políticos
+- Fuerzas de seguridad
+- Sistema judicial
+
+Relaciones negativas (subcategorías): Bloqueador/Conspirador, Atacante, Actor apático, Actor ilegítimo, Actor incompetente, Actor deshonesto.
+Relaciones positivas (subcategorías): Aliado potencial, Aliado estratégico, Inspiración, Ejemplo.
+Relaciones neutras (subcategorías): Referencia neutral, Actor contextual.
+
+Estructura requerida:
+{{
+  "stakeholders": [
+    {{
+      "nombre": str,
+      "categoria": str,
+      "porcentaje_discurso": float,
+      "tipo_relacion": "positiva" | "negativa" | "neutra",
+      "subcategoria_relacion": str,
+      "evidencia": str
+    }}
+  ]
+}}
+Los porcentajes no tienen que sumar 100% (un stakeholder puede aparecer en distintos momentos del discurso).
+Solo incluye stakeholders mencionados de forma explícita o clara en el texto.
+""",
     "eficacia": """
 {base}
 Estructura requerida:
@@ -398,6 +450,7 @@ def ejecutar_modulo(modulo: str, texto: str, metadatos: dict, metricas: dict, ap
         
     http_client = httpx.Client(verify=False, timeout=60.0)
     client = anthropic.Anthropic(api_key=key, http_client=http_client)
+    print(f"--- DEBUG: Analizando con API Key: {key[:8]}...{key[-4:]} ---")
 
     base = BASE_CONTEXTO.format(
         candidato=metadatos.get("candidato", "No especificado"),

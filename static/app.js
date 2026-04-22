@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebarModulesView.style.display = 'none';
         sidebarResultsView.style.display = 'block';
         btnExportPdf.style.display = '';
-        // Open first section by default
-        const firstSection = sidebarResultsView.querySelector('.res-section-sb');
-        if (firstSection && !firstSection.classList.contains('open')) {
-            firstSection.classList.add('open');
+        // Open intro section by default
+        const introSection = document.getElementById('res-intro');
+        if (introSection && !introSection.classList.contains('open')) {
+            introSection.classList.add('open');
         }
         sidebarResultsView.scrollTop = 0;
     }
@@ -375,8 +375,8 @@ document.addEventListener('DOMContentLoaded', () => {
             badges.forEach(b => {
                 b.textContent = 'Completado';
                 b.className = 'status-badge completed';
-                b.style.backgroundColor = '#dcfce7';
-                b.style.color = '#166534';
+                b.style.backgroundColor = '#e8edf7';
+                b.style.color = '#1e3a6e';
             });
 
             renderResults(data, metaObj);
@@ -397,118 +397,156 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ============================================================
-       RESULTS RENDERING ENGINE
+       RESULTS RENDERING ENGINE — 4 Macrosecciones
      ============================================================ */
 
-    function h(tag, cls, inner = '') {
-        return `<${tag} class="${cls}">${inner}</${tag}>`;
-    }
-    function errBlock(msg) {
-        return `<div class="error-block"><i class="fa-solid fa-circle-exclamation"></i> ${msg}</div>`;
-    }
-    function tags(arr, color = 'blue') {
-        return `<div class="tag-list">${arr.map(t => `<span class="tag tag-${color}">${t}</span>`).join('')}</div>`;
-    }
+    function h(tag, cls, inner = '') { return `<${tag} class="${cls}">${inner}</${tag}>`; }
+    function errBlock(msg) { return `<div class="error-block"><i class="fa-solid fa-circle-exclamation"></i> ${msg}</div>`; }
     function gaugeCircle(score, max = 10) {
         const pct = Math.round((score / max) * 100);
         return `<div class="gauge-circle" style="--pct:${pct}%"><span class="gauge-val">${score}</span></div>`;
     }
 
-    /* ---------- Section renderers ---------- */
-
-    function renderMetricas(m) {
-        const grid = document.getElementById('metrics-grid');
-        const extra = document.getElementById('metrics-extra');
-        // Ensure parent section is open
-        const sec = document.getElementById('res-metricas');
-        if (sec) sec.classList.add('open');
-
-        if (!m) { grid.innerHTML = errBlock('Sin datos de métricas.'); return; }
-
-        // Main stat cards (grid)
-        grid.innerHTML = [
-            { val: m.TTR, label: 'Índice TTR', title: 'Riqueza léxica (Type-Token Ratio)' },
-            { val: m.legibilidad_flesch, label: 'Legibilidad', title: 'Facilidad de lectura (Flesch)' },
-            { val: m.longitud_promedio_oracion, label: 'Media Palabras/Oración', title: 'Extensión media de las unidades sintácticas' },
-            { val: m.negaciones?.count ?? 0, label: 'Frecuencia Negaciones', title: 'Conteo total de partículas negativas' },
-            { val: `${m.negaciones?.densidad_pct ?? 0}%`, label: 'Densidad Negativa', title: 'Porcentaje de negaciones sobre el total' },
-        ].map(s => `
-            <div class="metric-stat-card" title="${s.title}">
-                <div class="stat-val">${s.val}</div>
-                <div class="stat-label">${s.label}</div>
+    // ── SECCIÓN 0: Introducción ──────────────────────────────────
+    function renderIntro(meta) {
+        const body = document.getElementById('body-intro');
+        const candidato = meta.candidato || 'el candidato';
+        body.innerHTML = `
+            <div class="result-card intro-catchy-card">
+                <p style="font-size:0.92rem;color:var(--c-blue-dark);line-height:1.6;margin:0">
+                    <strong>PitchLab360</strong> analiza el discurso político de <strong>${candidato}</strong> usando inteligencia artificial y lingüística computacional, para ayudarle a tomar decisiones de comunicación más informadas, eficaces y estratégicas durante su campaña.
+                </p>
             </div>
-        `).join('');
-
-        // Nosotros/Ellos bar
-        const nos = m.nosotros_ellos?.nosotros || 0;
-        const ell = m.nosotros_ellos?.ellos || 0;
-        const total = nos + ell || 1;
-        const nosPct = Math.round((nos / total) * 100);
-        const ellPct = 100 - nosPct;
-
-        // Word frequency chips
-        const topWords = (m.palabras_frecuentes || []).slice(0, 20);
-
-        extra.innerHTML = `
-            <div class="nos-ell-bar">
-                <div class="bar-label">Dicotomía Discursiva: Nosotros (${nos}) vs. Ellos (${ell}) &mdash; Proporción: ${m.nosotros_ellos?.ratio ?? 'N/A'}</div>
-                <div class="bar-track">
-                    <div class="bar-fill-nos" style="width:${nosPct}%"></div>
-                    <div class="bar-fill-ell" style="width:${ellPct}%"></div>
+            <div class="result-card">
+                <div class="result-card-title">Sobre este Informe</div>
+                <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">
+                    <p>Este informe combina <strong>análisis computacional</strong> (métricas objetivas del lenguaje) con <strong>análisis cualitativo mediante LLM</strong> (Claude de Anthropic). Está organizado en tres secciones:</p>
+                    <ul style="margin:0.5rem 0 0 1.2rem;display:flex;flex-direction:column;gap:0.3rem">
+                        <li><strong>Sección 1 — Perfil Comunicativo:</strong> Estilo, formalidad y tipo de discurso.</li>
+                        <li><strong>Sección 2 — Análisis Emocional:</strong> Índice de sentimiento, unidades de sentido, potencial digital y encuadres emocionales.</li>
+                        <li><strong>Sección 3 — Análisis Semántico:</strong> Palabras frecuentes, complejidad lingüística e identificación de stakeholders.</li>
+                    </ul>
                 </div>
             </div>
-            <div>
-                <div class="result-card-title">Distribución de Términos Frecuentes</div>
-                <div class="word-freq-chips">
-                    ${topWords.length ? topWords.map(([w, n]) => `<span class="word-freq-chip">${w} <b>(${n})</b></span>`).join('') : '<em style="font-size:0.8rem;color:#94a3b8">No se identificaron términos recurrentes.</em>'}
+            <div class="result-card" style="text-align:center">
+                <div class="result-card-title">Demo en Video</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">El siguiente código QR lleva al video tutorial que muestra todas las funcionalidades disponibles de la herramienta.</div>
+                <div class="qr-placeholder">
+                    <i class="fa-solid fa-qrcode" style="font-size:3rem;color:var(--c-blue-dark);opacity:0.3"></i>
+                    <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem">QR · Video Tutorial PitchLab360</div>
                 </div>
-            </div>
-        `;
+            </div>`;
     }
 
-
-    function renderFrases(mod) {
-        const body = document.getElementById('body-frases');
-        if (!mod?.ok) { body.innerHTML = errBlock(mod?.error || 'Sin datos'); return; }
-        const d = mod.data;
-        const score = d.tono?.score ?? 0;
-        const pct = Math.round(((score + 1) / 2) * 100); // -1..1 → 0..100%
+    // ── SECCIÓN 1: Perfil Comunicativo del Candidato ─────────────
+    function renderPerfilComunicativo(estilo) {
+        const body = document.getElementById('body-perfil-comunicativo');
+        if (!estilo?.ok) { body.innerHTML = errBlock(estilo?.error || 'Sin datos'); return; }
+        const d = estilo.data;
+        const cats = d.tipo_discurso?.categorias || [];
         body.innerHTML = `
             <div class="result-card">
-                <div class="result-card-title">Índice de Tono Emocional</div>
+                <div class="result-card-title">a. Perfil Comunicativo</div>
+                <div style="font-size:0.9rem;color:var(--c-blue-dark);line-height:1.6">${d.perfil_comunicativo || ''}</div>
+            </div>
+            <div class="result-card">
+                <div class="result-card-title">b. Nivel de Formalidad</div>
+                <div class="score-gauge">
+                    ${gaugeCircle(d.formalidad?.score || 0)}
+                    <div class="gauge-text">${d.formalidad?.justificacion || ''}</div>
+                </div>
+            </div>
+            <div class="result-card">
+                <div class="result-card-title">c. Tipo de Discurso</div>
+                <div style="display:flex;flex-direction:column;gap:0.6rem">
+                    ${cats.map(c => {
+                        const nombre = typeof c === 'object' ? c.nombre : c;
+                        const just   = typeof c === 'object' ? c.justificacion : '';
+                        const isDom  = nombre === d.tipo_discurso?.categoria_dominante;
+                        return `<div class="discourse-type-tag ${isDom ? 'dominant' : ''}">
+                            <span class="tag tag-purple">${nombre}${isDom ? ' ★' : ''}</span>
+                            ${just ? `<div class="discourse-type-just">${just}</div>` : ''}
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>`;
+    }
+
+    // ── SECCIÓN 2: Análisis Emocional del Discurso ───────────────
+    function renderAnalisisEmocional(frases, digital, marcos) {
+        const body = document.getElementById('body-analisis-emocional');
+        let html = '';
+
+        // a. Índice de Sentimiento
+        if (frases?.ok) {
+            const d = frases.data;
+            const score = d.tono?.score ?? 0;
+            const pct = Math.round(((score + 1) / 2) * 100);
+            html += `
+            <div class="result-card">
+                <div class="result-card-title">a. Índice de Sentimiento</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                    El Índice de Sentimiento mide la carga emocional global del discurso en una escala de −1 (muy negativo/hostil) a +1 (muy positivo/esperanzador), asignada por el modelo de IA al analizar el tono general de las expresiones.
+                </div>
                 <div class="tone-bar-container">
-                    <div class="tone-track">
-                        <div class="tone-thumb" style="left:${pct}%"></div>
-                    </div>
+                    <div class="tone-track"><div class="tone-thumb" style="left:${pct}%"></div></div>
                     <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted)">
-                        <span>Negativo (-1)</span>
-                        <span style="font-weight:600;color:var(--c-blue-dark)">Puntaje: ${score.toFixed(2)} &mdash; Caracterización: ${d.tono?.descripcion || ''}</span>
+                        <span>Negativo (−1)</span>
+                        <span style="font-weight:600;color:var(--c-blue-dark)">Puntaje: ${score.toFixed(2)} — ${d.tono?.descripcion || ''}</span>
                         <span>Positivo (+1)</span>
                     </div>
                 </div>
-            </div>
+            </div>`;
+
+            // b. Unidades de Sentido Significativas
+            html += `
             <div class="result-card">
-                <div class="result-card-title">Unidades de Sentido Significativas</div>
+                <div class="result-card-title">b. Unidades de Sentido Significativas</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                    Las unidades de sentido significativas son frases o párrafos cortos que comunican la posición del candidato de forma autónoma, sin necesitar el contexto completo del discurso. Se clasifican por su función retórica a partir de una lista predefinida de categorías.
+                </div>
                 <div class="phrase-list">
                     ${(d.frases_memorables || []).map(f => `
                         <div class="phrase-item">
                             <div class="phrase-type">Categoría: ${f.tipo}</div>
                             <div>"${f.frase}"</div>
-                            <div class="phrase-just">Justificación técnica: ${f.justificacion}</div>
-                        </div>
-                    `).join('')}
+                            <div class="phrase-just">${f.justificacion}</div>
+                        </div>`).join('')}
                 </div>
-            </div>
-        `;
-    }
+            </div>`;
+        } else { html += errBlock(frases?.error || 'Sin datos de mensajes clave'); }
 
-    function renderMarcos(mod) {
-        const body = document.getElementById('body-marcos');
-        if (!mod?.ok) { body.innerHTML = errBlock(mod?.error || 'Sin datos'); return; }
-        const d = mod.data;
-        body.innerHTML = `
+        // c. Mensajes con Alto Potencial de Viralización
+        if (digital?.ok) {
+            const d = digital.data;
+            html += `
             <div class="result-card">
-                <div class="result-card-title">Distribución de Encuadres Emocionales</div>
+                <div class="result-card-title">c. Mensajes con Alto Potencial de Viralización</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                    Son fragmentos del discurso con alta probabilidad de resonar en redes sociales por su carga emocional, brevedad o impacto narrativo. Para cada uno se sugieren las plataformas más adecuadas según su naturaleza.
+                </div>
+                ${(d.fragmentos || []).map(f => {
+                    const plats = Array.isArray(f.plataformas) ? f.plataformas : [f.plataformas || f.formato_sugerido];
+                    return `<div class="digital-item">
+                        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.4rem">
+                            ${plats.map(p => `<span class="platform-badge">${p}</span>`).join('')}
+                        </div>
+                        <div class="digital-text">"${f.texto}"</div>
+                        <div class="digital-reason">Criterio: ${f.razon}</div>
+                    </div>`;
+                }).join('')}
+            </div>`;
+        } else { html += errBlock(digital?.error || 'Sin datos de potencial digital'); }
+
+        // d. Encuadres Emocionales
+        if (marcos?.ok) {
+            const d = marcos.data;
+            html += `
+            <div class="result-card">
+                <div class="result-card-title">d. Encuadres Emocionales</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                    Los encuadres emocionales son los marcos interpretativos que el discurso activa en la audiencia. Se asignan a partir de una lista predefinida de emociones políticas reconocidas (esperanza, miedo, indignación, orgullo, etc.) y se explica por qué cada una está presente.
+                </div>
                 <div class="emotion-list">
                     ${(d.emociones || []).sort((a,b) => b.porcentaje - a.porcentaje).map(e => `
                         <div class="emotion-row">
@@ -516,212 +554,220 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <span class="emotion-name">${e.nombre}</span>
                                 <span class="emotion-pct">${e.porcentaje}%</span>
                             </div>
-                            <div class="emotion-track">
-                                <div class="emotion-fill" style="width:${e.porcentaje}%"></div>
-                            </div>
+                            <div class="emotion-track"><div class="emotion-fill" style="width:${e.porcentaje}%"></div></div>
                             <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.15rem">${e.interpretacion || ''}</div>
+                        </div>`).join('')}
+                </div>
+            </div>`;
+        } else { html += errBlock(marcos?.error || 'Sin datos de encuadres'); }
+
+        body.innerHTML = html;
+    }
+
+    // ── SECCIÓN 3: Análisis Semántico del Discurso ───────────────
+    function renderAnalisisSematico(metricas, marcos, stakeholders) {
+        const body = document.getElementById('body-analisis-semantico');
+        let html = '';
+
+        // a. Palabras más frecuentes del discurso
+        if (metricas) {
+            const topWords = (metricas.palabras_frecuentes || []).slice(0, 20);
+            html += `
+            <div class="result-card">
+                <div class="result-card-title">a. Palabras Más Frecuentes del Discurso</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                    Listado de los términos con mayor frecuencia de aparición en el discurso. Se excluyen automáticamente pronombres, artículos, preposiciones y conjunciones para resaltar el vocabulario conceptual del candidato.
+                </div>
+                <div class="word-freq-chips">
+                    ${topWords.length ? topWords.map(([w,n]) => `<span class="word-freq-chip">${w} <b>(${n})</b></span>`).join('') : '<em style="font-size:0.8rem;color:#94a3b8">No se identificaron términos recurrentes.</em>'}
+                </div>
+            </div>`;
+        }
+
+        // b. Nivel de Complejidad Discursiva (gauge 1-10 desde LLM)
+        if (marcos?.ok) {
+            const comp = marcos.data?.complejidad_lenguaje;
+            html += `
+            <div class="result-card">
+                <div class="result-card-title">b. Nivel de Complejidad Discursiva</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                    Calificación de 1 a 10 sobre la sofisticación del lenguaje utilizado, considerando el TTR (riqueza léxica), el promedio de palabras por oración y el Índice de Legibilidad de Flesch-Kincaid. 1 = muy simple y accesible, 10 = muy técnico y complejo.
+                </div>
+                <div class="score-gauge">
+                    ${gaugeCircle(comp?.score || 0)}
+                    <div class="gauge-text">${comp?.justificacion || ''}</div>
+                </div>
+            </div>`;
+        }
+
+        // c. Identificación de Stakeholders
+        if (stakeholders?.ok) {
+            const list = stakeholders.data?.stakeholders || [];
+            const relColor = { positiva: '#e8edf7', negativa: '#fee2e2', neutra: '#f1f5f9' };
+            const relTextColor = { positiva: '#1e3a6e', negativa: '#991b1b', neutra: '#475569' };
+            const PALETTE = ['#003b8f','#762372','#d51437','#3277c3','#fb6f1a','#f8a719','#2563a8','#a855f7','#0891b2','#be185d','#65a30d','#92400e'];
+
+            // Helper: build SVG pie chart from [{label, value, color}] array
+            function svgPie(items, size = 160) {
+                if (!items.length) return '';
+                const total = items.reduce((s, x) => s + x.value, 0) || 1;
+                const cx = size / 2, cy = size / 2, r = size / 2 - 4;
+                let angle = -Math.PI / 2;
+                const slices = items.map((item) => {
+                    const sweep = (item.value / total) * 2 * Math.PI;
+                    const x1 = cx + r * Math.cos(angle);
+                    const y1 = cy + r * Math.sin(angle);
+                    angle += sweep;
+                    const x2 = cx + r * Math.cos(angle);
+                    const y2 = cy + r * Math.sin(angle);
+                    const large = sweep > Math.PI ? 1 : 0;
+                    return `<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${large},1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${item.color}" stroke="white" stroke-width="2"/>`;
+                });
+                return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${slices.join('')}</svg>`;
+            }
+
+            // Color map por tipo_relacion
+            const relChartColor = { positiva: '#2563a8', negativa: '#d51437', neutra: '#94a3b8' };
+
+            // Helpers: hex ↔ RGB, weighted RGB blend
+            function hexToRgb(hex) {
+                const h = hex.replace('#','');
+                return [ parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16) ];
+            }
+            function rgbToHex([r,g,b]) {
+                return '#' + [r,g,b].map(v => Math.round(v).toString(16).padStart(2,'0')).join('');
+            }
+            function blendRelationColors(pos, neg, neu) {
+                const total = pos + neg + neu || 1;
+                const wPos = pos / total, wNeg = neg / total, wNeu = neu / total;
+                const cPos = hexToRgb(relChartColor.positiva);
+                const cNeg = hexToRgb(relChartColor.negativa);
+                const cNeu = hexToRgb(relChartColor.neutra);
+                const blended = [0,1,2].map(i => cPos[i]*wPos + cNeg[i]*wNeg + cNeu[i]*wNeu);
+                return rgbToHex(blended);
+            }
+
+            // Torta 1: por stakeholder individual (color = su relación)
+            const stakeholderItems = list
+                .sort((a,b) => b.porcentaje_discurso - a.porcentaje_discurso)
+                .map(s => ({ label: s.nombre, value: s.porcentaje_discurso || 0, color: relChartColor[s.tipo_relacion] || '#94a3b8', rel: s.tipo_relacion }));
+
+            // Torta 2: por categoría (color = promedio RGB ponderado por % de discurso)
+            const byCategoryRaw = {};
+            list.forEach(s => {
+                if (!byCategoryRaw[s.categoria]) byCategoryRaw[s.categoria] = { total: 0, pos: 0, neg: 0, neu: 0 };
+                const pct = s.porcentaje_discurso || 0;
+                byCategoryRaw[s.categoria].total += pct;
+                if (s.tipo_relacion === 'positiva') byCategoryRaw[s.categoria].pos += pct;
+                else if (s.tipo_relacion === 'negativa') byCategoryRaw[s.categoria].neg += pct;
+                else byCategoryRaw[s.categoria].neu += pct;
+            });
+            const categoryItems = Object.entries(byCategoryRaw)
+                .sort((a,b) => b[1].total - a[1].total)
+                .map(([label, v]) => ({
+                    label,
+                    value: v.total,
+                    color: blendRelationColors(v.pos, v.neg, v.neu)
+                }));
+
+
+
+            html += `
+            <div class="result-card">
+                <div class="result-card-title">c. Identificación de Stakeholders</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                    Se identifican los actores, instituciones y grupos sobre los que <em>habla</em> el candidato en el discurso. Para cada uno se estima el porcentaje del discurso dedicado a ese actor y se clasifica la relación que el candidato proyecta hacia él.
+                </div>
+
+                <!-- Gráficos de torta -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem">
+                        <div class="result-card-title" style="text-align:center">Por Stakeholder</div>
+                        ${svgPie(stakeholderItems)}
+                        <div style="display:flex;flex-direction:column;gap:0.25rem;width:100%">
+                            ${stakeholderItems.map(it => `
+                            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem">
+                                <span style="width:10px;height:10px;border-radius:2px;flex-shrink:0;background:${it.color}"></span>
+                                <span style="flex:1;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.label}">${it.label}</span>
+                                <span style="font-weight:700;color:var(--c-blue-dark)">${it.value}%</span>
+                            </div>`).join('')}
                         </div>
-                    `).join('')}
-                </div>
-            </div>
-            <div class="result-card">
-                <div class="result-card-title">Nivel de Complejidad Discursiva</div>
-                <div class="score-gauge">
-                    ${gaugeCircle(d.complejidad_lenguaje?.score || 0)}
-                    <div class="gauge-text">${d.complejidad_lenguaje?.justificacion || ''}</div>
-                </div>
-            </div>
-            ${d.advertencia_metodologica ? `<div class="result-card"><div class="result-card-title">Advertencia Metodológica</div><div style="font-size:0.85rem;color:var(--text-secondary)">${d.advertencia_metodologica}</div></div>` : ''}
-        `;
-    }
-
-    function renderPublicos(mod) {
-        const body = document.getElementById('body-publicos');
-        if (!mod?.ok) { body.innerHTML = errBlock(mod?.error || 'Sin datos'); return; }
-        const d = mod.data;
-        body.innerHTML = `
-            <div class="result-card">
-                <div class="result-card-title">Audiencias Objetivo Identificadas</div>
-                ${tags(d.publicos_generales || [], 'blue')}
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;flex-wrap:wrap">
-                <div class="result-card">
-                    <div class="result-card-title">Construcción del "Nosotros" (Endogrupo)</div>
-                    <div style="display:flex;flex-direction:column;gap:0.35rem">
-                        ${(d.perfil_nosotros?.caracteristicas || []).map(c => `<div style="font-size:0.85rem">• ${c}</div>`).join('')}
                     </div>
-                    <div style="margin-top:0.5rem">
-                        ${(d.perfil_nosotros?.frases_asociadas || []).map(f => `<div class="phrase-item" style="margin-top:0.3rem">"${f}"</div>`).join('')}
-                    </div>
-                </div>
-                <div class="result-card">
-                    <div class="result-card-title">Caracterización del "Ellos" (Exogrupo)</div>
-                    <div style="display:flex;flex-direction:column;gap:0.35rem">
-                        ${(d.perfil_ellos?.caracteristicas || []).map(c => `<div style="font-size:0.85rem">• ${c}</div>`).join('')}
-                    </div>
-                    <div style="margin-top:0.5rem">
-                        ${(d.perfil_ellos?.frases_asociadas || []).map(f => `<div class="phrase-item" style="margin-top:0.3rem;border-color:var(--c-red)">"${f}"</div>`).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderEstilo(mod) {
-        const body = document.getElementById('body-estilo');
-        if (!mod?.ok) { body.innerHTML = errBlock(mod?.error || 'Sin datos'); return; }
-        const d = mod.data;
-        body.innerHTML = `
-            <div class="result-card">
-                <div class="result-card-title">Formalidad</div>
-                <div class="score-gauge">
-                    ${gaugeCircle(d.formalidad?.score || 0)}
-                    <div class="gauge-text">${d.formalidad?.justificacion || ''}</div>
-                </div>
-            </div>
-            <div class="result-card">
-                <div class="result-card-title">Tipo de discurso</div>
-                ${tags(d.tipo_discurso?.categorias || [], 'purple')}
-                <div style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary)">Dominante: <strong>${d.tipo_discurso?.categoria_dominante || ''}</strong></div>
-            </div>
-            <div class="result-card">
-                <div class="result-card-title">Perfil comunicativo</div>
-                <div style="font-size:0.9rem;color:var(--c-blue-dark);line-height:1.5">${d.perfil_comunicativo || ''}</div>
-            </div>
-        `;
-    }
-
-    function renderDigital(mod) {
-        const body = document.getElementById('body-digital');
-        if (!mod?.ok) { body.innerHTML = errBlock(mod?.error || 'Sin datos'); return; }
-        const d = mod.data;
-        const hasPotential = d.tiene_potencial;
-        body.innerHTML = `
-            <div class="result-card">
-                <div class="result-card-title">Evaluación de Viabilidad Digital</div>
-                <div style="display:flex;align-items:center;gap:0.5rem">
-                    <i class="fa-solid ${hasPotential ? 'fa-circle-check' : 'fa-circle-xmark'}" style="color:${hasPotential ? '#22c55e' : '#ef4444'};font-size:1.5rem"></i>
-                    <span style="font-size:1rem;font-weight:600;color:var(--c-blue-dark)">${hasPotential ? 'Alto potencial de viralización y adaptación' : 'Potencial de adaptación limitado'}</span>
-                </div>
-            </div>
-            ${(d.fragmentos || []).map(f => `
-                <div class="digital-item">
-                    <div class="digital-format">Formato: ${f.formato_sugerido}</div>
-                    <div class="digital-text">"${f.texto}"</div>
-                    <div class="digital-reason">Criterio de selección: ${f.razon}</div>
-                </div>
-            `).join('')}
-        `;
-    }
-
-    function renderAutenticidad(mod) {
-        const body = document.getElementById('body-autenticidad');
-        if (!mod?.ok) { body.innerHTML = errBlock(mod?.error || 'Sin datos'); return; }
-        const d = mod.data;
-        body.innerHTML = `
-            <div class="result-card">
-                <div class="result-card-title">Índice de Autenticidad Percibida</div>
-                <div class="score-gauge">
-                    ${gaugeCircle(d.score_autenticidad || 0)}
-                    <div class="gauge-text">${d.justificacion_general || ''}</div>
-                </div>
-            </div>
-            ${(d.momentos_fabricados || []).length ? `
-            <div class="result-card">
-                <div class="result-card-title">Desviaciones de Autenticidad Detectadas</div>
-                <div class="phrase-list">
-                    ${d.momentos_fabricados.map(m => `
-                        <div class="phrase-item" style="border-color:var(--c-red)">
-                            <div>"${m.fragmento}"</div>
-                            <div class="phrase-just">Análisis: ${m.razon}</div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem">
+                        <div class="result-card-title" style="text-align:center">Por Categoría</div>
+                        ${svgPie(categoryItems)}
+                        <div style="display:flex;flex-direction:column;gap:0.25rem;width:100%">
+                            ${categoryItems.map(it => `
+                            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem">
+                                <span style="width:10px;height:10px;border-radius:2px;flex-shrink:0;background:${it.color}"></span>
+                                <span style="flex:1;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.label}">${it.label}</span>
+                                <span style="font-weight:700;color:var(--c-blue-dark)">${it.value.toFixed(1)}%</span>
+                            </div>`).join('')}
                         </div>
-                    `).join('')}
-                </div>
-            </div>` : ''}
-            ${d.advertencia_metodologica ? `<div class="result-card"><div class="result-card-title">Nota Metodológica</div><div style="font-size:0.85rem;color:var(--text-secondary)">${d.advertencia_metodologica}</div></div>` : ''}
-        `;
-    }
-
-    function renderRiesgos(mod) {
-        const body = document.getElementById('body-riesgos');
-        if (!mod?.ok) { body.innerHTML = errBlock(mod?.error || 'Sin datos'); return; }
-        const d = mod.data;
-        const sorted = (d.riesgos || []).sort((a, b) => {
-            const order = { alta: 0, media: 1, baja: 2 };
-            return (order[a.severidad] ?? 2) - (order[b.severidad] ?? 2);
-        });
-        body.innerHTML = `
-            <div style="display:flex;flex-direction:column;gap:0.6rem">
-                ${sorted.map(r => `
-                    <div class="risk-item ${r.severidad}">
-                        <div class="risk-type">${r.tipo} · ${r.severidad?.toUpperCase()}</div>
-                        <div class="risk-frag">"${r.fragmento}"</div>
-                        <div class="risk-desc">${r.descripcion}</div>
                     </div>
-                `).join('')}
-            </div>
-            ${(d.vulnerabilidades_factcheck || []).length ? `
-            <div class="result-card">
-                <div class="result-card-title">Aseveraciones para Verificación de Hechos</div>
-                <div style="display:flex;flex-direction:column;gap:0.5rem">
-                    ${d.vulnerabilidades_factcheck.map(v => `
-                        <div class="factcheck-item">
-                            <div class="fc-claim">${v.afirmacion}</div>
-                            <div class="fc-reason">${v.razon}</div>
-                        </div>
-                    `).join('')}
                 </div>
-            </div>` : ''}
-        `;
+
+
+                <!-- Lista detallada -->
+                <div style="display:flex;flex-direction:column;gap:0.6rem">
+                    ${list.sort((a,b) => b.porcentaje_discurso - a.porcentaje_discurso).map(s => `
+                        <div class="stakeholder-item">
+                            <div class="stakeholder-header">
+                                <span class="stakeholder-name">${s.nombre}</span>
+                                <span class="stakeholder-pct">${s.porcentaje_discurso}% del discurso</span>
+                            </div>
+                            <div class="stakeholder-meta">
+                                <span class="stakeholder-category">${s.categoria}</span>
+                                <span class="stakeholder-relation" style="background:${relColor[s.tipo_relacion]||'#f1f5f9'};color:${relTextColor[s.tipo_relacion]||'#475569'}">
+                                    ${s.subcategoria_relacion} (${s.tipo_relacion})
+                                </span>
+                            </div>
+                            <div class="stakeholder-track">
+                                <div class="stakeholder-fill" style="width:${Math.min(s.porcentaje_discurso*3,100)}%;background:${relColor[s.tipo_relacion]||'#e2e8f0'};border:1px solid ${relTextColor[s.tipo_relacion]||'#94a3b8'}"></div>
+                            </div>
+                            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">"${s.evidencia}"</div>
+                        </div>`).join('')}
+                </div>
+            </div>`;
+        } else { html += errBlock(stakeholders?.error || 'Sin datos de stakeholders'); }
+
+        body.innerHTML = html;
     }
 
-    function renderEficacia(mod) {
-        const body = document.getElementById('body-eficacia');
-        if (!mod?.ok) { body.innerHTML = errBlock(mod?.error || 'Sin datos'); return; }
-        const d = mod.data;
-        body.innerHTML = `
-            <div class="result-card">
-                <div class="result-card-title">Índice de Eficacia Comunicativa</div>
-                <div class="score-gauge">
-                    ${gaugeCircle(d.score_eficacia || 0)}
-                    <div class="gauge-text">${d.justificacion_score || ''}</div>
-                </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-                <div class="result-card">
-                    <div class="result-card-title">Fortalezas</div>
-                    ${d.fortalezas?.map(f => `<div style="font-size:0.85rem;padding:0.2rem 0;border-left:3px solid #22c55e;padding-left:0.5rem;margin-bottom:0.3rem">Fortaleza: ${f}</div>`).join('') || ''}
-                </div>
-                <div class="result-card">
-                    <div class="result-card-title">Debilidades</div>
-                    ${d.debilidades?.map(f => `<div style="font-size:0.85rem;padding:0.2rem 0;border-left:3px solid var(--c-red);padding-left:0.5rem;margin-bottom:0.3rem">Debilidad: ${f}</div>`).join('') || ''}
-                </div>
-            </div>
-            <div class="result-card">
-                <div class="result-card-title">Funciones Retóricas Identificadas</div>
-                ${tags(d.funciones_cumplidas || [], 'green')}
-            </div>
-            <div class="result-card">
-                <div class="result-card-title">Proyección de Impacto Social</div>
-                <div style="font-size:0.9rem;line-height:1.5;color:var(--c-blue-dark)">${d.impacto_opinion_publica || ''}</div>
-            </div>
-        `;
-    }
 
     /* ---------- Main render entry point ---------- */
     function renderResults(data, meta) {
-        renderMetricas(data.metricas);
-        renderFrases(data.frases_clave);
-        renderMarcos(data.marcos_narrativos);
-        renderPublicos(data.publicos);
-        renderEstilo(data.estilo);
-        renderDigital(data.potencial_digital);
-        renderAutenticidad(data.autenticidad);
-        renderRiesgos(data.riesgos);
-        renderEficacia(data.eficacia);
-
+        renderIntro(meta);
+        renderPerfilComunicativo(data.estilo);
+        renderAnalisisEmocional(data.frases_clave, data.potencial_digital, data.marcos_narrativos);
+        renderAnalisisSematico(data.metricas, data.marcos_narrativos, data.stakeholders);
         showResultsInSidebar();
         showToast('Análisis completado. Revise los resultados en el panel lateral.', 'success', 5000);
     }
 
+    /* ============================================================
+       DEMO — cargado desde /static/config/demo_data.json
+     ============================================================ */
+    document.getElementById('btn-demo').addEventListener('click', async () => {
+        try {
+            const res = await fetch('/static/config/demo_data.json');
+            const demoData = await res.json();
+            const { meta = {}, ...data } = demoData;
+
+            const badges = document.querySelectorAll('.status-badge');
+            badges.forEach(b => {
+                b.textContent = 'Demo';
+                b.className = 'status-badge completed';
+                b.style.backgroundColor = '#e0e7ff';
+                b.style.color = '#3730a3';
+            });
+            renderResults(data, meta);
+            showToast('Datos de prueba cargados desde demo_data.json', 'info', 4000);
+        } catch (e) {
+            showToast('Error cargando demo_data.json: ' + e.message, 'error');
+            console.error(e);
+        }
+    });
+
 });
+

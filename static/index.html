@@ -29,73 +29,42 @@
 
                 <!-- ── MÓDULOS VIEW (default) ── -->
                 <div id="sidebar-modules-view">
-                    <h2 class="sidebar-title">Módulos de Análisis</h2>
+                    <h2 class="sidebar-title">Secciones del Informe</h2>
                     <div class="modules-container">
-                        <div class="module-card metrics-card" data-target="res-metricas">
+                        <div class="module-card metrics-card" data-target="res-intro">
                             <div class="module-header">
-                                <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-calculator metric-icon"></i><span>Indicadores de Complejidad</span>
+                                <div class="module-title-wrapper">
+                                    <i class="fa-solid fa-circle-info metric-icon"></i>
+                                    <span>0. Introducción</span>
                                 </div>
                                 <span class="status-badge pending">Pendiente</span>
                             </div>
-                            <div class="module-body">
-                                <p class="module-desc">Medido de forma objetiva</p>
-                            </div>
                         </div>
-                        <div class="module-card llm-card" data-target="res-frases">
+                        <div class="module-card llm-card" data-target="res-perfil-comunicativo">
                             <div class="module-header">
-                                <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-quote-left llm-icon"></i><span>Mensajes Clave</span></div><span
-                                    class="status-badge pending">Pendiente</span>
-                            </div>
-                        </div>
-                        <div class="module-card llm-card" data-target="res-marcos">
-                            <div class="module-header">
-                                <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-masks-theater llm-icon"></i><span>Encuadres Narrativos</span>
-                                </div><span class="status-badge pending">Pendiente</span>
-                            </div>
-                        </div>
-                        <div class="module-card llm-card" data-target="res-publicos">
-                            <div class="module-header">
-                                <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-users llm-icon"></i><span>Audiencias</span></div><span
-                                    class="status-badge pending">Pendiente</span>
-                            </div>
-                        </div>
-                        <div class="module-card llm-card" data-target="res-estilo">
-                            <div class="module-header">
-                                <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-pen-nib llm-icon"></i><span>Estilo</span></div><span
-                                    class="status-badge pending">Pendiente</span>
-                            </div>
-                        </div>
-                        <div class="module-card llm-card" data-target="res-digital">
-                            <div class="module-header">
-                                <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-mobile-screen llm-icon"></i><span>Potencial Digital</span>
-                                </div><span class="status-badge pending">Pendiente</span>
-                            </div>
-                        </div>
-                        <div class="module-card llm-card" data-target="res-autenticidad">
-                            <div class="module-header">
-                                <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-fingerprint llm-icon"></i><span>Autenticidad</span></div>
+                                <div class="module-title-wrapper">
+                                    <i class="fa-solid fa-pen-nib llm-icon"></i>
+                                    <span>1. Perfil Comunicativo del Candidato</span>
+                                </div>
                                 <span class="status-badge pending">Pendiente</span>
                             </div>
                         </div>
-                        <div class="module-card llm-card" data-target="res-riesgos">
+                        <div class="module-card llm-card" data-target="res-analisis-emocional">
                             <div class="module-header">
-                                <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-triangle-exclamation llm-icon"></i><span>Riesgos</span></div>
+                                <div class="module-title-wrapper">
+                                    <i class="fa-solid fa-masks-theater llm-icon"></i>
+                                    <span>2. Análisis Emocional del Discurso</span>
+                                </div>
                                 <span class="status-badge pending">Pendiente</span>
                             </div>
                         </div>
-                        <div class="module-card llm-card" data-target="res-eficacia">
+                        <div class="module-card llm-card" data-target="res-analisis-semantico">
                             <div class="module-header">
-                                <div class="module-title-wrapper"><i
-                                        class="fa-solid fa-bullseye llm-icon"></i><span>Eficacia</span></div><span
-                                    class="status-badge pending">Pendiente</span>
+                                <div class="module-title-wrapper">
+                                    <i class="fa-solid fa-diagram-project llm-icon"></i>
+                                    <span>3. Análisis Semántico del Discurso</span>
+                                </div>
+                                <span class="status-badge pending">Pendiente</span>
                             </div>
                         </div>
                     </div>
@@ -107,83 +76,44 @@
                         <h2 class="sidebar-title" style="margin:0">Resultados</h2>
                     </div>
 
-                    <section class="res-section-sb" id="res-metricas">
+                    <!-- SECCIÓN 0: Introducción -->
+                    <section class="res-section-sb" id="res-intro">
                         <div class="res-section-hdr metrics-header">
-                            <i class="fa-solid fa-calculator"></i>
-                            <span>Indicadores de Complejidad y Estructura</span>
-                            <button class="btn-help-metrics" id="btn-help-metrics" title="¿Cómo interpretar?">
-                                <i class="fa-solid fa-circle-question"></i>
-                            </button>
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>0. Introducción</span>
                             <i class="fa-solid fa-chevron-down res-toggle"></i>
                         </div>
-                        <div class="res-section-body-sb">
-                            <div class="metrics-help-box hidden" id="metrics-help-box">
-                                <div class="help-box-header">
-                                    <strong><i class="fa-solid fa-circle-info"></i> Guía de Interpretación</strong>
-                                    <button class="close-help-box" id="close-help-box">&times;</button>
-                                </div>
-                                <div class="help-box-content">
-                                    <p><strong>TTR (Type-Token Ratio):</strong> Riqueza léxica (0 a 1). Valores altos indican vocabulario variado y menos repetitivo.</p>
-                                    <p><strong>Legibilidad (Flesch):</strong> Basada en longitud de palabras y frases. 
-                                        <br>• 90-100: Muy fácil (5to grado)
-                                        <br>• 60-70: Estándar / Conversacional
-                                        <br>• 0-30: Muy difícil / Académico
-                                    </p>
-                                    <p><strong>Palabras / Oración:</strong> Frases cortas (15-20 palabras) favorecen la claridad y el impacto en redes.</p>
-                                    <p><strong>Nosotros vs Ellos:</strong> Analiza la construcción de identidad colectiva frente a la confrontación con oponentes.</p>
-                                </div>
-                            </div>
-                            <div class="metrics-grid" id="metrics-grid"></div>
-                            <div class="metrics-extra" id="metrics-extra"></div>
+                        <div class="res-section-body-sb" id="body-intro"></div>
+                    </section>
+
+                    <!-- SECCIÓN 1: Perfil Comunicativo del Candidato -->
+                    <section class="res-section-sb" id="res-perfil-comunicativo">
+                        <div class="res-section-hdr llm-header">
+                            <i class="fa-solid fa-pen-nib"></i>
+                            <span>1. Perfil Comunicativo del Candidato</span>
+                            <i class="fa-solid fa-chevron-down res-toggle"></i>
                         </div>
+                        <div class="res-section-body-sb" id="body-perfil-comunicativo"></div>
                     </section>
 
-                    <section class="res-section-sb" id="res-frases">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-quote-left"></i><span>Análisis de Tono y Mensajes Clave</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
-                        <div class="res-section-body-sb" id="body-frases"></div>
+                    <!-- SECCIÓN 2: Análisis Emocional del Discurso -->
+                    <section class="res-section-sb" id="res-analisis-emocional">
+                        <div class="res-section-hdr llm-header">
+                            <i class="fa-solid fa-masks-theater"></i>
+                            <span>2. Análisis Emocional del Discurso</span>
+                            <i class="fa-solid fa-chevron-down res-toggle"></i>
+                        </div>
+                        <div class="res-section-body-sb" id="body-analisis-emocional"></div>
                     </section>
 
-                    <section class="res-section-sb" id="res-marcos">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-masks-theater"></i><span>Encuadres y Emociones Predominantes</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
-                        <div class="res-section-body-sb" id="body-marcos"></div>
-                    </section>
-
-                    <section class="res-section-sb" id="res-publicos">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-users"></i><span>Segmentación de Audiencias</span><i
-                                class="fa-solid fa-chevron-down res-toggle"></i></div>
-                        <div class="res-section-body-sb" id="body-publicos"></div>
-                    </section>
-
-                    <section class="res-section-sb" id="res-estilo">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-pen-nib"></i><span>Perfil y Estilo de Comunicación</span><i
-                                class="fa-solid fa-chevron-down res-toggle"></i></div>
-                        <div class="res-section-body-sb" id="body-estilo"></div>
-                    </section>
-
-                    <section class="res-section-sb" id="res-digital">
-                        <div class="res-section-hdr llm-header"><i class="fa-solid fa-mobile-screen"></i><span>Proyección en Canales Digitales</span><i class="fa-solid fa-chevron-down res-toggle"></i></div>
-                        <div class="res-section-body-sb" id="body-digital"></div>
-                    </section>
-
-                    <section class="res-section-sb" id="res-autenticidad">
-                        <div class="res-section-hdr llm-header"><i
-                                class="fa-solid fa-fingerprint"></i><span>Evaluación de Autenticidad</span><i
-                                class="fa-solid fa-chevron-down res-toggle"></i></div>
-                        <div class="res-section-body-sb" id="body-autenticidad"></div>
-                    </section>
-
-                    <section class="res-section-sb" id="res-riesgos">
-                        <div class="res-section-hdr llm-header"><i
-                                class="fa-solid fa-triangle-exclamation"></i><span>Análisis de Riesgos y Verificación</span><i
-                                class="fa-solid fa-chevron-down res-toggle"></i></div>
-                        <div class="res-section-body-sb" id="body-riesgos"></div>
-                    </section>
-
-                    <section class="res-section-sb" id="res-eficacia">
-                        <div class="res-section-hdr llm-header"><i
-                                class="fa-solid fa-bullseye"></i><span>Evaluación de Impacto y Eficacia</span><i
-                                class="fa-solid fa-chevron-down res-toggle"></i></div>
-                        <div class="res-section-body-sb" id="body-eficacia"></div>
+                    <!-- SECCIÓN 3: Análisis Semántico del Discurso -->
+                    <section class="res-section-sb" id="res-analisis-semantico">
+                        <div class="res-section-hdr llm-header">
+                            <i class="fa-solid fa-diagram-project"></i>
+                            <span>3. Análisis Semántico del Discurso</span>
+                            <i class="fa-solid fa-chevron-down res-toggle"></i>
+                        </div>
+                        <div class="res-section-body-sb" id="body-analisis-semantico"></div>
                     </section>
                 </div>
 
@@ -324,6 +254,9 @@
             <div class="execution-bar">
                 <button class="btn btn-giant-primary" id="btn-analyze">
                     INICIAR ANÁLISIS COMPLETO
+                </button>
+                <button class="btn btn-outline" id="btn-demo" title="Carga resultados de prueba sin llamar a la API" style="font-size:0.8rem;padding:0.5rem 1rem;white-space:nowrap">
+                    <i class="fa-solid fa-flask"></i> Datos de Prueba
                 </button>
             </div>
         </main>

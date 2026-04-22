@@ -1,0 +1,286 @@
+{
+  "meta": {
+    "candidato": "Alejandro Morales Ríos",
+    "evento": "Gran Debate Nacional — Primera Vuelta Presidencial",
+    "audiencia": "Ciudadanía colombiana, periodistas, representantes de sociedad civil",
+    "medio": "RCN · Semana · Canal Capital (transmisión simultánea)"
+  },
+  "metricas": {
+    "TTR": 0.41,
+    "legibilidad_flesch": 51.7,
+    "longitud_promedio_oracion": 24.8,
+    "negaciones": { "count": 31, "densidad_pct": 3.2 },
+    "nosotros_ellos": { "nosotros": 87, "ellos": 52, "ratio": "1.67:1" },
+    "palabras_frecuentes": [
+      ["colombia", 34], ["gobierno", 28], ["pueblo", 25], ["corrupción", 22],
+      ["educación", 19], ["paz", 17], ["reforma", 16], ["salud", 15],
+      ["recursos", 14], ["territorios", 13], ["futuro", 12], ["instituciones", 11],
+      ["cambio", 11], ["seguridad", 10], ["familias", 9], ["campo", 9],
+      ["empresas", 8], ["justicia", 8], ["agua", 7], ["hambre", 7]
+    ]
+  },
+  "estilo": {
+    "ok": true,
+    "data": {
+      "formalidad": {
+        "score": 5,
+        "justificacion": "El candidato alterna deliberadamente entre un registro formal —con cifras presupuestales y referencias institucionales— y un tono coloquial cargado de emotividad, especialmente al dirigirse a las comunidades rurales y a los jóvenes. Esta oscilación parece estratégica para conectar con audiencias heterogéneas sin perder credibilidad técnica."
+      },
+      "tipo_discurso": {
+        "categorias": [
+          {
+            "nombre": "combativo",
+            "justificacion": "Más de un tercio del discurso consiste en ataques directos o indirectos al gobierno vigente, el Congreso y los grupos económicos que identifica como responsables de la crisis institucional. Usa verbos de acción fuerte ('bloquearon', 'saquearon', 'traicionaron') para activar indignación."
+          },
+          {
+            "nombre": "pedagógico",
+            "justificacion": "Dedica segmentos enteros a explicar conceptos de política pública (regalías, transferencias territoriales, presupuesto de defensa) de forma simplificada, apelando a ejemplos cotidianos ('como si usted tuviera que pagar una deuda que no contrajo')."
+          },
+          {
+            "nombre": "inspirador",
+            "justificacion": "Los cierres de cada bloque temático usan narrativa esperanzadora y referencias históricas (Gaitán, el Bogotazo, el proceso de paz) para anclar su propuesta en una tradición de transformación colectiva."
+          },
+          {
+            "nombre": "emocional",
+            "justificacion": "Hace referencia explícita a experiencias personales de comunidades (madres cabeza de familia, campesinos desplazados, jóvenes sin oportunidades) para transferir legitimidad moral a sus argumentos y generar empatía en la audiencia."
+          }
+        ],
+        "categoria_dominante": "combativo"
+      },
+      "perfil_comunicativo": "Morales Ríos construye el perfil de un líder de ruptura con credenciales técnicas: conoce los datos, habla de cifras, pero deliberadamente los traduce al lenguaje de la calle para no sonar tecnocrático. Su postura corporal verbal —confrontacional pero esperanzadora— sugiere una audiencia objetivo de electores desencantados con el establecimiento pero temerosos del cambio radical. Es un comunicador que usa la indignación como puerta de entrada y la esperanza como destino."
+    }
+  },
+  "frases_clave": {
+    "ok": true,
+    "data": {
+      "tono": {
+        "score": -0.22,
+        "descripcion": "Moderadamente negativo: la carga de denuncia y urgencia supera los momentos de esperanza, generando una tensión sostenida que busca movilizar sin desesperar"
+      },
+      "frases_memorables": [
+        {
+          "tipo": "Denuncia",
+          "frase": "En este país hay plata para todo menos para los que trabajan la tierra.",
+          "justificacion": "Contraste directo entre abundancia percibida y exclusión real. Alta potencia emocional y fácil verificación intuitiva por parte de electores rurales y de clase media."
+        },
+        {
+          "tipo": "Propuesta",
+          "frase": "Vamos a convertir cada peso de regalías en un puesto de salud, en un maestro rural, en agua potable para los municipios olvidados.",
+          "justificacion": "Promesa concreta con tres compromisos tangibles encadenados. El uso de 'cada peso' sugiere transparencia y rendición de cuentas sin mencionarlas explícitamente."
+        },
+        {
+          "tipo": "Contraste (nosotros vs. ellos)",
+          "frase": "Mientras ellos debaten quién se queda con los contratos, nosotros estamos hablando de quién se queda sin comer.",
+          "justificacion": "Construcción clásica de dicotomía moral: élite extractiva vs. pueblo necesitado. Funciona como anclaje cognitivo para el resto del discurso."
+        },
+        {
+          "tipo": "Llamado a la acción",
+          "frase": "El 27 de octubre no es una fecha en el calendario. Es el día en que Colombia decide si sigue o si cambia.",
+          "justificacion": "Binarismo que elimina la ambigüedad electoral. Crea urgencia y posiciona el voto como acto histórico, no rutinario."
+        },
+        {
+          "tipo": "Metáfora política",
+          "frase": "Este país es un barco con un hueco en el fondo y el capitán bailando en cubierta.",
+          "justificacion": "Imagen vívida y fácilmente recordable que condensa la crítica a la gestión gubernamental. Alta viralidad potencial por su valor humorístico y su carga crítica simultánea."
+        },
+        {
+          "tipo": "Apelación emocional",
+          "frase": "Yo le pregunto a los colombianos que han tenido que mandar a sus hijos al exterior porque aquí no hay trabajo: ¿hasta cuándo?",
+          "justificacion": "Apelación directa a una experiencia masiva de pérdida y frustración. La pregunta retórica activa memoria emocional colectiva sin necesidad de datos."
+        },
+        {
+          "tipo": "Dato o cifra clave",
+          "frase": "Cuatro de cada diez niños colombianos se van a la cama sin haber comido lo suficiente. Eso no es un indicador, eso es una vergüenza.",
+          "justificacion": "Transforma una estadística en juicio moral. La reformulación ('eso no es un indicador') anticipa y descarta la frialdad tecnocrática para darle peso ético al dato."
+        },
+        {
+          "tipo": "Declaración de identidad",
+          "frase": "Yo no vengo de las familias que han gobernado este país. Vengo del barrio, vengo del trabajo, vengo de los que todavía creen que Colombia puede ser diferente.",
+          "justificacion": "Triple anclaje identitario: clase, trabajo y esperanza. Posiciona al candidato como representante genuino del electorado de base frente a élites percibidas como hereditarias."
+        }
+      ]
+    }
+  },
+  "potencial_digital": {
+    "ok": true,
+    "data": {
+      "tiene_potencial": true,
+      "fragmentos": [
+        {
+          "texto": "En este país hay plata para todo menos para los que trabajan la tierra.",
+          "plataformas": ["Tweet/X", "Historia de Instagram", "TikTok"],
+          "razon": "Máxima brevedad, alta carga emocional y rima interna. Funciona como slogan sin edición. Ideal para formatos de menos de 10 segundos y para texto sobre imagen."
+        },
+        {
+          "texto": "Este país es un barco con un hueco en el fondo y el capitán bailando en cubierta.",
+          "plataformas": ["Tweet/X", "Reel de Instagram", "TikTok"],
+          "razon": "La metáfora es visualmente evocadora y humorístico-crítica, lo que impulsa el share orgánico. Perfecta para video con ilustración animada o texto sobre imagen de barco."
+        },
+        {
+          "texto": "Cuatro de cada diez niños colombianos se van a la cama sin haber comido lo suficiente. Eso no es un indicador, eso es una vergüenza.",
+          "plataformas": ["Post en Facebook", "Titular para medios tradicionales", "Short de YouTube"],
+          "razon": "Combina dato verificable con carga moral. Genera debate y citación en medios. El formato largo de Facebook permite añadir contexto y fuente."
+        },
+        {
+          "texto": "Mientras ellos debaten quién se queda con los contratos, nosotros estamos hablando de quién se queda sin comer.",
+          "plataformas": ["Tweet/X", "Historia de Instagram", "TikTok", "Reel de Instagram"],
+          "razon": "El paralelismo sintáctico lo hace memorable y rítmico. Funciona bien en video con formato de texto animado o meme político estático."
+        },
+        {
+          "texto": "El 27 de octubre no es una fecha en el calendario. Es el día en que Colombia decide si sigue o si cambia.",
+          "plataformas": ["Reel de Instagram", "Short de YouTube", "Historia de Instagram"],
+          "razon": "Perfecto para el cierre de un video de campaña de 30-60 segundos. El binarismo 'sigue o cambia' funciona como call-to-action implícito y como elemento de identidad para compartir."
+        },
+        {
+          "texto": "Vamos a convertir cada peso de regalías en un puesto de salud, en un maestro rural, en agua potable para los municipios olvidados.",
+          "plataformas": ["Post en Facebook", "Titular para medios tradicionales"],
+          "razon": "Propuesta concreta que genera búsquedas y chequeo de datos. Alta tasa de guardado en Facebook por audiencias interesadas en política pública. Atractiva para medios regionales."
+        }
+      ]
+    }
+  },
+  "marcos_narrativos": {
+    "ok": true,
+    "data": {
+      "emociones": [
+        {
+          "nombre": "Indignación",
+          "porcentaje": 32,
+          "interpretacion": "Emoción estructural del discurso. Se activa en los momentos de denuncia de corrupción, exclusión y mal gobierno. Es la fuerza que convierte la narrativa crítica en energía política movilizadora."
+        },
+        {
+          "nombre": "Esperanza",
+          "porcentaje": 24,
+          "interpretacion": "Contrapeso emocional que impide que el discurso caiga en el pesimismo paralizante. Aparece sistemáticamente en los cierres de cada bloque como horizonte de llegada después de la denuncia."
+        },
+        {
+          "nombre": "Orgullo nacional",
+          "porcentaje": 16,
+          "interpretacion": "Evocado a través de referencias a la biodiversidad, la creatividad del pueblo colombiano y logros históricos (proceso de paz, vacunación). Crea un 'nosotros' positivo que contrasta con las élites criticadas."
+        },
+        {
+          "nombre": "Miedo",
+          "porcentaje": 13,
+          "interpretacion": "Presente de forma instrumental: el candidato activa el miedo a la continuidad del statu quo para hacer urgente la alternativa que propone. No apela al miedo al cambio, sino al miedo a no cambiar."
+        },
+        {
+          "nombre": "Urgencia",
+          "porcentaje": 9,
+          "interpretacion": "Se manifiesta en el uso de plazos concretos, cifras actuales de crisis (hambre, desempleo, desplazamiento) y referencias a 'ya no quedan más excusas'. Activa la sensación de ventana de oportunidad limitada."
+        },
+        {
+          "nombre": "Solidaridad",
+          "porcentaje": 6,
+          "interpretacion": "Emerge en las referencias a comunidades específicas (indígenas, afrocolombianos, campesinos) y en el uso del 'nosotros' inclusivo. Busca construir coaliciones identitarias diversas bajo un mismo paraguas."
+        }
+      ],
+      "complejidad_lenguaje": {
+        "score": 6,
+        "justificacion": "El discurso alcanza una complejidad media-alta: las oraciones son largas (promedio 24.8 palabras), incluye referentes históricos y técnicos que requieren cierto capital cultural para ser capturados en su totalidad. Sin embargo, el candidato los ancla constantemente en ejemplos cotidianos, lo que atenúa la barrera de comprensión y mantiene la accesibilidad para audiencias secundarias."
+      }
+    }
+  },
+  "stakeholders": {
+    "ok": true,
+    "data": {
+      "stakeholders": [
+        {
+          "nombre": "Gobierno Nacional",
+          "categoria": "Funcionarios electos del nivel nacional",
+          "porcentaje_discurso": 24,
+          "tipo_relacion": "negativa",
+          "subcategoria_relacion": "Actor incompetente",
+          "evidencia": "Tres años de promesas y cero entregas. Los indicadores de pobreza no bajaron, subieron."
+        },
+        {
+          "nombre": "Congreso de la República",
+          "categoria": "Funcionarios electos del nivel nacional",
+          "porcentaje_discurso": 18,
+          "tipo_relacion": "negativa",
+          "subcategoria_relacion": "Bloqueador/Conspirador",
+          "evidencia": "Bloquearon la reforma a la salud cuatro veces. ¿A quién le están sirviendo?"
+        },
+        {
+          "nombre": "Comunidades campesinas",
+          "categoria": "Ciudadanía en general",
+          "porcentaje_discurso": 16,
+          "tipo_relacion": "positiva",
+          "subcategoria_relacion": "Aliado estratégico",
+          "evidencia": "Son ellos quienes alimentan a Colombia y los que menos reciben a cambio. Eso va a cambiar."
+        },
+        {
+          "nombre": "Grandes grupos empresariales",
+          "categoria": "Sector privado",
+          "porcentaje_discurso": 12,
+          "tipo_relacion": "negativa",
+          "subcategoria_relacion": "Actor deshonesto",
+          "evidencia": "Las mismas familias que ganan con los contratos son las que financian las campañas de quienes los aprueban."
+        },
+        {
+          "nombre": "Maestros y docentes",
+          "categoria": "Ciudadanía en general",
+          "porcentaje_discurso": 11,
+          "tipo_relacion": "positiva",
+          "subcategoria_relacion": "Ejemplo",
+          "evidencia": "Los maestros rurales son héroes anónimos. Con lo que ganan y lo que hacen, son el mejor ejemplo de este país."
+        },
+        {
+          "nombre": "Medios de comunicación privados",
+          "categoria": "Medios de comunicación",
+          "porcentaje_discurso": 10,
+          "tipo_relacion": "negativa",
+          "subcategoria_relacion": "Actor apático",
+          "evidencia": "Mientras 4 de cada 10 niños se acuestan con hambre, los grandes medios hablan de escándalos de farándula."
+        },
+        {
+          "nombre": "Fuerzas Militares",
+          "categoria": "Fuerzas de seguridad",
+          "porcentaje_discurso": 9,
+          "tipo_relacion": "positiva",
+          "subcategoria_relacion": "Aliado potencial",
+          "evidencia": "Los soldados no son el problema — el problema es que los mandan a guerras que no son de ellos. Hay que darles paz para que cuiden la paz."
+        },
+        {
+          "nombre": "Corte Constitucional",
+          "categoria": "Sistema judicial",
+          "porcentaje_discurso": 7,
+          "tipo_relacion": "neutra",
+          "subcategoria_relacion": "Referencia neutral",
+          "evidencia": "La Corte ha protegido derechos que el ejecutivo ignoró. Su independencia es un activo que hay que preservar."
+        },
+        {
+          "nombre": "Jóvenes sin empleo",
+          "categoria": "Ciudadanía en general",
+          "porcentaje_discurso": 7,
+          "tipo_relacion": "positiva",
+          "subcategoria_relacion": "Aliado estratégico",
+          "evidencia": "Ustedes, los jóvenes que no encuentran trabajo, no son un problema estadístico — son la razón por la que estoy aquí."
+        },
+        {
+          "nombre": "Organización de Naciones Unidas",
+          "categoria": "Organismos internacionales",
+          "porcentaje_discurso": 5,
+          "tipo_relacion": "neutra",
+          "subcategoria_relacion": "Actor contextual",
+          "evidencia": "Los informes de la ONU sobre Colombia dicen lo que nosotros llevamos años diciendo en las regiones."
+        },
+        {
+          "nombre": "Partidos de la coalición de gobierno",
+          "categoria": "Partidos políticos",
+          "porcentaje_discurso": 5,
+          "tipo_relacion": "negativa",
+          "subcategoria_relacion": "Bloqueador/Conspirador",
+          "evidencia": "Son cinco partidos que se llaman de izquierda, de derecha, del centro — y todos votan igual cuando se trata de proteger sus contratos."
+        },
+        {
+          "nombre": "Pequeños y medianos empresarios",
+          "categoria": "Sector privado",
+          "porcentaje_discurso": 4,
+          "tipo_relacion": "positiva",
+          "subcategoria_relacion": "Aliado potencial",
+          "evidencia": "La pyme colombiana es la que emplea al 80% de los trabajadores. Ellos necesitan crédito barato, no más burocracia."
+        }
+      ]
+    }
+  }
+}

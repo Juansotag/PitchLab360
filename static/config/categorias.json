@@ -1,0 +1,61 @@
+{
+  "tipos_discurso": [
+    {
+      "nombre": "conversacional",
+      "descripcion": "Lenguaje cercano, informal y directo. Simula un diálogo con la audiencia."
+    },
+    {
+      "nombre": "combativo",
+      "descripcion": "Confronta explícitamente a adversarios políticos o instituciones. Alta carga de denuncia."
+    },
+    {
+      "nombre": "pedagógico",
+      "descripcion": "Explica conceptos, datos o propuestas de forma didáctica y accesible."
+    },
+    {
+      "nombre": "tecnocrático",
+      "descripcion": "Fundamentado en datos, cifras y argumentos técnicos. Apela a la razón sobre la emoción."
+    },
+    {
+      "nombre": "inspirador",
+      "descripcion": "Usa metáforas, narrativa y llamados emocionales para movilizar a la audiencia."
+    },
+    {
+      "nombre": "emocional",
+      "descripcion": "Prioriza la conexión afectiva con la audiencia sobre los argumentos racionales."
+    }
+  ],
+  "emociones_politicas": [
+    "Indignación",
+    "Esperanza",
+    "Miedo",
+    "Orgullo nacional",
+    "Entusiasmo",
+    "Desconfianza",
+    "Tristeza",
+    "Solidaridad",
+    "Urgencia",
+    "Nostalgia"
+  ],
+  "tipos_frases_memorables": [
+    "Denuncia",
+    "Propuesta",
+    "Llamado a la acción",
+    "Contraste (nosotros vs. ellos)",
+    "Promesa",
+    "Declaración de identidad",
+    "Apelación emocional",
+    "Eslogan",
+    "Dato o cifra clave",
+    "Metáfora política"
+  ],
+  "plataformas_digitales": [
+    "Tweet/X",
+    "Post en Facebook",
+    "Reel de Instagram",
+    "Short de YouTube",
+    "TikTok",
+    "Titular para medios tradicionales",
+    "Historia de Instagram"
+  ]
+}
