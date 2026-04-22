@@ -14,7 +14,11 @@
     "Organismos internacionales",
     "Partidos políticos",
     "Fuerzas de seguridad",
-    "Sistema judicial"
+    "Sistema judicial",
+    "Grupos armados",
+    "Crimen organizado",
+    "Economía informal",
+    "Economía formal"
   ],
   "relaciones": {
     "negativa": {

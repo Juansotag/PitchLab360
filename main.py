@@ -265,8 +265,12 @@ Estructura requerida:
     }}
   ]
 }}
-tipo es uno de: eslogan, titular, clip_redes, eje_narrativo.
+tipo es uno de: Denuncia, Propuesta, Llamado a la acción, Contraste (nosotros vs. ellos),
+Promesa, Declaración de identidad, Apelación emocional, Eslogan, Dato o cifra clave, Metáfora política.
+Identifica entre 3 y 8 frases memorables. Para cada una, elige el tipo más preciso y escribe
+una justificacion breve (1-2 frases) sobre por qué esa frase tiene potencial de impacto.
 """,
+
     "marcos_narrativos": """
 {base}
 Estructura requerida:
@@ -405,6 +409,10 @@ Categorías de stakeholders disponibles (elige la más apropiada):
 - Partidos políticos
 - Fuerzas de seguridad
 - Sistema judicial
+- Grupos armados
+- Crimen organizado
+- Economía informal
+- Economía formal
 
 Relaciones negativas (subcategorías): Bloqueador/Conspirador, Atacante, Actor apático, Actor ilegítimo, Actor incompetente, Actor deshonesto.
 Relaciones positivas (subcategorías): Aliado potencial, Aliado estratégico, Inspiración, Ejemplo.
