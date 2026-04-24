@@ -961,32 +961,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* ============================================================
-       DEMO — cargado desde /static/config/demo_data.json
+       DEMO — atajo secreto Ctrl+M (sin botón visible)
      ============================================================ */
-    document.getElementById('btn-demo').addEventListener('click', async () => {
-        try {
-            const res = await fetch('/static/config/demo_data.json?v=' + Date.now());
-            const demoData = await res.json();
-            const { meta = {}, ...data } = demoData;
+    document.addEventListener('keydown', async (e) => {
+        if (e.ctrlKey && e.key === 'm') {
+            e.preventDefault();
+            try {
+                const res = await fetch('/static/config/demo_data.json?v=' + Date.now());
+                const demoData = await res.json();
+                const { meta = {}, ...data } = demoData;
 
-            const badges = document.querySelectorAll('.status-badge');
-            badges.forEach(b => {
-                b.textContent = 'Demo';
-                b.className = 'status-badge completed';
-                b.style.backgroundColor = '#e0e7ff';
-                b.style.color = '#3730a3';
-            });
-            // Populate metadata fields from demo JSON
-            if (meta.candidato) document.getElementById('meta-candidato').value = meta.candidato;
-            if (meta.evento)    document.getElementById('meta-evento').value    = meta.evento;
-            if (meta.medio)     document.getElementById('meta-medio').value     = meta.medio;
-            if (meta.fecha)     document.getElementById('meta-fecha').value     = meta.fecha;
+                const badges = document.querySelectorAll('.status-badge');
+                badges.forEach(b => {
+                    b.textContent = 'Demo';
+                    b.className = 'status-badge completed';
+                    b.style.backgroundColor = 'var(--c-blue-tint)';
+                    b.style.color = 'var(--c-blue-dark)';
+                });
+                // Populate metadata fields from demo JSON
+                if (meta.candidato) document.getElementById('meta-candidato').value = meta.candidato;
+                if (meta.evento)    document.getElementById('meta-evento').value    = meta.evento;
+                if (meta.medio)     document.getElementById('meta-medio').value     = meta.medio;
+                if (meta.fecha)     document.getElementById('meta-fecha').value     = meta.fecha;
 
-            renderResults(data, meta, true); // silent=true: demo shows its own toast
-            showToast('Datos de prueba cargados desde demo_data.json', 'info', 4000);
-        } catch (e) {
-            showToast('Error cargando demo_data.json: ' + e.message, 'error');
-            console.error(e);
+                renderResults(data, meta, true);
+                showToast('Modo demo activado', 'info', 3000);
+            } catch (e) {
+                showToast('Error cargando demo_data.json: ' + e.message, 'error');
+                console.error(e);
+            }
         }
     });
 
