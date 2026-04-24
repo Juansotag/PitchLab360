@@ -93,24 +93,35 @@ def extraer_fragmento(url: str, inicio: int, fin: int) -> str:
     tmpdir = tempfile.mkdtemp()
     try:
         out_template = os.path.join(tmpdir, 'sub')
-        ytdlp_cmd = shutil.which('yt-dlp') or 'yt-dlp'
+        # Buscar yt-dlp — ruta explícita de Anaconda primero
+        _YTDLP_PATHS = [
+            r'C:\Users\juansoag\AppData\Local\anaconda3\Scripts\yt-dlp.exe',
+            shutil.which('yt-dlp') or '',
+            shutil.which('yt-dlp.exe') or '',
+            'yt-dlp',
+        ]
+        ytdlp_cmd = next((p for p in _YTDLP_PATHS if p and os.path.exists(p)), 'yt-dlp')
         result = subprocess.run(
             [
                 ytdlp_cmd,
                 '--skip-download',
                 '--write-auto-sub',
-                '--sub-langs', 'es,es-419,es-CO,es-MX,es-AR',
+                '--sub-langs', 'es',
                 '--sub-format', 'json3',
                 '--no-playlist',
-                '--quiet',
                 '-o', out_template,
                 f'https://www.youtube.com/watch?v={video_id}'
             ],
             capture_output=True, text=True, timeout=60
         )
+
         sub_files = [f for f in os.listdir(tmpdir) if f.endswith('.json3')]
         if not sub_files:
-            raise ValueError("No se encontraron subtítulos en español para este video.")
+            stderr_info = result.stderr[:300] if result.stderr else ''
+            raise ValueError(
+                f"No se encontraron subtítulos en español (código {result.returncode}). "
+                f"El video podría no tener subtítulos automáticos en español. {stderr_info}"
+            )
 
         with open(os.path.join(tmpdir, sub_files[0]), 'r', encoding='utf-8') as fp:
             data = json.load(fp)
