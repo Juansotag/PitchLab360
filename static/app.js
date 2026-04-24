@@ -92,16 +92,35 @@ document.addEventListener('DOMContentLoaded', () => {
 <meta charset="UTF-8">
 <title>Informe PitchLab360 — ${candidato}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Libre+Franklin:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="${base}/static/style.css">
 <style>
+  :root {
+    --fs-sm:  0.72rem;
+    --fs-md:  0.875rem;
+    --fs-lg:  1.15rem;
+    --lh:     1.75;
+    --font-display: 'Publico Banner', 'Playfair Display', serif;
+    --font-main:    'Libre Franklin', sans-serif;
+    --font-label:   'Cabinet Grotesk', sans-serif;
+    --c-blue-dark:  #00205B;
+    --c-blue-light: #00387D;
+    --c-blue-soft:  #93AAC9;
+    --c-blue-tint:  #D9E1EF;
+    --text-primary:   #00205B;
+    --text-secondary: #374151;
+    --text-muted:     #64748b;
+    --border-color:   #D9E1EF;
+  }
+  html { font-size: 13pt; }
   html, body {
     background: #fff !important;
-    color: #1e293b !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: 11.5pt !important;
-    line-height: 1.65 !important;
+    color: #00205B !important;
+    font-family: 'Libre Franklin', sans-serif !important;
+    font-size: var(--fs-md) !important;
+    line-height: var(--lh) !important;
     text-align: justify !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -122,28 +141,56 @@ document.addEventListener('DOMContentLoaded', () => {
   #pv-root { display: block; padding: 0 2.5cm; max-width: 100%; }
   .pv-header-logos {
     display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 2px solid #003b8f; padding-bottom: 0.8rem; margin-bottom: 1.4rem;
+    border-bottom: 2px solid #00205B; padding-bottom: 0.8rem; margin-bottom: 1.4rem;
   }
   .pv-logo-main  { height: 52px; width: auto; }
   .pv-logos-secondary { display: flex; gap: 1rem; align-items: center; }
   .pv-logo-sub   { height: 36px; width: auto; }
-  #pv-root h1 { font-size: 15pt; color: #003b8f; margin-bottom: 0.2rem; font-weight: 700; }
-  .pv-meta { font-size: 10pt; color: #64748b; margin-bottom: 1.6rem; line-height: 1.5; }
+  #pv-root h1 {
+    font-size: 18pt;
+    font-family: 'Publico Banner', 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 800;
+    color: #00205B;
+    margin-bottom: 0.2rem;
+  }
+  .pv-meta { font-size: var(--fs-sm); color: #64748b; margin-bottom: 1.6rem; line-height: var(--lh); font-family: 'Libre Franklin', sans-serif; }
   .pv-section { margin-bottom: 1.4rem; padding-top: 0.6cm; border: none !important; border-radius: 0; overflow: visible; break-inside: auto; }
   .pv-section-hdr {
     background: none !important; padding: 0.25rem 0;
-    font-weight: 700; font-size: 10.5pt; color: #003b8f;
-    border: none !important; border-bottom: 1.5px solid #003b8f !important;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 700; font-size: var(--fs-lg) !important; color: #00205B;
+    border: none !important; border-bottom: 1.5px solid #00205B !important;
     text-transform: uppercase; margin-bottom: 0.6rem; break-after: avoid;
   }
-  .pv-section-body { padding: 0.3rem 0 0 0; line-height: 1.65; text-align: justify; }
-  .pv-section-hdr, .pv-header-logos, .pv-meta,
-  .result-card-title, .phrase-type, .phrase-just,
+  .pv-section-body { padding: 0.3rem 0 0 0; line-height: var(--lh); text-align: justify; }
+  /* Elementos que no deben justificarse */
+  .pv-header-logos, .pv-meta,
+  .phrase-type, .phrase-just,
   .word-freq-chips, .word-freq-chip,
   .platform-badge, .emotion-header,
   .stakeholder-header, .stakeholder-meta,
   .gauge-circle, .gauge-val, .tone-bar-container,
   .discourse-type-tag, .tag { text-align: left !important; }
+  /* Titulo de tarjeta (item) - Cabinet Grotesk, tamano lg, color UniSabana */
+  .result-card-title {
+    font-size: var(--fs-lg) !important;
+    font-family: 'Cabinet Grotesk', sans-serif !important;
+    font-weight: 700 !important;
+    color: #00205B !important;
+    text-align: left !important;
+    margin-bottom: 0.4rem !important;
+  }
+  /* Contenido en tarjetas - tamano md (excluye titulos) */
+  .result-card > div:not(.result-card-title), .result-card > p,
+  .gauge-text, .phrase-item, .digital-text,
+  .emotion-name, .factcheck-item, .risk-item .risk-frag,
+  .pv-section-body > p { font-size: var(--fs-md) !important; line-height: var(--lh) !important; }
+  /* Etiquetas, notas - tamano sm */
+  .phrase-type, .phrase-just, .digital-reason,
+  .emotion-pct, .fc-reason, .risk-desc,
+  .stakeholder-pct, .stakeholder-category,
+  .discourse-type-just, .stat-label { font-size: var(--fs-sm) !important; }
   .result-card {
     break-inside: avoid; page-break-inside: avoid;
     margin-bottom: 0.4rem;
@@ -175,12 +222,12 @@ document.addEventListener('DOMContentLoaded', () => {
   .mini-marco-card, .nota-metodologica { break-inside: avoid; page-break-inside: avoid; }
   .pv-section-hdr, .result-card-title { break-after: avoid; page-break-after: avoid; }
   .tone-track {
-    background: linear-gradient(to right, #d51437, #e2e8f0, #2563a8) !important;
+    background: linear-gradient(to right, #d51437, #e2e8f0, #00205B) !important;
     border-radius: 99px; height: 12px; width: 100%; position: relative;
   }
   .tone-thumb {
     position: absolute; width: 18px; height: 18px; border-radius: 50%;
-    background: white !important; border: 3px solid #003b8f !important;
+    background: white !important; border: 3px solid #00205B !important;
     top: 50%; transform: translate(-50%, -50%);
   }
   .stakeholder-track {
@@ -197,19 +244,12 @@ document.addEventListener('DOMContentLoaded', () => {
   /* === Armonización tipográfica ===
      Normaliza los tamaños rem del sidebar a pt coherentes en impresión.
      También unifica los colores de texto secundario. */
-  /* Tamaños rem frecuentes → pt equivalentes legibles */
-  *[style*="0.92rem"], *[style*="0.9rem"]  { font-size: 11pt   !important; }
-  *[style*="0.85rem"], *[style*="0.82rem"] { font-size: 10.5pt !important; }
-  *[style*="0.8rem"]                       { font-size: 10.5pt !important; }
-  *[style*="0.79rem"], *[style*="0.78rem"] { font-size: 10pt   !important; }
-  *[style*="0.75rem"], *[style*="0.73rem"] { font-size: 9.5pt  !important; }
-  *[style*="0.69rem"]                      { font-size: 9pt    !important; }
   /* Colores unificados */
   *[style*="text-muted"]    { color: #64748b !important; }
   *[style*="text-secondary"]{ color: #475569 !important; }
-  *[style*="c-blue-dark"]   { color: #003b8f !important; }
-  /* Texto generado por LLM: uniforme y legible */
-  .result-card > div[style] { line-height: 1.65 !important; }
+  *[style*="c-blue-dark"]   { color: #00205B !important; }
+  /* Texto generado por LLM: interlineado consistente */
+  .result-card > div[style] { line-height: var(--lh) !important; }
 </style>
 </head>
 <body>
@@ -579,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 b.textContent = 'Completado';
                 b.className = 'status-badge completed';
                 b.style.backgroundColor = '#e8edf7';
-                b.style.color = '#1e3a6e';
+                b.style.color = '#00205B';
             });
 
             renderResults(data, metaObj);
@@ -618,13 +658,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const evento = meta.evento || '';
         body.innerHTML = `
             <div class="result-card intro-catchy-card">
-                <p style="font-size:0.92rem;color:var(--c-blue-dark);line-height:1.6;margin:0">
+                <p style="font-size:var(--fs-md);color:var(--c-blue-dark);line-height:var(--lh);margin:0">
                     <strong> PitchLab360 </strong>es una herramienta tecnológica de análisis de lenguaje que utiliza técnicas de procesamiento de lenguaje natural (<em>NLP</em>) para evaluar discursos, textos o intervenciones de exponentes y candidatos como <strong>${candidato}</strong> en <strong>${evento}</strong>. Su función principal es convertir el contenido verbal en indicadores medibles, como claridad, complejidad, estructura y tono del mensaje. A partir de esto, permite entender cómo está construido un discurso y qué tan efectivo puede ser para una audiencia. En términos más amplios, PitchLab no analiza si un mensaje es verdadero o falso, sino cómo está formulado, ofreciendo una base objetiva para diagnosticar y mejorar la comunicación, especialmente en contextos políticos, institucionales o estratégicos.
                 </p>
             </div>
             <div class="result-card">
                 <div class="result-card-title">Contenido del informe</div>
-                <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">
+                <div style="font-size:var(--fs-md);color:var(--text-secondary);line-height:var(--lh)">
                     <p>Este informe combina <strong>análisis computacional</strong> (métricas objetivas del lenguaje) con <strong>análisis cualitativo mediante <em>LLM</em></strong>. Está organizado en tres secciones:</p>
                     <ul style="margin:0.5rem 0 0 1.2rem;display:flex;flex-direction:column;gap:0.3rem">
                         <li><strong>Sección 1: Perfil comunicativo:</strong> Estilo, formalidad y tipo de discurso.</li>
@@ -635,10 +675,26 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="result-card" style="text-align:center">
                 <div class="result-card-title">Demo en video</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">El siguiente código QR lleva al video tutorial que muestra todas las funcionalidades disponibles de la herramienta.</div>
+                <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">El siguiente código QR lleva al video tutorial que muestra todas las funcionalidades disponibles de la herramienta.</div>
                 <div class="qr-placeholder">
-                    <i class="fa-solid fa-qrcode" style="font-size:3rem;color:var(--c-blue-dark);opacity:0.3"></i>
-                    <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem">QR · Video Tutorial PitchLab360</div>
+                    <img src="${window.location.origin}/assets/QR.png" alt="QR Video Tutorial PitchLab360" style="width:140px;height:140px;object-fit:contain" onerror="this.style.display='none'">
+                </div>
+            </div>
+            <div class="result-card">
+                <div class="result-card-title">Glosario</div>
+                <div style="font-size:var(--fs-md);color:var(--text-secondary);line-height:var(--lh);display:flex;flex-direction:column;gap:0.75rem">
+                    <div>
+                        <strong style="color:var(--c-blue-dark)">TTR &mdash; Type-Token Ratio</strong><br>
+                        Razón entre el número de palabras únicas (<em>types</em>) y el total de palabras del discurso (<em>tokens</em>). Un TTR alto indica mayor riqueza léxica y variedad de vocabulario; un TTR bajo sugiere mayor repetición terminológica.
+                    </div>
+                    <div>
+                        <strong style="color:var(--c-blue-dark)">Palabras por oración</strong><br>
+                        Promedio del número de palabras por cada oración del discurso. Oraciones largas tienden a asociarse con registros más formales o técnicos; oraciones cortas, con un estilo más directo y accesible.
+                    </div>
+                    <div>
+                        <strong style="color:var(--c-blue-dark)">Índice de Legibilidad de Flesch-Kincaid</strong><br>
+                        Métrica que estima qué tan fácil es leer un texto. Valores altos indican mayor accesibilidad; valores bajos corresponden a textos de mayor complejidad y formalidad.
+                    </div>
                 </div>
             </div>`;
     }
@@ -652,13 +708,10 @@ document.addEventListener('DOMContentLoaded', () => {
         body.innerHTML = `
             <div class="result-card">
                 <div class="result-card-title">a. Perfil comunicativo</div>
-                <div style="font-size:0.9rem;color:var(--c-blue-dark);line-height:1.6">${d.perfil_comunicativo || ''}</div>
+                <div style="font-size:var(--fs-md);color:var(--c-blue-dark);line-height:var(--lh)">${d.perfil_comunicativo || ''}</div>
             </div>
             <div class="result-card">
                 <div class="result-card-title">b. Nivel de formalidad</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
-                    El nivel de formalidad evalúa, en una escala de 1 a 10, qué tan formal o coloquial es el registro lingüístico del discurso. Es asignado por el modelo de IA a partir del análisis cualitativo del texto sobre tres métricas computacionales calculadas localmente: <strong><em>TTR</em></strong> (<em>Type-Token Ratio</em>: razón entre palabras únicas y palabras totales, valores altos indican mayor riqueza léxica y sofisticación), <strong>Índice de Legibilidad de Flesch-Kincaid</strong> (mide qué tan fácil es leer el texto, valores bajos corresponden a textos más complejos y formales) y <strong>longitud promedio de oración</strong> (oraciones largas tienden a corresponder a registros más formales).
-                </div>
                 <div class="score-gauge">
                     ${gaugeCircle(d.formalidad?.score || 0)}
                     <div class="gauge-text">${d.formalidad?.justificacion || ''}</div>
@@ -693,7 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
             html += `
             <div class="result-card">
                 <div class="result-card-title">a. Índice de sentimiento</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
                     El Índice de sentimiento mide la carga emocional global del discurso en una escala de −1 (muy negativo/hostil) a +1 (muy positivo/esperanzador), asignada por el modelo de IA al analizar el tono general de las expresiones.
                 </div>
                 <div class="tone-bar-container">
@@ -702,7 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span>Negativo (−1)</span>
                         <span>Positivo (+1)</span>
                     </div>
-                    <div style="text-align:center;margin-top:0.5rem;font-size:0.82rem;font-weight:600;color:var(--c-blue-dark)">
+                    <div style="text-align:center;margin-top:0.5rem;font-size:var(--fs-md);font-weight:600;color:var(--c-blue-dark)">
                         Puntaje: ${score.toFixed(2)} — <span style="font-weight:400;color:var(--text-secondary)">${d.tono?.descripcion || ''}</span>
                     </div>
                 </div>
@@ -710,17 +763,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // b. Unidades de Sentido Significativas
             html += `
+            ${marcoTeorico?.data?.nota_metodologica ? `
+            <div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.6rem 0.85rem;background:var(--c-blue-tint);border-left:2px solid var(--c-blue-dark);border-radius:0 6px 6px 0;margin-bottom:0.5rem">
+                <i class="fa-solid fa-circle-info" style="color:var(--c-blue-dark);font-size:var(--fs-sm);margin-top:0.15rem;flex-shrink:0"></i>
+                <div>
+                    <span style="font-size:var(--fs-sm);font-weight:700;color:var(--c-blue-dark);text-transform:uppercase;letter-spacing:0.04em">Nota metodológica</span>
+                    <p style="font-size:var(--fs-sm);color:var(--text-secondary);line-height:var(--lh);margin:0.15rem 0 0">${marcoTeorico.data.nota_metodologica}</p>
+                </div>
+            </div>` : ''}
             <div class="result-card">
                 <div class="result-card-title">b. Unidades de sentido significativas</div>
-                ${marcoTeorico?.data?.nota_metodologica ? `
-                <div class="result-card" style="background:#f8faff;border-left:3px solid var(--c-blue-light);margin-bottom:0.6rem">
-                    <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.3rem">
-                        <i class="fa-solid fa-circle-info" style="color:var(--c-blue-light);font-size:0.78rem"></i>
-                        <span style="font-size:0.73rem;font-weight:700;color:var(--c-blue-dark)">Nota metodológica</span>
-                    </div>
-                    <p style="font-size:0.79rem;color:var(--text-secondary);line-height:1.5;margin:0">${marcoTeorico.data.nota_metodologica}</p>
-                </div>` : ''}
-                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
                     Las unidades de sentido significativas son frases o párrafos cortos que comunican la posición del candidato de forma autónoma, sin necesitar el contexto completo del discurso. Se clasifican por su función retórica a partir de una lista predefinida de categorías.
                 </div>
                 <div class="phrase-list">
@@ -740,7 +793,7 @@ document.addEventListener('DOMContentLoaded', () => {
             html += `
             <div class="result-card">
                 <div class="result-card-title">c. Mensajes con alto potencial de viralización</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
                     Son fragmentos del discurso con alta probabilidad de resonar en redes sociales por su carga emocional, brevedad o impacto narrativo. Para cada uno se sugieren las plataformas más adecuadas según su naturaleza.
                 </div>
                 ${(d.fragmentos || []).map(f => {
@@ -762,7 +815,7 @@ document.addEventListener('DOMContentLoaded', () => {
             html += `
             <div class="result-card">
                 <div class="result-card-title">d. Encuadres emocionales</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
                     Los encuadres emocionales son los marcos interpretativos que el discurso activa en la audiencia. Se identifican a partir de una lista predefinida de emociones políticas reconocidas (como esperanza, miedo, indignación u orgullo) y culminan en una síntesis interpretativa del encuadre emocional, que permite comprender la función de ese marco dentro del discurso.
                 </div>
                 <div class="emotion-list">
@@ -773,7 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <span class="emotion-pct">${e.porcentaje}%</span>
                             </div>
                             <div class="emotion-track"><div class="emotion-fill" style="width:${e.porcentaje}%"></div></div>
-                            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.15rem">${e.interpretacion || ''}</div>
+                            <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-top:0.15rem">${e.interpretacion || ''}</div>
                         </div>`).join('')}
                 </div>
             </div>`;
@@ -792,13 +845,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const lista = marcoTeorico?.data?.marcos || [];
             const m = lista.find(x => `${x.nombre} ${x.autor_anio}`.toLowerCase().includes(nombre.toLowerCase()));
             if (!m) return '';
-            return `<div class="result-card" style="border-left:3px solid var(--c-blue-light);background:#f8faff">
+            return `<div class="result-card" style="border-left:3px solid var(--c-blue-dark);background:var(--c-blue-tint)">
                 <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem">
-                    <i class="fa-solid fa-book-open" style="color:var(--c-blue-light);font-size:0.8rem"></i>
+                    <i class="fa-solid fa-book-open" style="color:var(--c-blue-dark);font-size:0.8rem"></i>
                     <span style="font-size:0.75rem;font-weight:700;color:var(--c-blue-dark)">${m.nombre}</span>
                     <span style="font-size:0.7rem;color:var(--text-muted);margin-left:auto">${m.autor_anio}</span>
                 </div>
-                <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.5;margin:0 0 0.4rem">${m.justificacion}</p>
+                <p style="font-size:var(--fs-md);color:var(--text-secondary);line-height:var(--lh);margin:0 0 0.4rem">${m.justificacion}</p>
                 <div style="display:flex;flex-wrap:wrap;gap:0.3rem">
                     ${(m.indicadores_que_lo_activan || []).map(ind => `<span style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px">${ind}</span>`).join('')}
                 </div>
@@ -829,8 +882,8 @@ document.addEventListener('DOMContentLoaded', () => {
             html += `
             <div class="result-card">
                 <div class="result-card-title">b. Nivel de complejidad discursiva</div>
-                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
-                    Calificación de 1 a 10 sobre la sofisticación del lenguaje utilizado, considerando el <em>TTR</em> (riqueza léxica), el promedio de palabras por oración y el Índice de Legibilidad de Flesch-Kincaid. 1 = muy simple y accesible, 10 = muy técnico y complejo.
+                <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
+                    Calificación de 1 a 10 sobre la sofisticación del lenguaje (TTR, palabras por oración e índice Flesch-Kincaid). 1 = muy simple, 10 = muy técnico.
                 </div>
                 <div class="score-gauge">
                     ${gaugeCircle(comp?.score || 0)}
@@ -843,7 +896,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (stakeholders?.ok) {
             const list = stakeholders.data?.stakeholders || [];
             const relColor = { positiva: '#e8edf7', negativa: '#fee2e2', neutra: '#f1f5f9' };
-            const relTextColor = { positiva: '#1e3a6e', negativa: '#991b1b', neutra: '#475569' };
+            const relTextColor = { positiva: '#00205B', negativa: '#991b1b', neutra: '#374151' };
 
             html += `
             <div class="result-card">
