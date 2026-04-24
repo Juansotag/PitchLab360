@@ -114,9 +114,16 @@ def extraer_subtitulos(req: ExtractRequest):
     except ValueError as e:
         return {"error": str(e)}
     except (TranscriptsDisabled, NoTranscriptFound):
-        return {"error": "El video no contiene subtítulos en español utilizables."}
+        return {"error": "El video no contiene subtítulos en español utilizables. Pega el texto del discurso manualmente."}
     except Exception as e:
-        return {"error": str(e), "texto": None}
+        msg = str(e)
+        if "blocking" in msg.lower() or "ip" in msg.lower() or "RequestBlocked" in msg or "IPBlocked" in msg:
+            return {
+                "error": "YouTube está bloqueando la solicitud desde esta red. "
+                         "Solución: copia el texto del discurso desde la transcripción de YouTube "
+                         "(botón '...' bajo el video → 'Mostrar transcripción') y pégalo directamente en el campo de texto."
+            }
+        return {"error": f"No se pudo extraer el transcript: {msg}"}
 
 PROMPT_LIMPIEZA = """
 El siguiente texto son subtítulos extraídos automáticamente de YouTube.
