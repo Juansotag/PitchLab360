@@ -18,7 +18,9 @@ import re
 from typing import Dict, Any, Optional
 import concurrent.futures
 from dotenv import load_dotenv
-from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
+import subprocess
+import tempfile
+import shutil
 from urllib.parse import urlparse, parse_qs
 
 # Load environment variables
@@ -87,17 +89,44 @@ def extraer_fragmento(url: str, inicio: int, fin: int) -> str:
     video_id = extraer_id(url)
     if not video_id:
         raise ValueError("URL de YouTube inválida")
-        
-    api = YouTubeTranscriptApi()
-    transcript = api.fetch(
-        video_id,
-        languages=["es", "es-419", "es-CO", "es-MX", "es-AR"]
-    )
-    fragmento = [
-        entry.text for entry in transcript
-        if entry.start >= inicio and entry.start <= fin
-    ]
-    return " ".join(fragmento)
+
+    tmpdir = tempfile.mkdtemp()
+    try:
+        out_template = os.path.join(tmpdir, 'sub')
+        ytdlp_cmd = shutil.which('yt-dlp') or 'yt-dlp'
+        result = subprocess.run(
+            [
+                ytdlp_cmd,
+                '--skip-download',
+                '--write-auto-sub',
+                '--sub-langs', 'es,es-419,es-CO,es-MX,es-AR',
+                '--sub-format', 'json3',
+                '--no-playlist',
+                '--quiet',
+                '-o', out_template,
+                f'https://www.youtube.com/watch?v={video_id}'
+            ],
+            capture_output=True, text=True, timeout=60
+        )
+        sub_files = [f for f in os.listdir(tmpdir) if f.endswith('.json3')]
+        if not sub_files:
+            raise ValueError("No se encontraron subtítulos en español para este video.")
+
+        with open(os.path.join(tmpdir, sub_files[0]), 'r', encoding='utf-8') as fp:
+            data = json.load(fp)
+
+        events = data.get('events', [])
+        fragments = []
+        for event in events:
+            start_s = event.get('tStartMs', 0) / 1000
+            if inicio <= start_s <= fin:
+                for seg in event.get('segs', []):
+                    text = seg.get('utf8', '').strip()
+                    if text and text != '\n':
+                        fragments.append(text)
+        return ' '.join(fragments).strip()
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
 # --- ENDPOINTS ---
 @app.post("/extraer-subtitulos")
@@ -113,17 +142,10 @@ def extraer_subtitulos(req: ExtractRequest):
         
     except ValueError as e:
         return {"error": str(e)}
-    except (TranscriptsDisabled, NoTranscriptFound):
-        return {"error": "El video no contiene subtítulos en español utilizables. Pega el texto del discurso manualmente."}
+    except subprocess.TimeoutExpired:
+        return {"error": "Tiempo de espera agotado al contactar YouTube. Intenta de nuevo."}
     except Exception as e:
-        msg = str(e)
-        if "blocking" in msg.lower() or "ip" in msg.lower() or "RequestBlocked" in msg or "IPBlocked" in msg:
-            return {
-                "error": "YouTube está bloqueando la solicitud desde esta red. "
-                         "Solución: copia el texto del discurso desde la transcripción de YouTube "
-                         "(botón '...' bajo el video → 'Mostrar transcripción') y pégalo directamente en el campo de texto."
-            }
-        return {"error": f"No se pudo extraer el transcript: {msg}"}
+        return {"error": f"No se pudo extraer el transcript: {str(e)}"}
 
 PROMPT_LIMPIEZA = """
 El siguiente texto son subtítulos extraídos automáticamente de YouTube.
