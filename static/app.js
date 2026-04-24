@@ -1,5 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    /* ── Pie chart tooltip (global, event delegation) ──────────── */
+    function initPieTooltips() {
+        if (document.getElementById('pie-tooltip')) return; // single instance
+        const tip = document.createElement('div');
+        tip.id = 'pie-tooltip';
+        document.body.appendChild(tip);
+
+        document.addEventListener('mousemove', e => {
+            const slice = e.target.closest('.pie-slice');
+            if (slice) {
+                tip.textContent = `${slice.dataset.label}  ·  ${slice.dataset.value}`;
+                tip.style.display = 'block';
+                tip.style.left = (e.clientX + 14) + 'px';
+                tip.style.top = (e.clientY - 36) + 'px';
+            } else {
+                tip.style.display = 'none';
+            }
+        });
+        document.addEventListener('mouseleave', () => { tip.style.display = 'none'; }, true);
+    }
+
     /* --- GLOBAL DOM REFS --- */
     const discourseTextarea = document.getElementById('discourse-text');
     const wordCountDisplay = document.getElementById('word-count');
@@ -19,12 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
     /* --- SIDEBAR VIEW SWITCHING --- */
     const sidebarModulesView = document.getElementById('sidebar-modules-view');
     const sidebarResultsView = document.getElementById('sidebar-results-view');
-    const btnExportPdf = document.getElementById('btn-export-pdf');
+    const btnExportPdf  = document.getElementById('btn-export-pdf');
+    const btnExportHtml = document.getElementById('btn-export-html');
 
     function showResultsInSidebar() {
         sidebarModulesView.style.display = 'none';
         sidebarResultsView.style.display = 'block';
-        btnExportPdf.style.display = '';
+        btnExportPdf.style.display  = '';
+        btnExportHtml.style.display = '';
         // Open intro section by default
         const introSection = document.getElementById('res-intro');
         if (introSection && !introSection.classList.contains('open')) {
@@ -35,20 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    btnExportPdf.addEventListener('click', () => {
-        const printView = document.getElementById('print-view');
-        const candidato = document.getElementById('meta-candidato')?.value || 'Análisis PitchLab360';
-        const fecha = document.getElementById('meta-fecha')?.value || new Date().toLocaleDateString('es-CO');
 
-        // Collect all result sections from sidebar
+    /* ── Genera el HTML completo del informe (compartido por PDF y descarga HTML) ── */
+    function generateReportHTML() {
+        const candidato = document.getElementById('meta-candidato')?.value || '';
+        const evento    = document.getElementById('meta-evento')?.value    || '';
+        const fecha     = document.getElementById('meta-fecha')?.value     || '';
+
         const sections = document.querySelectorAll('#sidebar-results-view .res-section-sb');
         let sectionsHTML = '';
         sections.forEach(sec => {
-            const hdr = sec.querySelector('.res-section-hdr span')?.textContent || '';
-            // Clone the body content (open or not)
+            const hdr    = sec.querySelector('.res-section-hdr span')?.textContent || '';
             const bodyEl = sec.querySelector('.res-section-body-sb');
             const bodyHTML = bodyEl ? bodyEl.innerHTML : '';
-            if (!bodyHTML.trim()) return; // skip empty sections
+            if (!bodyHTML.trim()) return;
             sectionsHTML += `
                 <div class="pv-section">
                     <div class="pv-section-hdr">${hdr}</div>
@@ -56,32 +79,213 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`;
         });
 
-        if (!sectionsHTML) {
-            showToast('Primero realiza un análisis antes de exportar.', 'warning');
-            return;
+        if (!sectionsHTML) return null;
+
+        // Eliminar guiones largos del HTML de secciones (por si quedaron en alguna renderización)
+        sectionsHTML = sectionsHTML.replace(/—/g, '-');
+
+        const base = window.location.origin;
+
+        return { html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Informe PitchLab360 — ${candidato}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="${base}/static/style.css">
+<style>
+  html, body {
+    background: #fff !important;
+    color: #1e293b !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 11.5pt !important;
+    line-height: 1.65 !important;
+    text-align: justify !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+  @page {
+    size: A4;
+    margin: 0; /* 0 elimina URL/fecha/hora del navegador */
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  /* Tabla que genera márgenes consistentes en cada página (thead/tfoot se repiten) */
+  #pv-margin-table { width: 100%; border-collapse: collapse; border-spacing: 0; }
+  #pv-margin-top, #pv-margin-bottom { height: 1.8cm; }
+  #pv-root { display: block; padding: 0 2.5cm; max-width: 100%; }
+  .pv-header-logos {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid #003b8f; padding-bottom: 0.8rem; margin-bottom: 1.4rem;
+  }
+  .pv-logo-main  { height: 52px; width: auto; }
+  .pv-logos-secondary { display: flex; gap: 1rem; align-items: center; }
+  .pv-logo-sub   { height: 36px; width: auto; }
+  #pv-root h1 { font-size: 15pt; color: #003b8f; margin-bottom: 0.2rem; font-weight: 700; }
+  .pv-meta { font-size: 10pt; color: #64748b; margin-bottom: 1.6rem; line-height: 1.5; }
+  .pv-section { margin-bottom: 1.4rem; padding-top: 0.6cm; border: none !important; border-radius: 0; overflow: visible; break-inside: auto; }
+  .pv-section-hdr {
+    background: none !important; padding: 0.25rem 0;
+    font-weight: 700; font-size: 10.5pt; color: #003b8f;
+    border: none !important; border-bottom: 1.5px solid #003b8f !important;
+    text-transform: uppercase; margin-bottom: 0.6rem; break-after: avoid;
+  }
+  .pv-section-body { padding: 0.3rem 0 0 0; line-height: 1.65; text-align: justify; }
+  .pv-section-hdr, .pv-header-logos, .pv-meta,
+  .result-card-title, .phrase-type, .phrase-just,
+  .word-freq-chips, .word-freq-chip,
+  .platform-badge, .emotion-header,
+  .stakeholder-header, .stakeholder-meta,
+  .gauge-circle, .gauge-val, .tone-bar-container,
+  .discourse-type-tag, .tag { text-align: left !important; }
+  .result-card {
+    break-inside: avoid; page-break-inside: avoid;
+    margin-bottom: 0.4rem;
+    border: none !important; background: none !important;
+    padding: 0.15rem 0 !important;
+    border-bottom: 0.5px solid #e2e8f0 !important;
+    border-radius: 0 !important;
+  }
+  .result-card:last-child { border-bottom: none !important; }
+  /* La tarjeta de frases memorables sí puede cortarse entre páginas;
+     cada recuadro individual permanece indivisible */
+  .result-card:has(.phrase-list) { break-inside: auto !important; page-break-inside: auto !important; }
+  .result-card:has(.phrase-list) .phrase-list { break-inside: auto !important; }
+  .phrase-item { break-inside: avoid !important; page-break-inside: avoid !important; }
+  /* Lo mismo para mensajes con potencial de viralización */
+  .result-card:has(.digital-item) { break-inside: auto !important; page-break-inside: auto !important; }
+  .digital-item { break-inside: avoid !important; page-break-inside: avoid !important; }
+  /* Lo mismo para encuadres emocionales */
+  .result-card:has(.emotion-list) { break-inside: auto !important; page-break-inside: auto !important; }
+  .result-card:has(.emotion-list) .emotion-list { break-inside: auto !important; }
+  .emotion-row { break-inside: avoid !important; page-break-inside: avoid !important; }
+  /* Análisis Semántico — stakeholders y palabras frecuentes */
+  .result-card:has(.stakeholder-item) { break-inside: auto !important; page-break-inside: auto !important; }
+  .stakeholder-item { break-inside: avoid !important; page-break-inside: avoid !important; }
+  .result-card:has(.word-freq-chips) { break-inside: auto !important; page-break-inside: auto !important; }
+  .gauge-circle, .gauge-row, .tone-bar-container, .tone-track,
+  .bar-row, .bar-track, .emotion-track, .stakeholder-item,
+  .phrase-item, .digital-item, .word-freq-chips,
+  .mini-marco-card, .nota-metodologica { break-inside: avoid; page-break-inside: avoid; }
+  .pv-section-hdr, .result-card-title { break-after: avoid; page-break-after: avoid; }
+  .tone-track {
+    background: linear-gradient(to right, #d51437, #e2e8f0, #2563a8) !important;
+    border-radius: 99px; height: 12px; width: 100%; position: relative;
+  }
+  .tone-thumb {
+    position: absolute; width: 18px; height: 18px; border-radius: 50%;
+    background: white !important; border: 3px solid #003b8f !important;
+    top: 50%; transform: translate(-50%, -50%);
+  }
+  .stakeholder-track {
+    display: block !important; background: #f1f5f9 !important;
+    border-radius: 999px; height: 6px; overflow: hidden; margin-top: 0.3rem;
+  }
+  .stakeholder-fill { height: 100%; border-radius: 999px; }
+  .platform-badge { display: inline-block; font-size: 9pt; border-radius: 999px; padding: 0.15rem 0.55rem; margin: 0.1rem; }
+  .metrics-help-box, .res-toggle, button { display: none !important; }
+  .pv-disclaimer {
+    margin-top: 2rem; padding-top: 0.8rem; border-top: 1px solid #e2e8f0;
+    font-size: 9.5pt; color: #64748b; line-height: 1.65; text-align: justify;
+  }
+  /* === Armonización tipográfica ===
+     Normaliza los tamaños rem del sidebar a pt coherentes en impresión.
+     También unifica los colores de texto secundario. */
+  /* Tamaños rem frecuentes → pt equivalentes legibles */
+  *[style*="0.92rem"], *[style*="0.9rem"]  { font-size: 11pt   !important; }
+  *[style*="0.85rem"], *[style*="0.82rem"] { font-size: 10.5pt !important; }
+  *[style*="0.8rem"]                       { font-size: 10.5pt !important; }
+  *[style*="0.79rem"], *[style*="0.78rem"] { font-size: 10pt   !important; }
+  *[style*="0.75rem"], *[style*="0.73rem"] { font-size: 9.5pt  !important; }
+  *[style*="0.69rem"]                      { font-size: 9pt    !important; }
+  /* Colores unificados */
+  *[style*="text-muted"]    { color: #64748b !important; }
+  *[style*="text-secondary"]{ color: #475569 !important; }
+  *[style*="c-blue-dark"]   { color: #003b8f !important; }
+  /* Texto generado por LLM: uniforme y legible */
+  .result-card > div[style] { line-height: 1.65 !important; }
+</style>
+</head>
+<body>
+<table id="pv-margin-table">
+  <thead><tr><td id="pv-margin-top"></td></tr></thead>
+  <tfoot><tr><td id="pv-margin-bottom"></td></tr></tfoot>
+  <tbody><tr><td>
+<div id="pv-root">
+  <div class="pv-header-logos">
+    <img src="${base}/assets/PitchLab360.jpg" class="pv-logo-main" onerror="this.style.display='none'">
+    <div class="pv-logos-secondary">
+      <img src="${base}/assets/Universidad de la Sabana.png" class="pv-logo-sub" onerror="this.style.display='none'">
+      <img src="${base}/assets/Govlab.png" class="pv-logo-sub" onerror="this.style.display='none'">
+    </div>
+  </div>
+  <h1>Informe de Análisis de Discurso: ${candidato}</h1>
+  <div class="pv-meta">${evento ? evento + ' · ' : ''}${fecha}</div>
+  ${sectionsHTML}
+  <div class="pv-disclaimer">
+    <strong>Alcance metodológico del análisis:</strong> Este informe es un ejercicio de
+    <strong>análisis de discurso</strong>, no de verificación de hechos (<em>fact-checking</em>).
+    La herramienta evalúa cómo está construido el mensaje, su estructura, tono, complejidad y
+    estrategia comunicativa, pero <strong>no determina la veracidad o falsedad de ninguna afirmación</strong>.
+    Asimismo, los resultados corresponden exclusivamente al discurso analizado y no representan
+    ni resumen la totalidad de la campaña o trayectoria comunicativa del candidato.
+    Los resultados no representan la posición oficial de la Universidad de La Sabana
+    ni del Laboratorio de Gobierno (GovLab).
+  </div>
+</div>
+  </td></tr></tbody>
+</table>
+</body>
+</html>`, candidato, fecha };
+    }
+
+    /* ── Exportar PDF ── */
+    btnExportPdf.addEventListener('click', () => {
+        const result = generateReportHTML();
+        if (!result) { showToast('Primero realiza un análisis antes de exportar.', 'warning'); return; }
+        const { html: printHTML } = result;
+
+        let iframe = document.getElementById('_pitchlab-print-frame');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = '_pitchlab-print-frame';
+            iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;opacity:0;pointer-events:none;';
+            document.body.appendChild(iframe);
         }
-
-        printView.innerHTML = `
-            <div class="pv-header-logos">
-                <img src="/assets/PitchLab360.jpg" class="pv-logo-main">
-                <div class="pv-logos-secondary">
-                    <img src="/assets/Universidad de la Sabana.png" class="pv-logo-sub">
-                    <img src="/assets/Govlab.png" class="pv-logo-sub">
-                </div>
-            </div>
-            <h1>Informe de Análisis de Discurso: ${candidato}</h1>
-            <div class="pv-meta">PitchLab360 · Laboratorio de Gobierno (GovLab) · Universidad de La Sabana · ${fecha}</div>
-            ${sectionsHTML}
-            <div class="pv-disclaimer">
-                <strong>Nota de exención de responsabilidad:</strong> Este análisis es un ejercicio académico generado mediante herramientas de inteligencia artificial y procesamiento de lenguaje natural. Los resultados aquí presentados no representan la posición oficial de la Universidad de La Sabana, el Laboratorio de Gobierno (GovLab), ni de sus trabajadores, estudiantes o personal administrativo.
-            </div>`;
-
-        setTimeout(() => {
-            window.print();
-            // Clean up after print dialog closes
-            setTimeout(() => { printView.innerHTML = ''; }, 1000);
-        }, 150);
+        iframe.onload = () => {
+            setTimeout(() => {
+                try { iframe.contentWindow.print(); }
+                catch(e) {
+                    const w = window.open('', '_blank');
+                    if (w) { w.document.write(printHTML); w.document.close(); }
+                }
+            }, 800);
+        };
+        iframe.srcdoc = printHTML;
     });
+
+    /* ── Exportar HTML ── */
+    document.getElementById('btn-export-html').addEventListener('click', () => {
+        const result = generateReportHTML();
+        if (!result) { showToast('Primero realiza un análisis antes de exportar.', 'warning'); return; }
+        const { html, candidato, fecha } = result;
+        const slug = (candidato || 'informe').replace(/\s+/g, '_').replace(/[^\w_]/g, '');
+        const filename = `Informe_PitchLab360_${slug}_${fecha || 'sin_fecha'}.html`;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a); URL.revokeObjectURL(url);
+        showToast(`HTML descargado: ${filename}`, 'success', 5000);
+    });
+
 
     // Module card navigation: click → show results & scroll to section
     document.querySelectorAll('.module-card[data-target]').forEach(card => {
@@ -324,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnAnalyze.addEventListener('click', async () => {
         const text = discourseTextarea.value.trim();
         if (text.length === 0) {
-            alert('Por favor introduce algún texto para analizar.');
+            showToast('Por favor introduce algún texto para analizar.', 'warning');
             return;
         }
 
@@ -362,13 +566,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                const errData = await response.json();
-                alert(`Error en el servidor: ${errData.detail || 'Error desconocido'}`);
+                const errData = await response.json().catch(() => ({}));
+                showToast(`Error en el servidor: ${errData.detail || 'Error desconocido'}`, 'error', 6000);
                 throw new Error('Server Error');
             }
 
             const data = await response.json();
-            console.log('Análisis Completado:', data);
 
             btnAnalyze.innerHTML = originalText;
             btnAnalyze.style.backgroundColor = 'var(--c-red)';
@@ -402,6 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function h(tag, cls, inner = '') { return `<${tag} class="${cls}">${inner}</${tag}>`; }
     function errBlock(msg) { return `<div class="error-block"><i class="fa-solid fa-circle-exclamation"></i> ${msg}</div>`; }
+    function cap(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : str; }
     function gaugeCircle(score, max = 10) {
         const pct = Math.round((score / max) * 100);
         return `<div class="gauge-circle" style="--pct:${pct}%"><span class="gauge-val">${score}</span></div>`;
@@ -411,25 +615,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderIntro(meta) {
         const body = document.getElementById('body-intro');
         const candidato = meta.candidato || 'el candidato';
+        const evento = meta.evento || '';
         body.innerHTML = `
             <div class="result-card intro-catchy-card">
                 <p style="font-size:0.92rem;color:var(--c-blue-dark);line-height:1.6;margin:0">
-                    <strong>PitchLab360</strong> analiza el discurso político de <strong>${candidato}</strong> usando inteligencia artificial y lingüística computacional, para ayudarle a tomar decisiones de comunicación más informadas, eficaces y estratégicas durante su campaña.
+                    <strong> PitchLab360 </strong>es una herramienta tecnológica de análisis de lenguaje que utiliza técnicas de procesamiento de lenguaje natural (<em>NLP</em>) para evaluar discursos, textos o intervenciones de exponentes y candidatos como <strong>${candidato}</strong> en <strong>${evento}</strong>. Su función principal es convertir el contenido verbal en indicadores medibles, como claridad, complejidad, estructura y tono del mensaje. A partir de esto, permite entender cómo está construido un discurso y qué tan efectivo puede ser para una audiencia. En términos más amplios, PitchLab no analiza si un mensaje es verdadero o falso, sino cómo está formulado, ofreciendo una base objetiva para diagnosticar y mejorar la comunicación, especialmente en contextos políticos, institucionales o estratégicos.
                 </p>
             </div>
             <div class="result-card">
-                <div class="result-card-title">Sobre este Informe</div>
+                <div class="result-card-title">Contenido del informe</div>
                 <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">
-                    <p>Este informe combina <strong>análisis computacional</strong> (métricas objetivas del lenguaje) con <strong>análisis cualitativo mediante LLM</strong> (Claude de Anthropic). Está organizado en tres secciones:</p>
+                    <p>Este informe combina <strong>análisis computacional</strong> (métricas objetivas del lenguaje) con <strong>análisis cualitativo mediante <em>LLM</em></strong>. Está organizado en tres secciones:</p>
                     <ul style="margin:0.5rem 0 0 1.2rem;display:flex;flex-direction:column;gap:0.3rem">
-                        <li><strong>Sección 1 — Perfil Comunicativo:</strong> Estilo, formalidad y tipo de discurso.</li>
-                        <li><strong>Sección 2 — Análisis Emocional:</strong> Índice de sentimiento, unidades de sentido, potencial digital y encuadres emocionales.</li>
-                        <li><strong>Sección 3 — Análisis Semántico:</strong> Palabras frecuentes, complejidad lingüística e identificación de stakeholders.</li>
+                        <li><strong>Sección 1: Perfil comunicativo:</strong> Estilo, formalidad y tipo de discurso.</li>
+                        <li><strong>Sección 2: Análisis emocional:</strong> Índice de sentimiento, unidades de sentido, potencial digital y encuadres emocionales.</li>
+                        <li><strong>Sección 3: Análisis semántico:</strong> Palabras frecuentes, complejidad lingüística e identificación de <em>stakeholders</em>.</li>
                     </ul>
                 </div>
             </div>
             <div class="result-card" style="text-align:center">
-                <div class="result-card-title">Demo en Video</div>
+                <div class="result-card-title">Demo en video</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">El siguiente código QR lleva al video tutorial que muestra todas las funcionalidades disponibles de la herramienta.</div>
                 <div class="qr-placeholder">
                     <i class="fa-solid fa-qrcode" style="font-size:3rem;color:var(--c-blue-dark);opacity:0.3"></i>
@@ -446,34 +651,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const cats = d.tipo_discurso?.categorias || [];
         body.innerHTML = `
             <div class="result-card">
-                <div class="result-card-title">a. Perfil Comunicativo</div>
+                <div class="result-card-title">a. Perfil comunicativo</div>
                 <div style="font-size:0.9rem;color:var(--c-blue-dark);line-height:1.6">${d.perfil_comunicativo || ''}</div>
             </div>
             <div class="result-card">
-                <div class="result-card-title">b. Nivel de Formalidad</div>
+                <div class="result-card-title">b. Nivel de formalidad</div>
+                <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                    El nivel de formalidad evalúa, en una escala de 1 a 10, qué tan formal o coloquial es el registro lingüístico del discurso. Es asignado por el modelo de IA a partir del análisis cualitativo del texto sobre tres métricas computacionales calculadas localmente: <strong><em>TTR</em></strong> (<em>Type-Token Ratio</em>: razón entre palabras únicas y palabras totales, valores altos indican mayor riqueza léxica y sofisticación), <strong>Índice de Legibilidad de Flesch-Kincaid</strong> (mide qué tan fácil es leer el texto, valores bajos corresponden a textos más complejos y formales) y <strong>longitud promedio de oración</strong> (oraciones largas tienden a corresponder a registros más formales).
+                </div>
                 <div class="score-gauge">
                     ${gaugeCircle(d.formalidad?.score || 0)}
                     <div class="gauge-text">${d.formalidad?.justificacion || ''}</div>
                 </div>
             </div>
             <div class="result-card">
-                <div class="result-card-title">c. Tipo de Discurso</div>
+                <div class="result-card-title">c. Tipo de discurso</div>
                 <div style="display:flex;flex-direction:column;gap:0.6rem">
                     ${cats.map(c => {
-                        const nombre = typeof c === 'object' ? c.nombre : c;
-                        const just   = typeof c === 'object' ? c.justificacion : '';
-                        const isDom  = nombre === d.tipo_discurso?.categoria_dominante;
-                        return `<div class="discourse-type-tag ${isDom ? 'dominant' : ''}">
-                            <span class="tag tag-purple">${nombre}${isDom ? ' ★' : ''}</span>
+            const nombre = typeof c === 'object' ? c.nombre : c;
+            const just = typeof c === 'object' ? c.justificacion : '';
+            const isDom = nombre === d.tipo_discurso?.categoria_dominante;
+            return `<div class="discourse-type-tag ${isDom ? 'dominant' : ''}">
+                            <span class="tag tag-purple">${cap(nombre)}${isDom ? ' ★' : ''}</span>
                             ${just ? `<div class="discourse-type-just">${just}</div>` : ''}
                         </div>`;
-                    }).join('')}
+        }).join('')}
                 </div>
             </div>`;
     }
 
     // ── SECCIÓN 2: Análisis Emocional del Discurso ───────────────
-    function renderAnalisisEmocional(frases, digital, marcos) {
+    function renderAnalisisEmocional(frases, digital, marcos, marcoTeorico) {
         const body = document.getElementById('body-analisis-emocional');
         let html = '';
 
@@ -484,16 +692,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const pct = Math.round(((score + 1) / 2) * 100);
             html += `
             <div class="result-card">
-                <div class="result-card-title">a. Índice de Sentimiento</div>
+                <div class="result-card-title">a. Índice de sentimiento</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
-                    El Índice de Sentimiento mide la carga emocional global del discurso en una escala de −1 (muy negativo/hostil) a +1 (muy positivo/esperanzador), asignada por el modelo de IA al analizar el tono general de las expresiones.
+                    El Índice de sentimiento mide la carga emocional global del discurso en una escala de −1 (muy negativo/hostil) a +1 (muy positivo/esperanzador), asignada por el modelo de IA al analizar el tono general de las expresiones.
                 </div>
                 <div class="tone-bar-container">
                     <div class="tone-track"><div class="tone-thumb" style="left:${pct}%"></div></div>
-                    <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted)">
+                    <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);margin-top:0.3rem">
                         <span>Negativo (−1)</span>
-                        <span style="font-weight:600;color:var(--c-blue-dark)">Puntaje: ${score.toFixed(2)} — ${d.tono?.descripcion || ''}</span>
                         <span>Positivo (+1)</span>
+                    </div>
+                    <div style="text-align:center;margin-top:0.5rem;font-size:0.82rem;font-weight:600;color:var(--c-blue-dark)">
+                        Puntaje: ${score.toFixed(2)} — <span style="font-weight:400;color:var(--text-secondary)">${d.tono?.descripcion || ''}</span>
                     </div>
                 </div>
             </div>`;
@@ -501,7 +711,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // b. Unidades de Sentido Significativas
             html += `
             <div class="result-card">
-                <div class="result-card-title">b. Unidades de Sentido Significativas</div>
+                <div class="result-card-title">b. Unidades de sentido significativas</div>
+                ${marcoTeorico?.data?.nota_metodologica ? `
+                <div class="result-card" style="background:#f8faff;border-left:3px solid var(--c-blue-light);margin-bottom:0.6rem">
+                    <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.3rem">
+                        <i class="fa-solid fa-circle-info" style="color:var(--c-blue-light);font-size:0.78rem"></i>
+                        <span style="font-size:0.73rem;font-weight:700;color:var(--c-blue-dark)">Nota metodológica</span>
+                    </div>
+                    <p style="font-size:0.79rem;color:var(--text-secondary);line-height:1.5;margin:0">${marcoTeorico.data.nota_metodologica}</p>
+                </div>` : ''}
                 <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
                     Las unidades de sentido significativas son frases o párrafos cortos que comunican la posición del candidato de forma autónoma, sin necesitar el contexto completo del discurso. Se clasifican por su función retórica a partir de una lista predefinida de categorías.
                 </div>
@@ -521,20 +739,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const d = digital.data;
             html += `
             <div class="result-card">
-                <div class="result-card-title">c. Mensajes con Alto Potencial de Viralización</div>
+                <div class="result-card-title">c. Mensajes con alto potencial de viralización</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
                     Son fragmentos del discurso con alta probabilidad de resonar en redes sociales por su carga emocional, brevedad o impacto narrativo. Para cada uno se sugieren las plataformas más adecuadas según su naturaleza.
                 </div>
                 ${(d.fragmentos || []).map(f => {
-                    const plats = Array.isArray(f.plataformas) ? f.plataformas : [f.plataformas || f.formato_sugerido];
-                    return `<div class="digital-item">
+                const plats = Array.isArray(f.plataformas) ? f.plataformas : [f.plataformas || f.formato_sugerido];
+                return `<div class="digital-item">
                         <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.4rem">
                             ${plats.map(p => `<span class="platform-badge">${p}</span>`).join('')}
                         </div>
                         <div class="digital-text">"${f.texto}"</div>
                         <div class="digital-reason">Criterio: ${f.razon}</div>
                     </div>`;
-                }).join('')}
+            }).join('')}
             </div>`;
         } else { html += errBlock(digital?.error || 'Sin datos de potencial digital'); }
 
@@ -543,15 +761,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const d = marcos.data;
             html += `
             <div class="result-card">
-                <div class="result-card-title">d. Encuadres Emocionales</div>
+                <div class="result-card-title">d. Encuadres emocionales</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
-                    Los encuadres emocionales son los marcos interpretativos que el discurso activa en la audiencia. Se asignan a partir de una lista predefinida de emociones políticas reconocidas (esperanza, miedo, indignación, orgullo, etc.) y se explica por qué cada una está presente.
+                    Los encuadres emocionales son los marcos interpretativos que el discurso activa en la audiencia. Se identifican a partir de una lista predefinida de emociones políticas reconocidas (como esperanza, miedo, indignación u orgullo) y culminan en una síntesis interpretativa del encuadre emocional, que permite comprender la función de ese marco dentro del discurso.
                 </div>
                 <div class="emotion-list">
-                    ${(d.emociones || []).sort((a,b) => b.porcentaje - a.porcentaje).map(e => `
+                    ${(d.emociones || []).sort((a, b) => b.porcentaje - a.porcentaje).map(e => `
                         <div class="emotion-row">
                             <div class="emotion-header">
-                                <span class="emotion-name">${e.nombre}</span>
+                                <span class="emotion-name">${cap(e.nombre)}</span>
                                 <span class="emotion-pct">${e.porcentaje}%</span>
                             </div>
                             <div class="emotion-track"><div class="emotion-fill" style="width:${e.porcentaje}%"></div></div>
@@ -565,21 +783,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ── SECCIÓN 3: Análisis Semántico del Discurso ───────────────
-    function renderAnalisisSematico(metricas, marcos, stakeholders) {
+    function renderAnalisisSematico(metricas, marcos, stakeholders, marcoTeorico) {
         const body = document.getElementById('body-analisis-semantico');
         let html = '';
+
+        // Helper: render a mini framework card from marco_teorico data
+        function miniMarco(nombre) {
+            const lista = marcoTeorico?.data?.marcos || [];
+            const m = lista.find(x => `${x.nombre} ${x.autor_anio}`.toLowerCase().includes(nombre.toLowerCase()));
+            if (!m) return '';
+            return `<div class="result-card" style="border-left:3px solid var(--c-blue-light);background:#f8faff">
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem">
+                    <i class="fa-solid fa-book-open" style="color:var(--c-blue-light);font-size:0.8rem"></i>
+                    <span style="font-size:0.75rem;font-weight:700;color:var(--c-blue-dark)">${m.nombre}</span>
+                    <span style="font-size:0.7rem;color:var(--text-muted);margin-left:auto">${m.autor_anio}</span>
+                </div>
+                <p style="font-size:0.8rem;color:var(--text-secondary);line-height:1.5;margin:0 0 0.4rem">${m.justificacion}</p>
+                <div style="display:flex;flex-wrap:wrap;gap:0.3rem">
+                    ${(m.indicadores_que_lo_activan || []).map(ind => `<span style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px">${ind}</span>`).join('')}
+                </div>
+            </div>`;
+        }
+
+        // Entman framework — shown at top of section 3
+        html += miniMarco('Entman');
 
         // a. Palabras más frecuentes del discurso
         if (metricas) {
             const topWords = (metricas.palabras_frecuentes || []).slice(0, 20);
             html += `
             <div class="result-card">
-                <div class="result-card-title">a. Palabras Más Frecuentes del Discurso</div>
+                <div class="result-card-title">a. Palabras más frecuentes del discurso</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
                     Listado de los términos con mayor frecuencia de aparición en el discurso. Se excluyen automáticamente pronombres, artículos, preposiciones y conjunciones para resaltar el vocabulario conceptual del candidato.
                 </div>
                 <div class="word-freq-chips">
-                    ${topWords.length ? topWords.map(([w,n]) => `<span class="word-freq-chip">${w} <b>(${n})</b></span>`).join('') : '<em style="font-size:0.8rem;color:#94a3b8">No se identificaron términos recurrentes.</em>'}
+                    ${topWords.length ? topWords.map(([w, n]) => `<span class="word-freq-chip">${cap(w)} <b>(${n})</b></span>`).join('') : '<em style="font-size:0.8rem;color:#94a3b8">No se identificaron términos recurrentes.</em>'}
                 </div>
             </div>`;
         }
@@ -589,9 +828,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const comp = marcos.data?.complejidad_lenguaje;
             html += `
             <div class="result-card">
-                <div class="result-card-title">b. Nivel de Complejidad Discursiva</div>
+                <div class="result-card-title">b. Nivel de complejidad discursiva</div>
                 <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
-                    Calificación de 1 a 10 sobre la sofisticación del lenguaje utilizado, considerando el TTR (riqueza léxica), el promedio de palabras por oración y el Índice de Legibilidad de Flesch-Kincaid. 1 = muy simple y accesible, 10 = muy técnico y complejo.
+                    Calificación de 1 a 10 sobre la sofisticación del lenguaje utilizado, considerando el <em>TTR</em> (riqueza léxica), el promedio de palabras por oración y el Índice de Legibilidad de Flesch-Kincaid. 1 = muy simple y accesible, 10 = muy técnico y complejo.
                 </div>
                 <div class="score-gauge">
                     ${gaugeCircle(comp?.score || 0)}
@@ -605,125 +844,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const list = stakeholders.data?.stakeholders || [];
             const relColor = { positiva: '#e8edf7', negativa: '#fee2e2', neutra: '#f1f5f9' };
             const relTextColor = { positiva: '#1e3a6e', negativa: '#991b1b', neutra: '#475569' };
-            const PALETTE = ['#003b8f','#762372','#d51437','#3277c3','#fb6f1a','#f8a719','#2563a8','#a855f7','#0891b2','#be185d','#65a30d','#92400e'];
-
-            // Helper: build SVG pie chart from [{label, value, color}] array
-            function svgPie(items, size = 160) {
-                if (!items.length) return '';
-                const total = items.reduce((s, x) => s + x.value, 0) || 1;
-                const cx = size / 2, cy = size / 2, r = size / 2 - 4;
-                let angle = -Math.PI / 2;
-                const slices = items.map((item) => {
-                    const sweep = (item.value / total) * 2 * Math.PI;
-                    const x1 = cx + r * Math.cos(angle);
-                    const y1 = cy + r * Math.sin(angle);
-                    angle += sweep;
-                    const x2 = cx + r * Math.cos(angle);
-                    const y2 = cy + r * Math.sin(angle);
-                    const large = sweep > Math.PI ? 1 : 0;
-                    return `<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${large},1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${item.color}" stroke="white" stroke-width="2"/>`;
-                });
-                return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${slices.join('')}</svg>`;
-            }
-
-            // Color map por tipo_relacion
-            const relChartColor = { positiva: '#2563a8', negativa: '#d51437', neutra: '#94a3b8' };
-
-            // Helpers: hex ↔ RGB, weighted RGB blend
-            function hexToRgb(hex) {
-                const h = hex.replace('#','');
-                return [ parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16) ];
-            }
-            function rgbToHex([r,g,b]) {
-                return '#' + [r,g,b].map(v => Math.round(v).toString(16).padStart(2,'0')).join('');
-            }
-            function blendRelationColors(pos, neg, neu) {
-                const total = pos + neg + neu || 1;
-                const wPos = pos / total, wNeg = neg / total, wNeu = neu / total;
-                const cPos = hexToRgb(relChartColor.positiva);
-                const cNeg = hexToRgb(relChartColor.negativa);
-                const cNeu = hexToRgb(relChartColor.neutra);
-                const blended = [0,1,2].map(i => cPos[i]*wPos + cNeg[i]*wNeg + cNeu[i]*wNeu);
-                return rgbToHex(blended);
-            }
-
-            // Torta 1: por stakeholder individual (color = su relación)
-            const stakeholderItems = list
-                .sort((a,b) => b.porcentaje_discurso - a.porcentaje_discurso)
-                .map(s => ({ label: s.nombre, value: s.porcentaje_discurso || 0, color: relChartColor[s.tipo_relacion] || '#94a3b8', rel: s.tipo_relacion }));
-
-            // Torta 2: por categoría (color = promedio RGB ponderado por % de discurso)
-            const byCategoryRaw = {};
-            list.forEach(s => {
-                if (!byCategoryRaw[s.categoria]) byCategoryRaw[s.categoria] = { total: 0, pos: 0, neg: 0, neu: 0 };
-                const pct = s.porcentaje_discurso || 0;
-                byCategoryRaw[s.categoria].total += pct;
-                if (s.tipo_relacion === 'positiva') byCategoryRaw[s.categoria].pos += pct;
-                else if (s.tipo_relacion === 'negativa') byCategoryRaw[s.categoria].neg += pct;
-                else byCategoryRaw[s.categoria].neu += pct;
-            });
-            const categoryItems = Object.entries(byCategoryRaw)
-                .sort((a,b) => b[1].total - a[1].total)
-                .map(([label, v]) => ({
-                    label,
-                    value: v.total,
-                    color: blendRelationColors(v.pos, v.neg, v.neu)
-                }));
-
-
 
             html += `
             <div class="result-card">
-                <div class="result-card-title">c. Identificación de Stakeholders</div>
+                <div class="result-card-title">c. Identificación de <em>stakeholders</em></div>
                 <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
                     Se identifican los actores, instituciones y grupos sobre los que <em>habla</em> el candidato en el discurso. Para cada uno se estima el porcentaje del discurso dedicado a ese actor y se clasifica la relación que el candidato proyecta hacia él.
                 </div>
+                ${miniMarco('Freeman')}
 
-                <!-- Gráficos de torta -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem">
-                        <div class="result-card-title" style="text-align:center">Por Stakeholder</div>
-                        ${svgPie(stakeholderItems)}
-                        <div style="display:flex;flex-direction:column;gap:0.25rem;width:100%">
-                            ${stakeholderItems.map(it => `
-                            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem">
-                                <span style="width:10px;height:10px;border-radius:2px;flex-shrink:0;background:${it.color}"></span>
-                                <span style="flex:1;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.label}">${it.label}</span>
-                                <span style="font-weight:700;color:var(--c-blue-dark)">${it.value}%</span>
-                            </div>`).join('')}
-                        </div>
-                    </div>
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:0.5rem">
-                        <div class="result-card-title" style="text-align:center">Por Categoría</div>
-                        ${svgPie(categoryItems)}
-                        <div style="display:flex;flex-direction:column;gap:0.25rem;width:100%">
-                            ${categoryItems.map(it => `
-                            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem">
-                                <span style="width:10px;height:10px;border-radius:2px;flex-shrink:0;background:${it.color}"></span>
-                                <span style="flex:1;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${it.label}">${it.label}</span>
-                                <span style="font-weight:700;color:var(--c-blue-dark)">${it.value.toFixed(1)}%</span>
-                            </div>`).join('')}
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Lista detallada -->
                 <div style="display:flex;flex-direction:column;gap:0.6rem">
-                    ${list.sort((a,b) => b.porcentaje_discurso - a.porcentaje_discurso).map(s => `
+                    ${list.sort((a, b) => b.porcentaje_discurso - a.porcentaje_discurso).map(s => `
                         <div class="stakeholder-item">
                             <div class="stakeholder-header">
                                 <span class="stakeholder-name">${s.nombre}</span>
                                 <span class="stakeholder-pct">${s.porcentaje_discurso}% del discurso</span>
                             </div>
                             <div class="stakeholder-meta">
-                                <span class="stakeholder-category">${s.categoria}</span>
-                                <span class="stakeholder-relation" style="background:${relColor[s.tipo_relacion]||'#f1f5f9'};color:${relTextColor[s.tipo_relacion]||'#475569'}">
-                                    ${s.subcategoria_relacion} (${s.tipo_relacion})
+                                <span class="stakeholder-category">Categoría: ${s.categoria}</span>
+                                <span class="stakeholder-relation" style="background:${relColor[s.tipo_relacion] || '#f1f5f9'};color:${relTextColor[s.tipo_relacion] || '#475569'}">
+                                    Relación: ${s.subcategoria_relacion} (${s.tipo_relacion})
                                 </span>
                             </div>
                             <div class="stakeholder-track">
-                                <div class="stakeholder-fill" style="width:${Math.min(s.porcentaje_discurso*3,100)}%;background:${relColor[s.tipo_relacion]||'#e2e8f0'};border:1px solid ${relTextColor[s.tipo_relacion]||'#94a3b8'}"></div>
+                                <div class="stakeholder-fill" style="width:${Math.min(s.porcentaje_discurso * 3, 100)}%;background:${relColor[s.tipo_relacion] || '#e2e8f0'};border:1px solid ${relTextColor[s.tipo_relacion] || '#94a3b8'}"></div>
                             </div>
                             <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">"${s.evidencia}"</div>
                         </div>`).join('')}
@@ -732,25 +876,43 @@ document.addEventListener('DOMContentLoaded', () => {
         } else { html += errBlock(stakeholders?.error || 'Sin datos de stakeholders'); }
 
         body.innerHTML = html;
+        initPieTooltips();
     }
 
 
     /* ---------- Main render entry point ---------- */
-    function renderResults(data, meta) {
+
+
+    function renderResults(data, meta, silent = false) {
         renderIntro(meta);
         renderPerfilComunicativo(data.estilo);
-        renderAnalisisEmocional(data.frases_clave, data.potencial_digital, data.marcos_narrativos);
-        renderAnalisisSematico(data.metricas, data.marcos_narrativos, data.stakeholders);
+        renderAnalisisEmocional(data.frases_clave, data.potencial_digital, data.marcos_narrativos, data.marco_teorico);
+        renderAnalisisSematico(data.metricas, data.marcos_narrativos, data.stakeholders, data.marco_teorico);
+        // Elimina guiones largos “—” del contenido renderizado (LLM y estático)
+        sanitizeEmdashes(document.getElementById('sidebar-results-view'));
         showResultsInSidebar();
-        showToast('Análisis completado. Revise los resultados en el panel lateral.', 'success', 5000);
+        if (!silent) showToast('Análisis completado. Revise los resultados en el panel lateral.', 'success', 5000);
     }
+
+    /* Reemplaza guiones largos en nodos de texto del DOM */
+    function sanitizeEmdashes(rootEl) {
+        if (!rootEl) return;
+        const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null);
+        let node;
+        while ((node = walker.nextNode())) {
+            if (node.nodeValue.includes('—')) {
+                node.nodeValue = node.nodeValue.replace(/—/g, '-');
+            }
+        }
+    }
+
 
     /* ============================================================
        DEMO — cargado desde /static/config/demo_data.json
      ============================================================ */
     document.getElementById('btn-demo').addEventListener('click', async () => {
         try {
-            const res = await fetch('/static/config/demo_data.json');
+            const res = await fetch('/static/config/demo_data.json?v=' + Date.now());
             const demoData = await res.json();
             const { meta = {}, ...data } = demoData;
 
@@ -761,7 +923,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 b.style.backgroundColor = '#e0e7ff';
                 b.style.color = '#3730a3';
             });
-            renderResults(data, meta);
+            // Populate metadata fields from demo JSON
+            if (meta.candidato) document.getElementById('meta-candidato').value = meta.candidato;
+            if (meta.evento)    document.getElementById('meta-evento').value    = meta.evento;
+            if (meta.medio)     document.getElementById('meta-medio').value     = meta.medio;
+            if (meta.fecha)     document.getElementById('meta-fecha').value     = meta.fecha;
+
+            renderResults(data, meta, true); // silent=true: demo shows its own toast
             showToast('Datos de prueba cargados desde demo_data.json', 'info', 4000);
         } catch (e) {
             showToast('Error cargando demo_data.json: ' + e.message, 'error');

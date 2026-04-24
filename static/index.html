@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
@@ -21,7 +21,7 @@
             <div class="sidebar-content">
 
                 <div class="main-logo-container">
-                    <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno" target="_blank">
+                    <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno" target="_blank" rel="noopener noreferrer">
                         <img src="/assets/PitchLab360.jpg" alt="PitchLab360 Logo" class="logo logo-pitchlab-main"
                             title="PitchLab360">
                     </a>
@@ -35,7 +35,7 @@
                             <div class="module-header">
                                 <div class="module-title-wrapper">
                                     <i class="fa-solid fa-circle-info metric-icon"></i>
-                                    <span>0. Introducción</span>
+                                    <span>INTRODUCCIÓN</span>
                                 </div>
                                 <span class="status-badge pending">Pendiente</span>
                             </div>
@@ -44,7 +44,7 @@
                             <div class="module-header">
                                 <div class="module-title-wrapper">
                                     <i class="fa-solid fa-pen-nib llm-icon"></i>
-                                    <span>1. Perfil Comunicativo del Candidato</span>
+                                    <span>PERFIL COMUNICATIVO DEL CANDIDATO</span>
                                 </div>
                                 <span class="status-badge pending">Pendiente</span>
                             </div>
@@ -53,7 +53,7 @@
                             <div class="module-header">
                                 <div class="module-title-wrapper">
                                     <i class="fa-solid fa-masks-theater llm-icon"></i>
-                                    <span>2. Análisis Emocional del Discurso</span>
+                                    <span>ANÁLISIS EMOCIONAL DEL DISCURSO</span>
                                 </div>
                                 <span class="status-badge pending">Pendiente</span>
                             </div>
@@ -62,7 +62,7 @@
                             <div class="module-header">
                                 <div class="module-title-wrapper">
                                     <i class="fa-solid fa-diagram-project llm-icon"></i>
-                                    <span>3. Análisis Semántico del Discurso</span>
+                                    <span>ANÁLISIS SEMÁNTICO DEL DISCURSO</span>
                                 </div>
                                 <span class="status-badge pending">Pendiente</span>
                             </div>
@@ -80,17 +80,18 @@
                     <section class="res-section-sb" id="res-intro">
                         <div class="res-section-hdr metrics-header">
                             <i class="fa-solid fa-circle-info"></i>
-                            <span>0. Introducción</span>
+                            <span>INTRODUCCIÓN</span>
                             <i class="fa-solid fa-chevron-down res-toggle"></i>
                         </div>
                         <div class="res-section-body-sb" id="body-intro"></div>
                     </section>
 
+
                     <!-- SECCIÓN 1: Perfil Comunicativo del Candidato -->
                     <section class="res-section-sb" id="res-perfil-comunicativo">
                         <div class="res-section-hdr llm-header">
                             <i class="fa-solid fa-pen-nib"></i>
-                            <span>1. Perfil Comunicativo del Candidato</span>
+                            <span>PERFIL COMUNICATIVO DEL CANDIDATO</span>
                             <i class="fa-solid fa-chevron-down res-toggle"></i>
                         </div>
                         <div class="res-section-body-sb" id="body-perfil-comunicativo"></div>
@@ -100,7 +101,7 @@
                     <section class="res-section-sb" id="res-analisis-emocional">
                         <div class="res-section-hdr llm-header">
                             <i class="fa-solid fa-masks-theater"></i>
-                            <span>2. Análisis Emocional del Discurso</span>
+                            <span>ANÁLISIS EMOCIONAL DEL DISCURSO</span>
                             <i class="fa-solid fa-chevron-down res-toggle"></i>
                         </div>
                         <div class="res-section-body-sb" id="body-analisis-emocional"></div>
@@ -110,7 +111,7 @@
                     <section class="res-section-sb" id="res-analisis-semantico">
                         <div class="res-section-hdr llm-header">
                             <i class="fa-solid fa-diagram-project"></i>
-                            <span>3. Análisis Semántico del Discurso</span>
+                            <span>ANÁLISIS SEMÁNTICO DEL DISCURSO</span>
                             <i class="fa-solid fa-chevron-down res-toggle"></i>
                         </div>
                         <div class="res-section-body-sb" id="body-analisis-semantico"></div>
@@ -118,18 +119,32 @@
                 </div>
 
                 <div class="sidebar-footer">
-                    <button class="btn btn-export" id="btn-export-pdf" style="display:none">
-                        <i class="fa-solid fa-file-pdf"></i> Exportar PDF
-                    </button>
+                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                        <button class="btn btn-export" id="btn-export-pdf" style="display:none;flex:1">
+                            <i class="fa-solid fa-file-pdf"></i> Exportar PDF
+                        </button>
+                        <button class="btn btn-export btn-export-html-style" id="btn-export-html" style="display:none;flex:1">
+                            <i class="fa-solid fa-file-code"></i> Descargar HTML
+                        </button>
+                    </div>
                     <div class="methodology-note-box">
-                        <p><strong>Nota Académica:</strong> Este análisis es un ejercicio estrictamente académico y no representa la posición oficial de la Universidad de La Sabana, el Laboratorio de Gobierno (GovLab) o ninguno de sus trabajadores, estudiantes o personal administrativo.</p>
+                        <p><strong>Alcance metodológico del análisis:</strong> Este informe es un ejercicio de
+                            <strong>análisis de discurso</strong>, no de verificación de hechos
+                            (<em>fact-checking</em>). La herramienta evalúa cómo está construido el mensaje, su
+                            estructura, tono, complejidad y estratégia comunicativa, pero <strong>no determina la
+                                veracidad o falsedad de ninguna afirmación</strong>. Asimismo, los resultados
+                            corresponden exclusivamente al discurso analizado y no representan ni resumen la totalidad
+                            de la campaña o trayectoria comunicativa del candidato. Los resultados no representan la
+                            posición oficial de la Universidad de La Sabana ni del Laboratorio de Gobierno (GovLab).</p>
                     </div>
                     <div class="sidebar-logos-bottom">
-                        <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno" target="_blank">
+                        <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno"
+                            target="_blank" rel="noopener noreferrer">
                             <img src="/assets/Universidad de la Sabana.png" alt="Universidad de La Sabana Logo"
                                 class="logo logo-unisabana-bottom" title="Universidad de La Sabana">
                         </a>
-                        <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno" target="_blank">
+                        <a href="https://www.unisabana.edu.co/proyeccion-social/laboratorio-de-gobierno"
+                            target="_blank" rel="noopener noreferrer">
                             <img src="/assets/Govlab.png" alt="GovLab Logo" class="logo logo-govlab-bottom"
                                 title="Laboratorio de Gobierno">
                         </a>
@@ -146,7 +161,7 @@
         <!-- ===================== MAIN PANEL ===================== -->
         <main class="main-panel">
             <header class="top-nav">
-                <span style="font-size:0.95rem;font-weight:600;color:var(--text-muted)"> </span>
+                <span style="font-size:0.95rem;font-weight:600;color:var(--text-muted)"></span>
                 <button class="btn btn-outline" id="toggle-yt-btn">
                     <i class="fa-brands fa-youtube"></i> Importar de YouTube
                 </button>
@@ -169,7 +184,7 @@
                                 <div class="api-key-input-wrapper">
                                     <input type="password" placeholder="sk-ant-api03-..." id="anthropic-api-key"
                                         autocomplete="off">
-                                    <button class="btn-icon" id="toggle-api-visibility" title="Mostrar/Ocultar clave">
+                                    <button class="btn-icon" id="toggle-api-visibility" title="Mostrar/Ocultar clave" aria-label="Mostrar u ocultar API key">
                                         <i class="fa-solid fa-eye" id="api-eye-icon"></i>
                                     </button>
                                 </div>
@@ -198,10 +213,10 @@
                             </div>
                         </div>
                         <div class="action-row">
-                            <button class="btn btn-primary btn-yt-extract">
+                            <button class="btn btn-primary btn-yt-extract" id="btn-yt-extract" aria-label="Extraer subtítulos del video">
                                 <i class="fa-solid fa-download"></i> Extraer Subtítulos
                             </button>
-                            <button class="btn btn-warning btn-yt-clean">
+                            <button class="btn btn-warning btn-yt-clean" id="btn-yt-clean" aria-label="Limpiar texto con inteligencia artificial">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i> Limpiar Texto (IA)
                             </button>
                         </div>
@@ -227,23 +242,31 @@
                     <div class="metadata-grid">
                         <div class="input-group">
                             <label>Candidato / Exponente</label>
-                            <input type="text" id="meta-candidato" placeholder="Ej: Candidato X">
+                            <input type="text" id="meta-candidato"
+                                value="Claudia López Hernández"
+                                placeholder="Ej: Candidato X">
                         </div>
                         <div class="input-group">
                             <label>Evento</label>
-                            <input type="text" id="meta-evento" placeholder="Ej: Debate Presidencial">
+                            <input type="text" id="meta-evento"
+                                value="Cumbre de Gobernadores: Las Regiones Proponen — Federación Nacional de Departamentos"
+                                placeholder="Ej: Debate Presidencial">
                         </div>
                         <div class="input-group">
                             <label>Audiencia</label>
-                            <input type="text" id="meta-audiencia" placeholder="Ej: Jóvenes / Nación">
+                            <input type="text" id="meta-audiencia"
+                                value="Gobernadores, alcaldes, representantes de sociedad civil y medios de comunicación"
+                                placeholder="Ej: Jóvenes / Nación">
                         </div>
                         <div class="input-group">
                             <label>Medio / Plataforma</label>
-                            <input type="text" id="meta-medio" placeholder="Ej: RCN / Plaza Pública">
+                            <input type="text" id="meta-medio"
+                                value="Red+ Noticias, El Tiempo, La FM radio"
+                                placeholder="Ej: RCN / Plaza Pública">
                         </div>
                         <div class="input-group">
                             <label>Fecha</label>
-                            <input type="date" id="meta-fecha">
+                            <input type="date" id="meta-fecha" value="2026-04-15">
                         </div>
                     </div>
                 </div>
@@ -255,7 +278,8 @@
                 <button class="btn btn-giant-primary" id="btn-analyze">
                     INICIAR ANÁLISIS COMPLETO
                 </button>
-                <button class="btn btn-outline" id="btn-demo" title="Carga resultados de prueba sin llamar a la API" style="font-size:0.8rem;padding:0.5rem 1rem;white-space:nowrap">
+                <button class="btn btn-outline" id="btn-demo" title="Carga resultados de prueba sin llamar a la API"
+                    style="font-size:0.8rem;padding:0.5rem 1rem;white-space:nowrap">
                     <i class="fa-solid fa-flask"></i> Datos de Prueba
                 </button>
             </div>
@@ -265,8 +289,6 @@
     <!-- Toast container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Print-only view (populated dynamically) -->
-    <div id="print-view"></div>
 
     <script src="/static/app.js"></script>
 </body>

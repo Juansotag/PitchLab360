@@ -1,22 +1,45 @@
 {
   "meta": {
     "candidato": "Alejandro Morales Ríos",
-    "evento": "Gran Debate Nacional — Primera Vuelta Presidencial",
-    "audiencia": "Ciudadanía colombiana, periodistas, representantes de sociedad civil",
-    "medio": "RCN · Semana · Canal Capital (transmisión simultánea)"
+    "evento": "Cumbre de Gobernadores: Las Regiones Proponen — Federación Nacional de Departamentos",
+    "audiencia": "Gobernadores, alcaldes, representantes de sociedad civil y medios de comunicación",
+    "medio": "Red+ Noticias, El Tiempo, La FM radio",
+    "fecha": "2026-04-15"
   },
   "metricas": {
     "TTR": 0.41,
     "legibilidad_flesch": 51.7,
     "longitud_promedio_oracion": 24.8,
-    "negaciones": { "count": 31, "densidad_pct": 3.2 },
-    "nosotros_ellos": { "nosotros": 87, "ellos": 52, "ratio": "1.67:1" },
+    "negaciones": {
+      "count": 31,
+      "densidad_pct": 3.2
+    },
+    "nosotros_ellos": {
+      "nosotros": 87,
+      "ellos": 52,
+      "ratio": "1.67:1"
+    },
     "palabras_frecuentes": [
-      ["colombia", 34], ["gobierno", 28], ["pueblo", 25], ["corrupción", 22],
-      ["educación", 19], ["paz", 17], ["reforma", 16], ["salud", 15],
-      ["recursos", 14], ["territorios", 13], ["futuro", 12], ["instituciones", 11],
-      ["cambio", 11], ["seguridad", 10], ["familias", 9], ["campo", 9],
-      ["empresas", 8], ["justicia", 8], ["agua", 7], ["hambre", 7]
+      ["colombia", 34],
+      ["gobierno", 28],
+      ["pueblo", 25],
+      ["corrupción", 22],
+      ["educación", 19],
+      ["paz", 17],
+      ["reforma", 16],
+      ["salud", 15],
+      ["recursos", 14],
+      ["territorios", 13],
+      ["futuro", 12],
+      ["instituciones", 11],
+      ["cambio", 11],
+      ["seguridad", 10],
+      ["familias", 9],
+      ["campo", 9],
+      ["empresas", 8],
+      ["justicia", 8],
+      ["agua", 7],
+      ["hambre", 7]
     ]
   },
   "estilo": {
@@ -146,38 +169,63 @@
         {
           "nombre": "Indignación",
           "porcentaje": 32,
+          "frases_ejemplo": [
+            "Tres años de promesas y cero entregas.",
+            "Las mismas familias que ganan con los contratos financian las campañas de quienes los aprueban."
+          ],
           "interpretacion": "Emoción estructural del discurso. Se activa en los momentos de denuncia de corrupción, exclusión y mal gobierno. Es la fuerza que convierte la narrativa crítica en energía política movilizadora."
         },
         {
           "nombre": "Esperanza",
           "porcentaje": 24,
+          "frases_ejemplo": [
+            "Vamos a convertir cada peso de regalías en un puesto de salud.",
+            "Todavía creo que Colombia puede ser diferente."
+          ],
           "interpretacion": "Contrapeso emocional que impide que el discurso caiga en el pesimismo paralizante. Aparece sistemáticamente en los cierres de cada bloque como horizonte de llegada después de la denuncia."
         },
         {
           "nombre": "Orgullo nacional",
           "porcentaje": 16,
+          "frases_ejemplo": [
+            "Los maestros rurales son héroes anónimos.",
+            "Son ellos quienes alimentan a Colombia."
+          ],
           "interpretacion": "Evocado a través de referencias a la biodiversidad, la creatividad del pueblo colombiano y logros históricos (proceso de paz, vacunación). Crea un 'nosotros' positivo que contrasta con las élites criticadas."
         },
         {
           "nombre": "Miedo",
           "porcentaje": 13,
+          "frases_ejemplo": [
+            "Si no cambiamos ahora, no habrá segunda oportunidad.",
+            "Seguir igual es elegir el precipicio."
+          ],
           "interpretacion": "Presente de forma instrumental: el candidato activa el miedo a la continuidad del statu quo para hacer urgente la alternativa que propone. No apela al miedo al cambio, sino al miedo a no cambiar."
         },
         {
           "nombre": "Urgencia",
           "porcentaje": 9,
+          "frases_ejemplo": [
+            "Ya no quedan más excusas.",
+            "El 27 de octubre no es una fecha en el calendario."
+          ],
           "interpretacion": "Se manifiesta en el uso de plazos concretos, cifras actuales de crisis (hambre, desempleo, desplazamiento) y referencias a 'ya no quedan más excusas'. Activa la sensación de ventana de oportunidad limitada."
         },
         {
           "nombre": "Solidaridad",
           "porcentaje": 6,
+          "frases_ejemplo": [
+            "Ustedes, los jóvenes que no encuentran trabajo, son la razón por la que estoy aquí.",
+            "Las comunidades indígenas y afrocolombianas también merecen un Estado que las vea."
+          ],
           "interpretacion": "Emerge en las referencias a comunidades específicas (indígenas, afrocolombianos, campesinos) y en el uso del 'nosotros' inclusivo. Busca construir coaliciones identitarias diversas bajo un mismo paraguas."
         }
       ],
       "complejidad_lenguaje": {
         "score": 6,
         "justificacion": "El discurso alcanza una complejidad media-alta: las oraciones son largas (promedio 24.8 palabras), incluye referentes históricos y técnicos que requieren cierto capital cultural para ser capturados en su totalidad. Sin embargo, el candidato los ancla constantemente en ejemplos cotidianos, lo que atenúa la barrera de comprensión y mantiene la accesibilidad para audiencias secundarias."
-      }
+      },
+      "advertencia_metodologica": "La distribución porcentual de emociones es una estimación cualitativa del modelo de lenguaje, no una medición algorítmica exacta. Debe interpretarse como una aproximación a la arquitectura emocional del discurso, no como una estadística de precisión. Los porcentajes pueden variar según el segmento del discurso analizado."
     }
   },
   "stakeholders": {
@@ -280,6 +328,51 @@
           "subcategoria_relacion": "Aliado potencial",
           "evidencia": "La pyme colombiana es la que emplea al 80% de los trabajadores. Ellos necesitan crédito barato, no más burocracia."
         }
+      ]
+    }
+  },
+  "marco_teorico": {
+    "ok": true,
+    "data": {
+      "marcos": [
+        {
+          "nombre": "Teoría de Encuadres / Framing",
+          "autor_anio": "Entman, 1993",
+          "justificacion": "El discurso construye deliberadamente un encuadre de crisis moral: define el problema (corrupción e ineficiencia institucional), identifica causas (élites políticas y económicas), emite un juicio moral ('es una vergüenza') y ofrece una solución (cambio de gobierno). Este patrón de cuatro componentes —característico del framing político— se activa en al menos 6 de las 8 unidades de sentido identificadas, y se refuerza con el TTR de 0.41, que sugiere un vocabulario repetitivo y orientado a instalar conceptos clave.",
+          "indicadores_que_lo_activan": [
+            "TTR 0.41 — vocabulario concentrado en nodos semánticos de denuncia",
+            "Ratio nosotros/ellos 1.67:1 — dicotomía estructural sostenida",
+            "6 de 8 frases memorables tienen estructura problema-solución",
+            "Legibilidad Flesch 51.7 — lenguaje accesible diseñado para audiencias amplias"
+          ]
+        },
+        {
+          "nombre": "Análisis de Stakeholders Políticos",
+          "autor_anio": "Freeman, 1984",
+          "justificacion": "El discurso articula explícitamente 12 actores con roles diferenciados: antagonistas (Gobierno Nacional 24%, Congreso 18%, grandes grupos empresariales 12%), aliados (comunidades campesinas 16%, jóvenes 7%, PYMES 4%) y actores neutros o contextuales (Corte Constitucional, ONU). Esta cartografía de relaciones permite identificar la estrategia de coalición electoral del candidato y los grupos a los que busca movilizar versus los que busca contrastar.",
+          "indicadores_que_lo_activan": [
+            "12 stakeholders identificados con porcentajes de discurso asignados",
+            "Distribución: 50% relaciones negativas, 40% positivas, 10% neutras",
+            "Concentración del 42% del discurso en actores institucionales (Gobierno + Congreso)",
+            "Uso del término 'nosotros' 87 veces vs. 'ellos' 52 veces"
+          ]
+        },
+        {
+          "nombre": "Lingüística Cognitiva / Metáfora Conceptual",
+          "autor_anio": "Lakoff & Johnson, 1980",
+          "justificacion": "El discurso hace uso intensivo de metáforas estructurantes ('el país como barco a la deriva', 'cada peso como inversión social') que no son meros adornos retóricos, sino marcos conceptuales que organizan la comprensión del problema político. La metáfora del barco, en particular, activa esquemas cognitivos de caos, liderazgo fallido e inminencia del naufragio.",
+          "indicadores_que_lo_activan": [
+            "Al menos 3 metáforas estructurantes identificadas en las frases memorables",
+            "Puntuación de complejidad discursiva 6/10 — compatible con uso de lenguaje figurado sofisticado",
+            "TTR 0.41 — vocabulario controlado que reitera los mismos marcos conceptuales"
+          ]
+        }
+      ],
+      "nota_metodologica": "Este análisis aplica tres marcos teóricos: Entman para evaluar la arquitectura del encuadre discursivo —cómo el discurso define problemas, atribuye causas, emite juicios morales y propone soluciones—; Freeman para mapear la red de actores y sus relaciones de poder dentro del discurso; y Lakoff & Johnson para identificar las metáforas conceptuales que estructuran la narrativa. Los tres marcos deben leerse de forma integrada. Las métricas computacionales (TTR, ratio nosotros/ellos, Flesch) funcionan como evidencia cuantitativa que activa o contextualiza cada marco, no como criterios de valoración del candidato.",
+      "limitaciones": [
+        "El análisis se basa en el texto transcrito del discurso: no captura elementos paralingüísticos (entonación, pausas, gesticulación) que pueden modificar el sentido de las afirmaciones.",
+        "El TTR y la legibilidad Flesch son métricas diseñadas originalmente para el inglés; su aplicación al español latinoamericano puede introducir sesgos de medición, especialmente en discursos con alto componente oral.",
+        "La identificación de emociones y frases clave depende del modelo de lenguaje (LLM) y puede variar con distintas configuraciones de temperatura o versiones del modelo. Los resultados deben interpretarse como aproximaciones analíticas, no como mediciones objetivas."
       ]
     }
   }

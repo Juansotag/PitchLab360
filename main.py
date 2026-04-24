@@ -14,6 +14,7 @@ import textstat
 textstat.set_lang('es')
 from collections import Counter
 import json
+import re
 from typing import Dict, Any, Optional
 import concurrent.futures
 from dotenv import load_dotenv
@@ -23,10 +24,12 @@ from urllib.parse import urlparse, parse_qs
 # Load environment variables
 load_dotenv()
 
+# SSL verification: set DISABLE_SSL_VERIFY=true in .env only for corporate proxies
+_SSL_VERIFY = os.environ.get('DISABLE_SSL_VERIFY', 'false').lower() != 'true'
+
 app = FastAPI(title="PitchLab360")
 
 # Setup Anthropic Client
-anthropic_client = anthropic.Anthropic() if os.environ.get("ANTHROPIC_API_KEY") else None
 
 # Mount directories for static files and assets
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -139,11 +142,9 @@ def limpiar_texto(req: CleanRequest):
     if not key:
         return {"error": "API Key de Anthropic no configurada. Ingrésala en el panel de YouTube o en el archivo .env."}
         
-    http_client = httpx.Client(verify=False, timeout=60.0)
+    http_client = httpx.Client(verify=_SSL_VERIFY, timeout=60.0)
     client = anthropic.Anthropic(api_key=key, http_client=http_client)
     
-    # Log de seguridad para verificar la clave usada (solo inicio y fin)
-    print(f"--- DEBUG: Usando API Key: {key[:8]}...{key[-4:]} ---")
     
     def clean_chunk(chunk: str) -> str:
         prompt = PROMPT_LIMPIEZA.format(texto=chunk)
@@ -169,8 +170,9 @@ def limpiar_texto(req: CleanRequest):
 # spaCy dependency removed to avoid installation issues
 
 STOPWORDS_EXTRA = {
-    "si", "así", "aquí", "allí", "entonces", "bueno", "bien",
-    "señor", "señora", "hoy", "día", "año", "vez", "ser", "hacer"
+    "entonces", "bueno", "bien",
+    "señor", "señora", "hoy", "día", "año", "vez", "hacer"
+    # Note: "si", "así", "aquí", "allí", "ser" are already in STOPWORDS_BASIC
 }
 
 NOSOTROS = {"nosotros", "nuestro", "nuestra", "nuestros", "nuestras"}
@@ -178,7 +180,6 @@ ELLOS = {"ellos", "ellas", "su", "sus", "ese", "esa", "esos", "esas"}
 NEGACIONES = {"no", "nunca", "jamás", "tampoco", "ningún", "ninguna", "ni"}
 
 def calcular_metricas(texto: str) -> dict:
-    import re
     # Tokenización simple: minúsculas y quitar puntuación
     texto_limpio = re.sub(r'[^\w\s]', '', texto.lower())
     tokens = texto_limpio.split()
@@ -293,27 +294,6 @@ Las emociones deben sumar 100%.
 nombres posibles: esperanza, miedo, indignación, orgullo, orden, cambio,
 seguridad, estabilidad, antiélite, cercanía, futuro.
 """,
-    "publicos": """
-{base}
-Estructura requerida:
-{{
-  "publicos_generales": [str],
-  "perfil_nosotros": {{
-    "caracteristicas": [str],
-    "frases_asociadas": [str]
-  }},
-  "perfil_ellos": {{
-    "caracteristicas": [str],
-    "frases_asociadas": [str]
-  }},
-  "momentos_por_publico": [
-    {{
-      "publico": str,
-      "fragmento": str
-    }}
-  ]
-}}
-""",
     "estilo": """
 {base}
 Estructura requerida:
@@ -353,41 +333,6 @@ Estructura requerida:
 plataformas es un subconjunto de estas opciones:
 "Tweet/X", "Post en Facebook", "Reel de Instagram", "Short de YouTube", "TikTok", "Titular para medios tradicionales", "Historia de Instagram".
 Elige las plataformas más adecuadas para cada fragmento según su naturaleza (longitud, tono, formato).
-""",
-    "autenticidad": """
-{base}
-Estructura requerida:
-{{
-  "score_autenticidad": int (1-10),
-  "momentos_fabricados": [
-    {{
-      "fragmento": str,
-      "razon": str
-    }}
-  ],
-  "justificacion_general": str,
-  "advertencia_metodologica": str
-}}
-""",
-    "riesgos": """
-{base}
-Estructura requerida:
-{{
-  "riesgos": [
-    {{
-      "tipo": str,
-      "fragmento": str,
-      "descripcion": str,
-      "severidad": "alta" | "media" | "baja"
-    }}
-  ],
-  "vulnerabilidades_factcheck": [
-    {{
-      "afirmacion": str,
-      "razon": str
-    }}
-  ]
-}}
 """,
     "stakeholders": """
 {base}
@@ -434,20 +379,40 @@ Estructura requerida:
 Los porcentajes no tienen que sumar 100% (un stakeholder puede aparecer en distintos momentos del discurso).
 Solo incluye stakeholders mencionados de forma explícita o clara en el texto.
 """,
-    "eficacia": """
+    "marco_teorico": """
 {base}
+Tu tarea es seleccionar y justificar los marcos teóricos más pertinentes para analizar
+ESTE discurso específico, basándote en sus metadatos y métricas computadas.
+
+Los siguientes dos marcos son OBLIGATORIOS y siempre deben incluirse en el output, independientemente del discurso:
+1. Teoría de Encuadres / Framing (Entman, 1993)
+2. Análisis de Stakeholders Políticos (Freeman, 1984 / adaptación política)
+
+Selecciona además entre 1 y 2 marcos adicionales de esta lista canónica:
+- Retórica Aristotélica (ethos, pathos, logos) — para evaluar estrategias de persuasión clásicas
+- Lingüística Cognitiva / Metáfora Conceptual (Lakoff & Johnson, 1980) — cuando predominan metáforas estructurantes
+
+Para cada marco seleccionado, justifica por qué aplica a ESTE discurso citando métricas concretas
+(TTR, ratio nosotros/ellos, densidad negativa, legibilidad Flesch) o rasgos del contexto (audiencia, evento, fecha).
+
 Estructura requerida:
 {{
-  "funciones_cumplidas": [str],
-  "fortalezas": [str],
-  "debilidades": [str],
-  "impacto_opinion_publica": str,
-  "score_eficacia": int (1-10),
-  "justificacion_score": str
+  "marcos": [
+    {{
+      "nombre": str,
+      "autor_anio": str,
+      "justificacion": str,
+      "indicadores_que_lo_activan": [str]
+    }}
+  ],
+  "nota_metodologica": str,
+  "limitaciones": [str]
 }}
-funciones_cumplidas es subset de:
-moviliza, persuade, emociona, ordena conversación,
-instala agenda, fortalece liderazgo, informa.
+
+En "justificacion": 2-3 frases que conecten el marco con los datos reales del discurso.
+En "indicadores_que_lo_activan": lista de 2-4 métricas o rasgos contextuales concretos.
+En "nota_metodologica": párrafo breve sobre cómo leer los resultados bajo estos marcos.
+En "limitaciones": 2-3 limitaciones honestas del análisis computacional para este discurso específico.
 """
 }
 
@@ -456,9 +421,8 @@ def ejecutar_modulo(modulo: str, texto: str, metadatos: dict, metricas: dict, ap
     if not key:
         return {"ok": False, "error": "API Key de Anthropic no configurada. Ingrésala en el panel de YouTube o en el archivo .env."}
         
-    http_client = httpx.Client(verify=False, timeout=60.0)
+    http_client = httpx.Client(verify=_SSL_VERIFY, timeout=60.0)
     client = anthropic.Anthropic(api_key=key, http_client=http_client)
-    print(f"--- DEBUG: Analizando con API Key: {key[:8]}...{key[-4:]} ---")
 
     base = BASE_CONTEXTO.format(
         candidato=metadatos.get("candidato", "No especificado"),
@@ -495,9 +459,9 @@ def analizar_todo(req: AnalizarRequest):
     resultados = {"metricas": metricas}
     metadatos_dict = req.metadatos.model_dump()
     
-    # Ejecutar consultas a Claude en PARALELO para ahorrar muchísimo tiempo
-    # Reducimos max_workers de 8 a 3 para evitar el error 429 (Rate Limit) 
-    # de 30,000 tokens por minuto en cuentas tier 1.
+    # Ejecutar consultas a Claude en PARALELO para ahorrar tiempo.
+    # max_workers=3 para evitar 429 Rate Limit en cuentas tier 1.
+    # Módulos activos: frases_clave, marcos_narrativos, estilo, potencial_digital, stakeholders, marco_teorico.
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
         f2m = {
             executor.submit(ejecutar_modulo, modulo, req.texto, metadatos_dict, metricas, req.api_key): modulo
