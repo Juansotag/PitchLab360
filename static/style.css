@@ -111,8 +111,8 @@ li,
 
 /* Sidebar */
 .sidebar {
-    width: 450px;
-    min-width: 280px;
+    width: 50vw;
+    min-width: 320px;
     max-width: 80vw;
     background-color: var(--bg-sidebar);
     border-right: 1px solid var(--border-color);
@@ -826,30 +826,17 @@ li,
     min-width: 0;
 }
 
-/* Override metrics-grid inside sidebar (smaller cards) */
+/* Override metrics-grid inside sidebar (mismas columnas que el reporte) */
 #sidebar-results-view .metrics-grid {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 0.6rem;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.75rem;
     padding: 0;
-}
-
-#sidebar-results-view .metric-stat-card .stat-val {
-    font-size: 1.4rem;
 }
 
 #sidebar-results-view .result-card {
     background: white;
     max-width: 100%;
     box-sizing: border-box;
-}
-
-#sidebar-results-view .phrase-item {
-    font-size: 0.83rem;
-}
-
-#sidebar-results-view .emotion-name,
-#sidebar-results-view .emotion-pct {
-    font-size: 0.8rem;
 }
 
 
