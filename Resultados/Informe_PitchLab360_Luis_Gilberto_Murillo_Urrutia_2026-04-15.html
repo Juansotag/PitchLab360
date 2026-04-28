@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Informe PitchLab360 — Luis Gilberto Murillo Urrutia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Libre+Franklin:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+        rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/style.css">
+    <style>
+        :root {
+            --fs-sm: 0.72rem;
+            --fs-md: 0.875rem;
+            --fs-lg: 1.15rem;
+            --lh: 1.75;
+            --font-display: 'Publico Banner', 'Playfair Display', serif;
+            --font-main: 'Libre Franklin', sans-serif;
+            --font-label: 'Cabinet Grotesk', sans-serif;
+            --c-blue-dark: #00135B;
+            --c-blue-light: #00387D;
+            --c-blue-soft: #93AAC9;
+            --c-blue-tint: #D9E1EF;
+            --text-primary: #00135B;
+            --text-secondary: #374151;
+            --text-muted: #64748b;
+            --border-color: #D9E1EF;
+        }
+
+        html {
+            font-size: 13pt;
+        }
+
+        html,
+        body {
+            background: #fff !important;
+            color: #00135B !important;
+            font-family: 'Libre Franklin', sans-serif !important;
+            font-size: var(--fs-md) !important;
+            line-height: var(--lh) !important;
+            text-align: justify !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            height: auto !important;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+            /* 0 elimina URL/fecha/hora del navegador */
+        }
+
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* Tabla que genera márgenes consistentes en cada página (thead/tfoot se repiten) */
+        #pv-margin-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        #pv-margin-top,
+        #pv-margin-bottom {
+            height: 1.8cm;
+        }
+
+        #pv-root {
+            display: block;
+            padding: 0 2.5cm;
+            max-width: 100%;
+        }
+
+        .pv-header-logos {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #00135B;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .pv-logo-main {
+            height: 52px;
+            width: auto;
+        }
+
+        .pv-logos-secondary {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .pv-logo-sub {
+            height: 36px;
+            width: auto;
+        }
+
+        #pv-root h1 {
+            font-size: 18pt;
+            font-family: 'Publico Banner', 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 800;
+            color: #00135B;
+            margin-bottom: 0.2rem;
+        }
+
+        .pv-meta {
+            font-size: var(--fs-sm);
+            color: #64748b;
+            margin-bottom: 1.6rem;
+            line-height: var(--lh);
+            font-family: 'Libre Franklin', sans-serif;
+        }
+
+        .pv-section {
+            margin-bottom: 1.4rem;
+            padding-top: 0.6cm;
+            border: none !important;
+            border-radius: 0;
+            overflow: visible;
+            break-inside: auto;
+        }
+
+        .pv-section-hdr {
+            background: none !important;
+            padding: 0.25rem 0;
+            font-family: 'Cabinet Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: var(--fs-lg) !important;
+            color: #00135B;
+            border: none !important;
+            border-bottom: 1.5px solid #00135B !important;
+            text-transform: uppercase;
+            margin-bottom: 0.6rem;
+            break-after: avoid;
+        }
+
+        .pv-section-body {
+            padding: 0.3rem 0 0 0;
+            line-height: var(--lh);
+            text-align: justify;
+        }
+
+        /* Elementos que no deben justificarse */
+        .pv-header-logos,
+        .pv-meta,
+        .phrase-type,
+        .phrase-just,
+        .word-freq-chips,
+        .word-freq-chip,
+        .platform-badge,
+        .emotion-header,
+        .stakeholder-header,
+        .stakeholder-meta,
+        .gauge-circle,
+        .gauge-val,
+        .tone-bar-container,
+        .discourse-type-tag,
+        .tag {
+            text-align: left !important;
+        }
+
+        /* Titulo de tarjeta (item) - Cabinet Grotesk, tamano lg, color UniSabana */
+        .result-card-title {
+            font-size: var(--fs-lg) !important;
+            font-family: 'Cabinet Grotesk', sans-serif !important;
+            font-weight: 700 !important;
+            color: #00135B !important;
+            text-align: left !important;
+            margin-bottom: 0.4rem !important;
+        }
+
+        /* Contenido en tarjetas - tamano md (excluye titulos) */
+        .result-card>div:not(.result-card-title),
+        .result-card>p,
+        .gauge-text,
+        .phrase-item,
+        .digital-text,
+        .emotion-name,
+        .factcheck-item,
+        .risk-item .risk-frag,
+        .pv-section-body>p {
+            font-size: var(--fs-md) !important;
+            line-height: var(--lh) !important;
+        }
+
+        /* Etiquetas, notas - tamano sm */
+        .phrase-type,
+        .phrase-just,
+        .digital-reason,
+        .emotion-pct,
+        .fc-reason,
+        .risk-desc,
+        .stakeholder-pct,
+        .stakeholder-category,
+        .discourse-type-just,
+        .stat-label {
+            font-size: var(--fs-sm) !important;
+        }
+
+        .result-card {
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin-bottom: 0.4rem;
+            border: none !important;
+            background: none !important;
+            padding: 0.15rem 0 !important;
+            border-bottom: 0.5px solid #e2e8f0 !important;
+            border-radius: 0 !important;
+        }
+
+        .result-card:last-child {
+            border-bottom: none !important;
+        }
+
+        /* La tarjeta de frases memorables sí puede cortarse entre páginas;
+     cada recuadro individual permanece indivisible */
+        .result-card:has(.phrase-list) {
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+        }
+
+        .result-card:has(.phrase-list) .phrase-list {
+            break-inside: auto !important;
+        }
+
+        .phrase-item {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
+
+        /* Lo mismo para mensajes con potencial de viralización */
+        .result-card:has(.digital-item) {
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+        }
+
+        .digital-item {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
+
+        /* Lo mismo para encuadres emocionales */
+        .result-card:has(.emotion-list) {
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+        }
+
+        .result-card:has(.emotion-list) .emotion-list {
+            break-inside: auto !important;
+        }
+
+        .emotion-row {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
+
+        /* Análisis Semántico — stakeholders y palabras frecuentes */
+        .result-card:has(.stakeholder-item) {
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+        }
+
+        .stakeholder-item {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
+
+        .result-card:has(.word-freq-chips) {
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+        }
+
+        .gauge-circle,
+        .gauge-row,
+        .tone-bar-container,
+        .tone-track,
+        .bar-row,
+        .bar-track,
+        .emotion-track,
+        .stakeholder-item,
+        .phrase-item,
+        .digital-item,
+        .word-freq-chips,
+        .mini-marco-card,
+        .nota-metodologica {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .pv-section-hdr,
+        .result-card-title {
+            break-after: avoid;
+            page-break-after: avoid;
+        }
+
+        .tone-track {
+            background: linear-gradient(to right, #d51437, #e2e8f0, #00135B) !important;
+            border-radius: 99px;
+            height: 12px;
+            width: 100%;
+            position: relative;
+        }
+
+        .tone-thumb {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white !important;
+            border: 3px solid #00135B !important;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .stakeholder-track {
+            display: block !important;
+            background: #f1f5f9 !important;
+            border-radius: 999px;
+            height: 6px;
+            overflow: hidden;
+            margin-top: 0.3rem;
+        }
+
+        .stakeholder-fill {
+            height: 100%;
+            border-radius: 999px;
+        }
+
+        .platform-badge {
+            display: inline-block;
+            font-size: 9pt;
+            border-radius: 999px;
+            padding: 0.15rem 0.55rem;
+            margin: 0.1rem;
+        }
+
+        .metrics-help-box,
+        .res-toggle,
+        button {
+            display: none !important;
+        }
+
+        .pv-disclaimer {
+            margin-top: 2rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 9.5pt;
+            color: #64748b;
+            line-height: 1.65;
+            text-align: justify;
+        }
+
+        /* === Armonización tipográfica ===
+     Normaliza los tamaños rem del sidebar a pt coherentes en impresión.
+     También unifica los colores de texto secundario. */
+        /* Colores unificados */
+        *[style*="text-muted"] {
+            color: #64748b !important;
+        }
+
+        *[style*="text-secondary"] {
+            color: #475569 !important;
+        }
+
+        *[style*="c-blue-dark"] {
+            color: #00135B !important;
+        }
+
+        /* Texto generado por LLM: interlineado consistente */
+        .result-card>div[style] {
+            line-height: var(--lh) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <table id="pv-margin-table">
+        <thead>
+            <tr>
+                <td id="pv-margin-top"></td>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td id="pv-margin-bottom"></td>
+            </tr>
+        </tfoot>
+        <tbody>
+            <tr>
+                <td>
+                    <div id="pv-root">
+                        <div class="pv-header-logos">
+                            <img src="../assets/PitchLab360.jpg" class="pv-logo-main"
+                                onerror="this.style.display='none'">
+                            <div class="pv-logos-secondary">
+                                <img src="../assets/Universidad de la Sabana.png" class="pv-logo-sub"
+                                    onerror="this.style.display='none'">
+                                <img src="../assets/Govlab.png" class="pv-logo-sub" onerror="this.style.display='none'">
+                            </div>
+                        </div>
+                        <h1>Informe de Análisis de Discurso: Luis Gilberto Murillo Urrutia</h1>
+                        <div class="pv-meta">Cumbre de Gobernadores: Las Regiones Proponen — Federación Nacional de
+                            Departamentos · 2026-04-15</div>
+
+                        <div class="pv-section">
+                            <div class="pv-section-hdr">INTRODUCCIÓN</div>
+                            <div class="pv-section-body">
+                                <div class="result-card intro-catchy-card">
+                                    <p
+                                        style="font-size:var(--fs-md);color:var(--c-blue-dark);line-height:var(--lh);margin:0">
+                                        <strong> PitchLab360 </strong>es una herramienta tecnológica de análisis de
+                                        lenguaje que utiliza técnicas de procesamiento de lenguaje natural
+                                        (<em>NLP</em>) para evaluar discursos, textos o intervenciones de exponentes y
+                                        candidatos como <strong>Luis Gilberto Murillo Urrutia</strong> en <strong>Cumbre
+                                            de Gobernadores: Las Regiones Proponen - Federación Nacional de
+                                            Departamentos</strong>. Su función principal es convertir el contenido
+                                        verbal en indicadores medibles, como claridad, complejidad, estructura y tono
+                                        del mensaje. A partir de esto, permite entender cómo está construido un discurso
+                                        y qué tan efectivo puede ser para una audiencia. En términos más amplios,
+                                        PitchLab no analiza si un mensaje es verdadero o falso, sino cómo está
+                                        formulado, ofreciendo una base objetiva para diagnosticar y mejorar la
+                                        comunicación, especialmente en contextos políticos, institucionales o
+                                        estratégicos.
+                                    </p>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">Contenido del informe</div>
+                                    <div
+                                        style="font-size:var(--fs-md);color:var(--text-secondary);line-height:var(--lh)">
+                                        <p>Este informe combina <strong>análisis computacional</strong> (métricas
+                                            objetivas del lenguaje) con <strong>análisis cualitativo mediante
+                                                <em>LLM</em></strong>. Está organizado en tres secciones:</p>
+                                        <ul
+                                            style="margin:0.5rem 0 0 1.2rem;display:flex;flex-direction:column;gap:0.3rem">
+                                            <li><strong>Sección 1: Perfil comunicativo:</strong> Estilo, formalidad y
+                                                tipo de discurso.</li>
+                                            <li><strong>Sección 2: Análisis emocional:</strong> Índice de sentimiento,
+                                                unidades de sentido, potencial digital y encuadres emocionales.</li>
+                                            <li><strong>Sección 3: Análisis semántico:</strong> Palabras frecuentes,
+                                                complejidad lingüística e identificación de <em>stakeholders</em>.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="result-card" style="text-align:center">
+                                    <div class="result-card-title">Demo en video</div>
+                                    <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">El
+                                        siguiente código QR lleva al video tutorial que muestra todas las
+                                        funcionalidades disponibles de la herramienta.</div>
+                                    <div class="qr-placeholder">
+                                        <img src="../assets/QR.png" alt="QR Video Tutorial PitchLab360"
+                                            style="width:140px;height:140px;object-fit:contain"
+                                            onerror="this.style.display='none'">
+                                    </div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">Glosario</div>
+                                    <div
+                                        style="font-size:var(--fs-md);color:var(--text-secondary);line-height:var(--lh);display:flex;flex-direction:column;gap:0.75rem">
+                                        <div>
+                                            <strong style="color:var(--c-blue-dark)"><em>TTR</em> - <em>Type-Token
+                                                    Ratio</em></strong><br>
+                                            Razón entre el número de palabras únicas (<em>types</em>) y el total de
+                                            palabras del discurso (<em>tokens</em>). Un <em>TTR</em> alto indica mayor
+                                            riqueza
+                                            léxica y variedad de vocabulario; un <em>TTR</em> bajo sugiere mayor
+                                            repetición
+                                            terminológica.
+                                        </div>
+                                        <div>
+                                            <strong style="color:var(--c-blue-dark)">Palabras por oración</strong><br>
+                                            Promedio del número de palabras por cada oración del discurso. Oraciones
+                                            largas tienden a asociarse con registros más formales o técnicos; oraciones
+                                            cortas, con un estilo más directo y accesible.
+                                        </div>
+                                        <div>
+                                            <strong style="color:var(--c-blue-dark)">Índice de Legibilidad de
+                                                Flesch-Kincaid</strong><br>
+                                            Métrica que estima qué tan fácil es leer un texto. Valores altos indican
+                                            mayor accesibilidad; valores bajos corresponden a textos de mayor
+                                            complejidad y formalidad.
+                                        </div>
+                                        <div>
+                                            <strong style="color:var(--c-blue-dark)">Densidad de negaciones</strong><br>
+                                            Proporción de palabras de negación en relación con el total del texto.
+                                            Valores altos suelen asociarse a discursos defensivos, de contraste o
+                                            confrontacionales.
+                                        </div>
+                                        <div>
+                                            <strong style="color:var(--c-blue-dark)">Ratio Nosotros/Ellos</strong><br>
+                                            Relación entre pronombres inclusivos (nosotros, nuestro) y
+                                            exclusivos/distantes (ellos, su, aquellos). Permite entender si el discurso
+                                            busca agrupar y unir, o si tiene un enfoque de polarización y alteridad.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pv-section">
+                            <div class="pv-section-hdr">PERFIL COMUNICATIVO DEL CANDIDATO</div>
+                            <div class="pv-section-body">
+                                <div class="result-card">
+                                    <div class="result-card-title">a. Perfil comunicativo</div>
+                                    <div style="font-size:var(--fs-md);color:var(--c-blue-dark);line-height:var(--lh)">
+                                        Líder regional confrontacional que utiliza su experiencia territorial como
+                                        plataforma de legitimidad, combinando crítica directa al centralismo con
+                                        propuestas técnicas específicas, manteniendo un tono cercano y testimonial que
+                                        busca diferenciarse de los candidatos tradicionales.</div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">b. Nivel de formalidad</div>
+                                    <div class="score-gauge">
+                                        <div class="gauge-circle" style="--pct:60%"><span class="gauge-val">6</span>
+                                        </div>
+                                        <div class="gauge-text">El discurso combina elementos formales (protocolo de
+                                            saludos, referencias académicas) con un lenguaje coloquial y directo
+                                            ('chiquitica', 'eh', anécdotas personales), manteniendo un registro
+                                            intermedio apropiado para la audiencia.</div>
+                                    </div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">c. Tipo de discurso</div>
+                                    <div style="display:flex;flex-direction:column;gap:0.6rem">
+                                        <div class="discourse-type-tag dominant">
+                                            <span class="tag tag-purple">Combativo ★</span>
+                                            <div class="discourse-type-just">Critica directamente a otros candidatos,
+                                                denuncia el centralismo como 'fallido' y desafía a quienes 'desde el
+                                                privilegio' no debaten, usando un tono confrontacional.</div>
+                                        </div>
+                                        <div class="discourse-type-tag ">
+                                            <span class="tag tag-purple">Conversacional</span>
+                                            <div class="discourse-type-just">Utiliza anécdotas personales, referencias
+                                                directas a los asistentes y un lenguaje cercano con expresiones
+                                                coloquiales que crean proximidad con la audiencia.</div>
+                                        </div>
+                                        <div class="discourse-type-tag ">
+                                            <span class="tag tag-purple">Pedagógico</span>
+                                            <div class="discourse-type-just">Explica conceptos como descentralización,
+                                                presenta datos del DANE y PIB per cápita, y propone mecanismos
+                                                específicos como el Consejo Nacional de Coordinación Territorial.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pv-section">
+                            <div class="pv-section-hdr">ANÁLISIS EMOCIONAL DEL DISCURSO</div>
+                            <div class="pv-section-body">
+                                <div class="result-card">
+                                    <div class="result-card-title">a. Índice de sentimiento</div>
+                                    <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
+                                        El Índice de sentimiento mide la carga emocional global del discurso en una
+                                        escala de −1 (muy negativo/hostil) a +1 (muy positivo/esperanzador), asignada
+                                        por el modelo de IA al analizar el tono general de las expresiones.
+                                    </div>
+                                    <div class="tone-bar-container">
+                                        <div class="tone-track">
+                                            <div class="tone-thumb" style="left:60%"></div>
+                                        </div>
+                                        <div
+                                            style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-muted);margin-top:0.3rem">
+                                            <span>Negativo (−1)</span>
+                                            <span>Positivo (+1)</span>
+                                        </div>
+                                        <div
+                                            style="text-align:center;margin-top:0.5rem;font-size:var(--fs-md);font-weight:600;color:var(--c-blue-dark)">
+                                            Puntaje: 0.20 - <span
+                                                style="font-weight:400;color:var(--text-secondary)">Discurso combativo
+                                                pero propositivo, con críticas directas al centralismo y otros
+                                                candidatos, pero manteniendo un enfoque constructivo hacia la
+                                                descentralización y el desarrollo territorial</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.6rem 0.85rem;background:var(--c-blue-tint);border-left:2px solid var(--c-blue-dark);border-radius:0 6px 6px 0;margin-bottom:0.5rem">
+                                    <i class="fa-solid fa-circle-info"
+                                        style="color:var(--c-blue-dark);font-size:var(--fs-sm);margin-top:0.15rem;flex-shrink:0"></i>
+                                    <div>
+                                        <span
+                                            style="font-size:var(--fs-sm);font-weight:700;color:var(--c-blue-dark);text-transform:uppercase;letter-spacing:0.04em">Nota
+                                            metodológica</span>
+                                        <p
+                                            style="font-size:var(--fs-sm);color:var(--text-secondary);line-height:var(--lh);margin:0.15rem 0 0">
+                                            Los marcos seleccionados operan de forma complementaria: el <em>framing</em>
+                                            identifica la estructura narrativa dominante (centro vs. periferia), el
+                                            análisis de <em>stakeholders</em> mapea las coaliciones en construcción, y
+                                            la
+                                            retórica aristotélica evalúa las estrategias de persuasión. Las métricas
+                                            computacionales proporcionan evidencia cuantitativa de estos patrones
+                                            discursivos, pero deben interpretarse considerando el contexto específico
+                                            del evento y la audiencia especializada.</p>
+                                    </div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">b. Unidades de sentido significativas</div>
+                                    <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
+                                        Las unidades de sentido significativas son frases o párrafos cortos que
+                                        comunican la posición del candidato de forma autónoma, sin necesitar el contexto
+                                        completo del discurso. Se clasifican por su función retórica a partir de una
+                                        lista predefinida de categorías.
+                                    </div>
+                                    <div class="phrase-list">
+
+                                        <div class="phrase-item">
+                                            <div class="phrase-type">Categoría: Metáfora política</div>
+                                            <div>"Eso pasa también con los que venimos de abajo, ¿No? Que a veces
+                                                bloquean para subir"</div>
+                                            <div class="phrase-just">Utiliza una anécdota personal del ascensor
+                                                bloqueado como metáfora del centralismo que impide el ascenso de las
+                                                regiones periféricas</div>
+                                        </div>
+                                        <div class="phrase-item">
+                                            <div class="phrase-type">Categoría: Dato o cifra clave</div>
+                                            <div>"En este país el 50% de la probabilidad de tener éxito la determina el
+                                                sitio donde usted nace"</div>
+                                            <div class="phrase-just">Estadística impactante que resume de manera
+                                                contundente la desigualdad territorial y el problema del centralismo en
+                                                Colombia</div>
+                                        </div>
+                                        <div class="phrase-item">
+                                            <div class="phrase-type">Categoría: Titular o axioma ideológico</div>
+                                            <div>"Colombia necesita pasar de un modelo en el que la nación decide y las
+                                                regiones se ejecutan a uno de corresponsabilidad real"</div>
+                                            <div class="phrase-just">Frase que sintetiza perfectamente su propuesta de
+                                                transformación del modelo de gobierno y la relación centro-periferia
+                                            </div>
+                                        </div>
+                                        <div class="phrase-item">
+                                            <div class="phrase-type">Categoría: Declaración sobre la realidad</div>
+                                            <div>"Quibdó, para llegar a los niveles socioeconómicos de Bogotá de hoy
+                                                necesita inversión sostenida por encima del promedio en los próximos 50
+                                                años"</div>
+                                            <div class="phrase-just">Proyección temporal dramática que dimensiona la
+                                                magnitud de la desigualdad regional y la urgencia de actuar</div>
+                                        </div>
+                                        <div class="phrase-item">
+                                            <div class="phrase-type">Categoría: Ironía o sarcasmo</div>
+                                            <div>"Van a ver que ahí se disminuye la lista corta de los que aspiran a
+                                                ministerios. No le digan que el ministerio no queda en Bogotá"</div>
+                                            <div class="phrase-just">Comentario sarcástico que critica el centralismo de
+                                                las élites políticas mientras propone descentralizar ministerios</div>
+                                        </div>
+                                        <div class="phrase-item">
+                                            <div class="phrase-type">Categoría: Declaración de identidad</div>
+                                            <div>"Ya no estamos para eso, ya nos preparamos, ya nosotros queremos
+                                                también liderar este bendito país"</div>
+                                            <div class="phrase-just">Manifiesto de empoderamiento regional que marca un
+                                                cambio generacional y territorial en el liderazgo político colombiano
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">c. Mensajes con alto potencial de viralización</div>
+                                    <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
+                                        Son fragmentos del discurso con alta probabilidad de resonar en redes sociales
+                                        por su carga emocional, brevedad o impacto narrativo. Para cada uno se sugieren
+                                        las plataformas más adecuadas según su naturaleza.
+                                    </div>
+                                    <div class="digital-item">
+                                        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.4rem">
+                                            <span class="platform-badge">Tweet/X</span><span class="platform-badge">Post
+                                                en Facebook</span><span class="platform-badge">TikTok</span><span
+                                                class="platform-badge">Historia de Instagram</span>
+                                        </div>
+                                        <div class="digital-text">"Yo no tengo que venir aquí a este escenario de los
+                                            territorios y de las regiones porque soy de allá y hablo con ellos
+                                            permanentemente."</div>
+                                        <div class="digital-reason">Criterio: Frase contundente que refuerza su
+                                            autenticidad territorial y contrasta con otros candidatos</div>
+                                    </div>
+                                    <div class="digital-item">
+                                        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.4rem">
+                                            <span class="platform-badge">Tweet/X</span><span class="platform-badge">Post
+                                                en Facebook</span><span class="platform-badge">Titular para medios
+                                                tradicionales</span>
+                                        </div>
+                                        <div class="digital-text">"En este país el 50% de la probabilidad de tener éxito
+                                            la determina el sitio donde usted nace"</div>
+                                        <div class="digital-reason">Criterio: Dato impactante que resume la desigualdad
+                                            territorial con cifra específica</div>
+                                    </div>
+                                    <div class="digital-item">
+                                        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.4rem">
+                                            <span class="platform-badge">Tweet/X</span><span class="platform-badge">Post
+                                                en Facebook</span><span class="platform-badge">Titular para medios
+                                                tradicionales</span>
+                                        </div>
+                                        <div class="digital-text">"Vamos a trasladar algunas sedes de ministerios a las
+                                            regiones dependiendo de la importancia estratégica y dependiendo de la
+                                            vocación de esas regiones"</div>
+                                        <div class="digital-reason">Criterio: Propuesta concreta y novedosa que puede
+                                            generar debate y diferenciación</div>
+                                    </div>
+                                    <div class="digital-item">
+                                        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.4rem">
+                                            <span class="platform-badge">TikTok</span><span class="platform-badge">Reel
+                                                de Instagram</span><span class="platform-badge">Short de YouTube</span>
+                                        </div>
+                                        <div class="digital-text">"Van a ver que ahí se disminuye la lista corta de los
+                                            que aspiran a ministerios. No le digan que el ministerio no queda en
+                                            Bogotá."</div>
+                                        <div class="digital-reason">Criterio: Comentario con humor político que critica
+                                            el centralismo de manera memorable</div>
+                                    </div>
+                                    <div class="digital-item">
+                                        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.4rem">
+                                            <span class="platform-badge">Tweet/X</span><span class="platform-badge">Post
+                                                en Facebook</span><span class="platform-badge">Titular para medios
+                                                tradicionales</span>
+                                        </div>
+                                        <div class="digital-text">"El centralismo es un ejercicio fallido en Colombia y
+                                            le ha salido caro a los colombianos"</div>
+                                        <div class="digital-reason">Criterio: Frase categórica que resume su posición
+                                            anti-centralista de manera contundente</div>
+                                    </div>
+                                    <div class="digital-item">
+                                        <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.4rem">
+                                            <span class="platform-badge">Tweet/X</span><span class="platform-badge">Post
+                                                en Facebook</span><span class="platform-badge">Historia de
+                                                Instagram</span>
+                                        </div>
+                                        <div class="digital-text">"Las oportunidades están en los territorios. Ellos son
+                                            los protagonistas naturales del desarrollo"</div>
+                                        <div class="digital-reason">Criterio: Mensaje positivo y propositivo que puede
+                                            inspirar y movilizar audiencias regionales</div>
+                                    </div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">d. Encuadres emocionales</div>
+                                    <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
+                                        Los encuadres emocionales son los marcos interpretativos que el discurso activa
+                                        en la audiencia. Se identifican a partir de una lista predefinida de emociones
+                                        políticas reconocidas (como esperanza, miedo, indignación u orgullo) y culminan
+                                        en una síntesis interpretativa del encuadre emocional, que permite comprender la
+                                        función de ese marco dentro del discurso.
+                                    </div>
+                                    <div class="emotion-list">
+
+                                        <div class="emotion-row">
+                                            <div class="emotion-header">
+                                                <span class="emotion-name">Antiélite</span>
+                                                <span class="emotion-pct">30%</span>
+                                            </div>
+                                            <div class="emotion-track">
+                                                <div class="emotion-fill" style="width:30%"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:var(--fs-sm);color:var(--text-muted);margin-top:0.15rem">
+                                                Fuerte crítica al centralismo y a los políticos que ejercen desde
+                                                posiciones privilegiadas, posicionándose contra las élites tradicionales
+                                            </div>
+                                        </div>
+                                        <div class="emotion-row">
+                                            <div class="emotion-header">
+                                                <span class="emotion-name">Cercanía</span>
+                                                <span class="emotion-pct">25%</span>
+                                            </div>
+                                            <div class="emotion-track">
+                                                <div class="emotion-fill" style="width:25%"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:var(--fs-sm);color:var(--text-muted);margin-top:0.15rem">
+                                                Construcción de identidad territorial y proximidad con las regiones
+                                                marginadas, enfatizando su origen y experiencia local</div>
+                                        </div>
+                                        <div class="emotion-row">
+                                            <div class="emotion-header">
+                                                <span class="emotion-name">Indignación</span>
+                                                <span class="emotion-pct">20%</span>
+                                            </div>
+                                            <div class="emotion-track">
+                                                <div class="emotion-fill" style="width:20%"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:var(--fs-sm);color:var(--text-muted);margin-top:0.15rem">
+                                                Expresión de molestia y rechazo hacia el trato despectivo de otros
+                                                candidatos y las consecuencias del centralismo</div>
+                                        </div>
+                                        <div class="emotion-row">
+                                            <div class="emotion-header">
+                                                <span class="emotion-name">Cambio</span>
+                                                <span class="emotion-pct">15%</span>
+                                            </div>
+                                            <div class="emotion-track">
+                                                <div class="emotion-fill" style="width:15%"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:var(--fs-sm);color:var(--text-muted);margin-top:0.15rem">
+                                                Propuesta de transformación del modelo político hacia mayor
+                                                descentralización y autonomía territorial</div>
+                                        </div>
+                                        <div class="emotion-row">
+                                            <div class="emotion-header">
+                                                <span class="emotion-name">Futuro</span>
+                                                <span class="emotion-pct">10%</span>
+                                            </div>
+                                            <div class="emotion-track">
+                                                <div class="emotion-fill" style="width:10%"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:var(--fs-sm);color:var(--text-muted);margin-top:0.15rem">
+                                                Visión prospectiva del desarrollo nacional basado en el potencial de las
+                                                regiones y territorios</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pv-section">
+                            <div class="pv-section-hdr">ANÁLISIS SEMÁNTICO DEL DISCURSO</div>
+                            <div class="pv-section-body">
+                                <div class="result-card"
+                                    style="border-left:3px solid var(--c-blue-dark);background:var(--c-blue-tint)">
+                                    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem">
+                                        <i class="fa-solid fa-book-open"
+                                            style="color:var(--c-blue-dark);font-size:0.8rem"></i>
+                                        <span style="font-size:0.75rem;font-weight:700;color:var(--c-blue-dark)">Teoría
+                                            de Encuadres / <em>Framing</em></span>
+                                        <span style="font-size:0.7rem;color:var(--text-muted);margin-left:auto">Entman,
+                                            1993</span>
+                                    </div>
+                                    <p
+                                        style="font-size:var(--fs-md);color:var(--text-secondary);line-height:var(--lh);margin:0 0 0.4rem">
+                                        El discurso construye un marco interpretativo claro centrado en la oposición
+                                        centralismo vs. descentralización, presentando consistentemente los territorios
+                                        como víctimas del centralismo bogotano. La alta frecuencia de palabras como
+                                        'territorios' (16), 'centralismo' (6) y 'descentralización' (6) indica un
+                                        encuadre deliberado del problema político nacional.</p>
+                                    <div style="display:flex;flex-wrap:wrap;gap:0.3rem">
+                                        <span
+                                            style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px">Palabras
+                                            frecuentes dominadas por términos territoriales</span><span
+                                            style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px">Ratio
+                                            nosotros/ellos de 0.79 indica polarización moderada</span><span
+                                            style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px">Densidad
+                                            de negaciones del 1.55% sugiere contraste con propuestas rivales</span><span
+                                            style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px">Audiencia
+                                            de gobernadores facilita encuadre anti-centralista</span>
+                                    </div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">a. Palabras más frecuentes del discurso</div>
+                                    <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                                        Listado de los términos con mayor frecuencia de aparición en el discurso. Se
+                                        excluyen automáticamente pronombres, artículos, preposiciones y conjunciones
+                                        para resaltar el vocabulario conceptual del candidato.
+                                    </div>
+                                    <div class="word-freq-chips">
+                                        <span class="word-freq-chip">Territorios <b>(16)</b></span><span
+                                            class="word-freq-chip">Regiones <b>(11)</b></span><span
+                                            class="word-freq-chip">País <b>(11)</b></span><span
+                                            class="word-freq-chip">Nosotros <b>(11)</b></span><span
+                                            class="word-freq-chip">Vamos <b>(11)</b></span><span
+                                            class="word-freq-chip">Gobernadores <b>(9)</b></span><span
+                                            class="word-freq-chip">Veces <b>(8)</b></span><span
+                                            class="word-freq-chip">Desarrollo <b>(7)</b></span><span
+                                            class="word-freq-chip">Gobernador <b>(6)</b></span><span
+                                            class="word-freq-chip">Gobierno <b>(6)</b></span><span
+                                            class="word-freq-chip">Realmente <b>(6)</b></span><span
+                                            class="word-freq-chip">Centralismo <b>(6)</b></span><span
+                                            class="word-freq-chip">Colombia <b>(6)</b></span><span
+                                            class="word-freq-chip">Descentralización <b>(6)</b></span><span
+                                            class="word-freq-chip">Doctora <b>(5)</b></span><span
+                                            class="word-freq-chip">Chocó <b>(5)</b></span><span
+                                            class="word-freq-chip">Departamentos <b>(5)</b></span><span
+                                            class="word-freq-chip">Provincias <b>(5)</b></span><span
+                                            class="word-freq-chip">Territorial <b>(5)</b></span><span
+                                            class="word-freq-chip">Gracias <b>(4)</b></span>
+                                    </div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">b. Nivel de complejidad discursiva</div>
+                                    <div style="font-size:var(--fs-sm);color:var(--text-muted);margin-bottom:0.75rem">
+                                        Calificación de 1 a 10 sobre la sofisticación del lenguaje (<em>TTR</em>,
+                                        palabras por
+                                        oración e índice Flesch-Kincaid). 1 = muy simple, 10 = muy técnico.
+                                    </div>
+                                    <div class="score-gauge">
+                                        <div class="gauge-circle" style="--pct:60%"><span class="gauge-val">6</span>
+                                        </div>
+                                        <div class="gauge-text">Lenguaje accesible con legibilidad moderada (63.32
+                                            Flesch), oraciones de extensión media (21.5 palabras), alto uso de términos
+                                            técnicos políticos pero explicados en contexto coloquial</div>
+                                    </div>
+                                </div>
+                                <div class="result-card">
+                                    <div class="result-card-title">c. Identificación de <em>stakeholders</em></div>
+                                    <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem">
+                                        Se identifican los actores, instituciones y grupos sobre los que <em>habla</em>
+                                        el candidato en el discurso. Para cada uno se estima el porcentaje del discurso
+                                        dedicado a ese actor y se clasifica la relación que el candidato proyecta hacia
+                                        él.
+                                    </div>
+                                    <div class="result-card"
+                                        style="border-left:3px solid var(--c-blue-dark);background:var(--c-blue-tint)">
+                                        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem">
+                                            <i class="fa-solid fa-book-open"
+                                                style="color:var(--c-blue-dark);font-size:0.8rem"></i>
+                                            <span
+                                                style="font-size:0.75rem;font-weight:700;color:var(--c-blue-dark)">Análisis
+                                                de <em>Stakeholders</em> Políticos</span>
+                                            <span
+                                                style="font-size:0.7rem;color:var(--text-muted);margin-left:auto">Freeman,
+                                                1984 / adaptación política</span>
+                                        </div>
+                                        <p
+                                            style="font-size:var(--fs-md);color:var(--text-secondary);line-height:var(--lh);margin:0 0 0.4rem">
+                                            Murillo mapea explícitamente múltiples actores del sistema político
+                                            territorial: gobernadores, alcaldes, líderes étnicos, candidatos rivales y
+                                            gobierno central. Su estrategia de coalición busca consolidar a los actores
+                                            territoriales contra el poder centralizado, evidenciado en los múltiples
+                                            saludos personalizados y referencias a experiencias compartidas.</p>
+                                        <div style="display:flex;flex-wrap:wrap;gap:0.3rem">
+                                            <span
+                                                style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px">Audiencia
+                                                mixta de gobernadores y sociedad civil</span><span
+                                                style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px">Referencias
+                                                explícitas a múltiples niveles de gobierno</span><span
+                                                style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px"><em>TTR</em>
+                                                de 0.646 refleja vocabulario técnico-institucional</span><span
+                                                style="font-size:0.69rem;background:#e8edf7;color:var(--c-blue-dark);padding:0.15rem 0.5rem;border-radius:999px">Contexto
+                                                de evento inter-gubernamental</span>
+                                        </div>
+                                    </div>
+
+                                    <div style="display:flex;flex-direction:column;gap:0.6rem">
+
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Gobernadores y gobernadoras</span>
+                                                <span class="stakeholder-pct">25% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Funcionarios electos del
+                                                    nivel regional</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#e8edf7;color:#00135B">
+                                                    Relación: Aliado estratégico (positiva)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:75%;background:#e8edf7;border:1px solid #00135B"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "Y quisiera ah inicialmente saludar a los gobernadores y gobernadoras
+                                                que todavía permanecen allí, esperándome" </div>
+                                        </div>
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Gobierno nacional</span>
+                                                <span class="stakeholder-pct">18% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Funcionarios públicos de
+                                                    nivel alto</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#fee2e2;color:#991b1b">
+                                                    Relación: Bloqueador/Conspirador (negativa)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:54%;background:#fee2e2;border:1px solid #991b1b"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "El centralismo es un ejercicio fallido en Colombia y le ha salido caro
+                                                a los colombianos"</div>
+                                        </div>
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Territorios negros, indígenas y
+                                                    campesinos</span>
+                                                <span class="stakeholder-pct">15% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Ciudadanía en
+                                                    general</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#e8edf7;color:#00135B">
+                                                    Relación: Inspiración (positiva)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:45%;background:#e8edf7;border:1px solid #00135B"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "Desde la presidencia vamos a fortalecer, a profundizar la autonomía de
+                                                las regiones, de las entidades territoriales, de los territorios y de la
+                                                nueva institucionalidad territorial de territorios negros, indígenas,
+                                                campesinos"</div>
+                                        </div>
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Doctora Paloma</span>
+                                                <span class="stakeholder-pct">12% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Funcionarios electos del
+                                                    nivel nacional</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#fee2e2;color:#991b1b">
+                                                    Relación: Atacante (negativa)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:36%;background:#fee2e2;border:1px solid #991b1b"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "Ahora escuché la doctora Paloma con sus tesis a quien respeto y es una
+                                                mujer competente, pero tiene unas tesis que yo no comparto"</div>
+                                        </div>
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Candidatos y candidatas que no
+                                                    debaten</span>
+                                                <span class="stakeholder-pct">10% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Candidatos</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#fee2e2;color:#991b1b">
+                                                    Relación: Actor apático (negativa)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:30%;background:#fee2e2;border:1px solid #991b1b"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "Y y yo de nuevo hago un llamado a los candidatos y candidatas que no
+                                                quieren participar en debates, porque algunos también lo hacen desde el
+                                                privilegio"</div>
+                                        </div>
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Alcaldes</span>
+                                                <span class="stakeholder-pct">8% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Funcionarios electos del
+                                                    nivel municipal</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#e8edf7;color:#00135B">
+                                                    Relación: Aliado estratégico (positiva)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:24%;background:#e8edf7;border:1px solid #00135B"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "No es predicándole a los gobernadores y a los alcaldes, sino que vamos
+                                                a crear un Consejo Nacional de Coordinación Territorial con carácter
+                                                vinculante"
+                                            </div>
+                                        </div>
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Universidad de La Sabana y directivos
+                                                    académicos</span>
+                                                <span class="stakeholder-pct">5% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Líderes de opinión</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#e8edf7;color:#00135B">
+                                                    Relación: Aliado potencial (positiva)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:15%;background:#e8edf7;border:1px solid #00135B"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "Eh, saludar al rector de la Universidad de La Sabana, al Dr. Rolando
+                                                Roncancio, a la doctora María Carmelina Londoño, directora de la Escuela
+                                                de Gobierno"</div>
+                                        </div>
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Juan Daniel Oviedo</span>
+                                                <span class="stakeholder-pct">4% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Candidatos</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#fee2e2;color:#991b1b">
+                                                    Relación: Actor deshonesto (negativa)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:12%;background:#fee2e2;border:1px solid #991b1b"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "Un candidato a la vicepresidencia que dijo que nosotros en
+                                                Buenaventura, de donde es mi familia, comíamos no sé qué cosa y en
+                                                privado
+                                                se burlan"</div>
+                                        </div>
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Medios de comunicación</span>
+                                                <span class="stakeholder-pct">3% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Medios de
+                                                    comunicación</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#e8edf7;color:#00135B">
+                                                    Relación: Aliado potencial (positiva)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:9%;background:#e8edf7;border:1px solid #00135B"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "saludar a la doctora Rafaela Cortés, al doctor Didier Tavera de la
+                                                Federación, igualmente a los medios de comunicación que han organizado
+                                                este evento"
+                                            </div>
+                                        </div>
+                                        <div class="stakeholder-item">
+                                            <div class="stakeholder-header">
+                                                <span class="stakeholder-name">Luz María Zapata</span>
+                                                <span class="stakeholder-pct">3% del discurso</span>
+                                            </div>
+                                            <div class="stakeholder-meta">
+                                                <span class="stakeholder-category">Categoría: Funcionarios electos del
+                                                    nivel nacional</span>
+                                                <span class="stakeholder-relation"
+                                                    style="background:#e8edf7;color:#00135B">
+                                                    Relación: Aliado estratégico (positiva)
+                                                </span>
+                                            </div>
+                                            <div class="stakeholder-track">
+                                                <div class="stakeholder-fill"
+                                                    style="width:9%;background:#e8edf7;border:1px solid #00135B"></div>
+                                            </div>
+                                            <div
+                                                style="font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic">
+                                                "Con mi fórmula vicepresidencial que es Luz María Zapata, comprometida
+                                                con los territorios, fue directora de Asoapitales"</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pv-disclaimer">
+                            <strong>Alcance metodológico del análisis:</strong> Este informe es un ejercicio de
+                            <strong>análisis de discurso</strong>, no de verificación de hechos
+                            (<em>fact-checking</em>).
+                            La herramienta evalúa cómo está construido el mensaje, su estructura, tono, complejidad y
+                            estrategia comunicativa, pero <strong>no determina la veracidad o falsedad de ninguna
+                                afirmación</strong>.
+                            Asimismo, los resultados corresponden exclusivamente al discurso analizado y no representan
+                            ni resumen la totalidad de la campaña o trayectoria comunicativa del candidato.
+                            Los resultados no representan la posición oficial de la Universidad de La Sabana
+                            ni del Laboratorio de Gobierno (GovLab).
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

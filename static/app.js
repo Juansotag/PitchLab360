@@ -695,6 +695,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         <strong style="color:var(--c-blue-dark)">Índice de Legibilidad de Flesch-Kincaid</strong><br>
                         Métrica que estima qué tan fácil es leer un texto. Valores altos indican mayor accesibilidad; valores bajos corresponden a textos de mayor complejidad y formalidad.
                     </div>
+                    <div>
+                        <strong style="color:var(--c-blue-dark)">Densidad de negaciones</strong><br>
+                        Proporción de palabras de negación en relación con el total del texto. Valores altos suelen asociarse a discursos defensivos, de contraste o confrontacionales.
+                    </div>
+                    <div>
+                        <strong style="color:var(--c-blue-dark)">Ratio Nosotros/Ellos</strong><br>
+                        Relación entre pronombres inclusivos (nosotros, nuestro) y exclusivos/distantes (ellos, su, aquellos). Permite entender si el discurso busca agrupar y unir, o si tiene un enfoque de polarización y alteridad.
+                    </div>
                 </div>
             </div>`;
     }
@@ -964,7 +972,7 @@ document.addEventListener('DOMContentLoaded', () => {
        DEMO — atajo secreto Ctrl+M (sin botón visible)
      ============================================================ */
     document.addEventListener('keydown', async (e) => {
-        if (e.ctrlKey && e.key === 'm') {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'm') {
             e.preventDefault();
             try {
                 const res = await fetch('/static/config/demo_data.json?v=' + Date.now());

@@ -306,8 +306,7 @@ Estructura requerida:
     }}
   ]
 }}
-tipo es uno de: Denuncia, Propuesta, Llamado a la acción, Contraste (nosotros vs. ellos),
-Promesa, Declaración de identidad, Apelación emocional, Eslogan, Dato o cifra clave, Metáfora política.
+tipo es uno de: Declaración de experiencia, Titular o axioma ideológico, Declaración sobre la realidad, Denuncia, Propuesta, Llamado a la acción, Contraste (nosotros vs. ellos), Promesa, Declaración de identidad, Apelación emocional, Eslogan, Dato o cifra clave, Metáfora política, Anécdota personal, Referencia histórica, Ataque directo, Defensa o justificación, Testimonio, Advertencia o amenaza velada, Declaración de principios, Visión de futuro, Autocrítica, Ironía o sarcasmo, Pregunta retórica, Llamado a la unidad, Deslegitimación del adversario, Hipérbole discursiva, Expresión de empatía, Declaración de urgencia, Elogio a un aliado, Refutación de argumento, Declaración de triunfo o logro.
 Identifica entre 3 y 8 frases memorables. Para cada una, elige el tipo más preciso y escribe
 una justificacion breve (1-2 frases) sobre por qué esa frase tiene potencial de impacto.
 """,
