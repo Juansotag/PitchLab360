@@ -32,28 +32,28 @@ PitchLab360 es una herramienta web de **análisis de discurso político** desarr
 
 ```
 PitchLab360/
-├── main.py                   # Backend completo (FastAPI)
+├── main.py # Backend completo (FastAPI)
 ├── requirements.txt
-├── Procfile                  # Deploy Railway
-├── runtime.txt               # Python 3.11
-├── .env                      # ANTHROPIC_API_KEY (no subir a git)
+├── Procfile # Deploy Railway
+├── runtime.txt # Python 3.11
+├── .env # ANTHROPIC_API_KEY (no subir a git)
 ├── .env.example
-├── discursos/                # Textos de discursos de prueba (.txt)
-│   ├── Abelardo_de_la_espriella.txt
-│   ├── Claudia_Lopez.txt
-│   ├── Paloma_Valencia.txt
-│   ├── Roy_Barreras.txt
-│   └── Sergio_Fajardo.txt
+├── discursos/ # Textos de discursos de prueba (.txt)
+│ ├── Abelardo_de_la_espriella.txt
+│ ├── Claudia_Lopez.txt
+│ ├── Paloma_Valencia.txt
+│ ├── Roy_Barreras.txt
+│ └── Sergio_Fajardo.txt
 ├── assets/
-│   └── PitchLab360.jpg       # Logo principal
+│ └── PitchLab360.jpg # Logo principal
 └── static/
-    ├── index.html            # UI completa (una sola página)
-    ├── app.js                # Motor de rendering y lógica frontend
-    ├── style.css             # Diseño y paleta de colores
-    └── config/               # JSONs editables de configuración
-        ├── demo_data.json    # Datos del botón "Datos de Prueba"
-        ├── categorias.json   # Tipos de discurso, emociones, plataformas
-        └── stakeholders.json # Categorías de actores y relaciones
+ ├── index.html # UI completa (una sola página)
+ ├── app.js # Motor de rendering y lógica frontend
+ ├── style.css # Diseño y paleta de colores
+ └── config/ # JSONs editables de configuración
+ ├── demo_data.json # Datos del botón "Datos de Prueba"
+ ├── categorias.json # Tipos de discurso, emociones, plataformas
+ └── stakeholders.json # Categorías de actores y relaciones
 ```
 
 ---
@@ -63,11 +63,11 @@ PitchLab360/
 1. **Usuario pega texto** del discurso en el frontend
 2. **`POST /limpiar-texto`** — Claude limpia y normaliza el texto en chunks paralelos
 3. **`POST /analizar/todo`** — Ejecuta **5 módulos en paralelo** con `ThreadPoolExecutor`:
-   - `estilo` — formalidad (1–10), tipo de discurso (con justificación por categoría), perfil comunicativo
-   - `frases_clave` — índice de tono (-1 a 1), frases memorables clasificadas por tipo
-   - `potencial_digital` — fragmentos viralizables con plataformas sugeridas y razones
-   - `marcos_narrativos` — encuadres emocionales (%), complejidad del lenguaje (1–10 con justificación)
-   - `stakeholders` — actores mencionados, categoría, % del discurso, tipo de relación, subcategoría, evidencia textual
+ - `estilo` — formalidad (1–10), tipo de discurso (con justificación por categoría), perfil comunicativo
+ - `frases_clave` — índice de tono (-1 a 1), frases memorables clasificadas por tipo
+ - `potencial_digital` — fragmentos viralizables con plataformas sugeridas y razones
+ - `marcos_narrativos` — encuadres emocionales (%), complejidad del lenguaje (1–10 con justificación)
+ - `stakeholders` — actores mencionados, categoría, % del discurso, tipo de relación, subcategoría, evidencia textual
 4. **Métricas locales** (sin API): TTR, Flesch, longitud de oraciones, negaciones, ratio nosotros/ellos, palabras frecuentes (filtradas de stopwords)
 
 ---
@@ -87,7 +87,7 @@ Los resultados se muestran en un panel lateral colapsable con 4 secciones:
 - **c. Perfil Comunicativo** — párrafo cualitativo de síntesis
 
 ### 2. Análisis Emocional
-- **a. Índice de Tono** — barra deslizante negativo↔positivo con descripción
+- **a. Índice de Tono** — barra deslizante negativopositivo con descripción
 - **b. Unidades de Sentido** — frases memorables clasificadas por tipo con justificación
 - **c. Potencial Digital** — fragmentos viralizables con badges de plataformas y razones
 - **d. Encuadres Emocionales** — barras de porcentaje por emoción con interpretación
@@ -113,10 +113,10 @@ Paleta calibrada al logo institucional:
 | `--c-yellow` | `#f8a719` | Índice de tono positivo |
 
 **Relaciones en gráficos de torta:**
-- Positiva → `#2563a8` (azul acero)
-- Negativa → `#d51437` (rojo)
-- Neutra → `#94a3b8` (gris)
-- Mixta → promedio RGB ponderado por % del discurso
+- Positiva `#2563a8` (azul acero)
+- Negativa `#d51437` (rojo)
+- Neutra `#94a3b8` (gris)
+- Mixta promedio RGB ponderado por % del discurso
 
 ---
 
@@ -160,7 +160,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ## Limitaciones conocidas
 
-- El modelo `claude-haiku-4-5-20251001` tiene un límite de rate que puede causar errores con textos muy largos en simultáneo → se mitiga con `ThreadPoolExecutor(max_workers=3)` y chunks de 800 palabras
+- El modelo `claude-haiku-4-5-20251001` tiene un límite de rate que puede causar errores con textos muy largos en simultáneo se mitiga con `ThreadPoolExecutor(max_workers=3)` y chunks de 800 palabras
 - Los JSONs de configuración (`categorias.json`) son referencia para los prompts pero el LLM puede generar valores fuera de las listas — el frontend renderiza lo que reciba
 - El análisis de stakeholders depende de que el texto mencione actores explícitamente; en discursos muy abstractos puede devolver lista vacía
 - No hay persistencia: cada sesión es independiente, no se guardan análisis anteriores
@@ -170,21 +170,21 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ## Prompt para Claude — solicitar recomendaciones
 
 ```
-Eres un experto en desarrollo de software, comunicación política y análisis de datos. 
-Revisa el contexto completo de PitchLab360 descrito arriba y dame recomendaciones 
+Eres un experto en desarrollo de software, comunicación política y análisis de datos.
+Revisa el contexto completo de PitchLab360 descrito arriba y dame recomendaciones
 concretas de mejora en estas áreas:
 
-1. **Calidad del análisis** — ¿Qué módulos adicionales o mejoras a los prompts 
-   enriquecerían el valor analítico para equipos de campaña?
+1. **Calidad del análisis** — ¿Qué módulos adicionales o mejoras a los prompts
+ enriquecerían el valor analítico para equipos de campaña?
 
-2. **Experiencia de usuario** — ¿Qué elementos del sidebar o del flujo de trabajo 
-   podrían simplificarse o potenciarse?
+2. **Experiencia de usuario** — ¿Qué elementos del sidebar o del flujo de trabajo
+ podrían simplificarse o potenciarse?
 
-3. **Arquitectura técnica** — ¿Qué cambios mejorarían rendimiento, escalabilidad 
-   o mantenibilidad?
+3. **Arquitectura técnica** — ¿Qué cambios mejorarían rendimiento, escalabilidad
+ o mantenibilidad?
 
-4. **Casos de uso adicionales** — ¿Qué otras aplicaciones o audiencias podría 
-   servir esta herramienta con ajustes menores?
+4. **Casos de uso adicionales** — ¿Qué otras aplicaciones o audiencias podría
+ servir esta herramienta con ajustes menores?
 
 Prioriza las recomendaciones de mayor impacto con menor costo de implementación.
 ```
