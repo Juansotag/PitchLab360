@@ -105,8 +105,9 @@ def extraer_fragmento(url: str, inicio: int, fin: int) -> str:
             [
                 ytdlp_cmd,
                 '--skip-download',
-                '--write-auto-sub',
-                '--sub-langs', 'es',
+                '--write-subs',
+                '--write-auto-subs',
+                '--sub-langs', 'es.*,es',
                 '--sub-format', 'json3',
                 '--no-playlist',
                 '-o', out_template,
