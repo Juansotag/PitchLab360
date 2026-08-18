@@ -110,6 +110,7 @@ def extraer_fragmento(url: str, inicio: int, fin: int) -> str:
                 '--sub-langs', 'es.*,es',
                 '--sub-format', 'json3',
                 '--no-playlist',
+                '--extractor-args', 'youtube:player_client=ios,web',
                 '-o', out_template,
                 f'https://www.youtube.com/watch?v={video_id}'
             ],

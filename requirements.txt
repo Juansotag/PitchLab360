@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 yt-dlp
+curl-cffi
 anthropic
 python-dotenv
 pydantic
