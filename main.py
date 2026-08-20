@@ -110,7 +110,7 @@ def extraer_fragmento(url: str, inicio: int, fin: int) -> str:
                 '--sub-langs', 'es.*,es',
                 '--sub-format', 'json3',
                 '--no-playlist',
-                '--extractor-args', 'youtube:player_client=ios,web',
+                '--impersonate=Chrome-110',
                 '-o', out_template,
                 f'https://www.youtube.com/watch?v={video_id}'
             ],
@@ -184,14 +184,14 @@ def limpiar_texto(req: CleanRequest):
     if not key:
         return {"error": "API Key de Anthropic no configurada. Ingrésala en el panel de YouTube o en el archivo .env."}
         
-    http_client = httpx.Client(verify=_SSL_VERIFY, timeout=60.0)
+    http_client = httpx.Client(verify=_SSL_VERIFY, timeout=300.0)
     client = anthropic.Anthropic(api_key=key, http_client=http_client)
     
     
     def clean_chunk(chunk: str) -> str:
         prompt = PROMPT_LIMPIEZA.format(texto=chunk)
         res = client.messages.create(
-            model="claude-haiku-4-5-20251001",
+            model="claude-haiku-4-5",
             max_tokens=2048,
             messages=[{"role": "user", "content": prompt}]
         )
@@ -462,7 +462,7 @@ def ejecutar_modulo(modulo: str, texto: str, metadatos: dict, metricas: dict, ap
     if not key:
         return {"ok": False, "error": "API Key de Anthropic no configurada. Ingrésala en el panel de YouTube o en el archivo .env."}
         
-    http_client = httpx.Client(verify=_SSL_VERIFY, timeout=60.0)
+    http_client = httpx.Client(verify=_SSL_VERIFY, timeout=300.0)
     client = anthropic.Anthropic(api_key=key, http_client=http_client)
 
     base = BASE_CONTEXTO.format(
@@ -477,7 +477,7 @@ def ejecutar_modulo(modulo: str, texto: str, metadatos: dict, metricas: dict, ap
     prompt = PROMPTS[modulo].format(base=base)
     try:
         response = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-5",
             max_tokens=8192,
             messages=[{"role": "user", "content": prompt}]
         )
